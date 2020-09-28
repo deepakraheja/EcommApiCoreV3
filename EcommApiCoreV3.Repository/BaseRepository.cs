@@ -39,16 +39,16 @@ namespace EcommApiCoreV3.Repository
            
             //**********************email setting*******************************
 
-            UsesmtpSSL = "true";
-            EnableSsl = "false";
-            enableMail = "1";
-            mailServer = "mailgateway.cscgrp.com";
-            userId = "support@protatech.com";
-            password = "C$c@aA07";
-            authenticate = "true";
+            //UsesmtpSSL = "true";
+            //EnableSsl = "false";
+            //enableMail = "1";
+            //mailServer = "mailgateway.cscgrp.com";
+            //userId = "support@protatech.com";
+            //password = "C$c@aA07";
+            //authenticate = "true";
 
-            fromEmailID = "jobs@csc-usa.com";
-            ReportTemplate = @"D:\inetpub\wwwWISHESSAPIv2\wwwroot\ReportTemplate\";
+            //fromEmailID = "jobs@csc-usa.com";
+            //ReportTemplate = @"D:\inetpub\wwwWISHESSAPIv2\wwwroot\ReportTemplate\";
         }
 
 
