@@ -13,7 +13,7 @@ using static EcommApiCoreV3.Controllers.Common.SendEmails;
 
 namespace EcommApiCoreV3.Controllers
 {
-     
+
     [Authorize]
     [Route("api/[controller]")]
     public class OrderController : BaseController<OrderController>
@@ -23,7 +23,7 @@ namespace EcommApiCoreV3.Controllers
         public static string webRootPath;
         IEmailTemplateBAL _IEmailTemplateBAL;
         IUsersBAL _usersBAL;
-        public OrderController(IWebHostEnvironment hostingEnvironment, 
+        public OrderController(IWebHostEnvironment hostingEnvironment,
             IOrderBAL OrderBAL, IEmailTemplateBAL emailTemplateBAL, IUsersBAL usersBAL)
         {
             _IOrderBAL = OrderBAL;
@@ -152,7 +152,7 @@ namespace EcommApiCoreV3.Controllers
                             item.ProductImg = _utilities.ProductImage(item.ProductId, "productColorImage", webRootPath, item.ProductSizeColorId);
                     }
                 }
-
+                //return lst;
                 return await Task.Run(() => new List<Order>(lst));
             }
             catch (Exception ex)
@@ -175,7 +175,7 @@ namespace EcommApiCoreV3.Controllers
                 {
                     res = await this._IOrderBAL.UpdateOrderDetailStatus(item);
                 }
-                
+
                 SendEmails sendEmails = new SendEmails(_usersBAL, _IEmailTemplateBAL, _IOrderBAL);
                 SendEmails.webRootPath = webRootPath;
                 Users objUser = new Users();
