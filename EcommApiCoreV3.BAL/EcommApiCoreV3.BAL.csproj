@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EcommApiCoreV3.Entities\EcommApiCoreV3.Entities.csproj" />
+    <ProjectReference Include="..\EcommApiCoreV3.Repository\EcommApiCoreV3.Repository.csproj" />
+  </ItemGroup>
+
+</Project>
