@@ -23,7 +23,8 @@ namespace EcommApiCoreV3.Controllers
         public static string webRootPath;
         IEmailTemplateBAL _IEmailTemplateBAL;
         IUsersBAL _usersBAL;
-        public OrderController(IWebHostEnvironment hostingEnvironment, IOrderBAL OrderBAL, IEmailTemplateBAL emailTemplateBAL, IUsersBAL usersBAL)
+        public OrderController(IWebHostEnvironment hostingEnvironment, 
+            IOrderBAL OrderBAL, IEmailTemplateBAL emailTemplateBAL, IUsersBAL usersBAL)
         {
             _IOrderBAL = OrderBAL;
             webRootPath = hostingEnvironment.WebRootPath;
