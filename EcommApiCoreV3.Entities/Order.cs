@@ -23,7 +23,7 @@ namespace EcommApiCoreV3.Entities
         public int Price { get; set; } = 0;
         public int Quantity { get; set; } = 0;
         public int Discount { get; set; } = 0;
-        public List<Order> OrderDetails;
+        public List<Order> OrderDetails { get; set; }
         public string[] ProductImg { get; set; }
         public string ProductName { get; set; }
         public int SetNo { get; set; }

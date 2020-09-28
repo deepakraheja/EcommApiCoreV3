@@ -47,7 +47,7 @@ namespace EcommApiCoreV3.Entities
         public int TagId { get; set; } = 0;
         public int FabricId { get; set; } = 0;
         public int FabricTypeId { get; set; } = 0;
-        public List<ProductSizeColor> ProductSizeColor;
+        public List<ProductSizeColor> ProductSizeColor { get; set; }
         public int SetType { get; set; } = 0; 
         public int minimum { get; set; } = 0;
         public int ProductSizeId { get; set; } = 0;
