@@ -1,23 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Project\\Mohit\\EcommApiCoreV3\\EcommApiCoreV3.Entities\\EcommApiCoreV3.Entities.csproj": {}
+    "G:\\E Drive\\Project\\Deepak Sir\\Ecom\\EcommApiCoreV3\\EcommApiCoreV3.Entities\\EcommApiCoreV3.Entities.csproj": {}
   },
   "projects": {
-    "C:\\Project\\Mohit\\EcommApiCoreV3\\EcommApiCoreV3.Entities\\EcommApiCoreV3.Entities.csproj": {
+    "G:\\E Drive\\Project\\Deepak Sir\\Ecom\\EcommApiCoreV3\\EcommApiCoreV3.Entities\\EcommApiCoreV3.Entities.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Project\\Mohit\\EcommApiCoreV3\\EcommApiCoreV3.Entities\\EcommApiCoreV3.Entities.csproj",
+        "projectUniqueName": "G:\\E Drive\\Project\\Deepak Sir\\Ecom\\EcommApiCoreV3\\EcommApiCoreV3.Entities\\EcommApiCoreV3.Entities.csproj",
         "projectName": "EcommApiCoreV3.Entities",
-        "projectPath": "C:\\Project\\Mohit\\EcommApiCoreV3\\EcommApiCoreV3.Entities\\EcommApiCoreV3.Entities.csproj",
-        "packagesPath": "C:\\Users\\deepak raheja\\.nuget\\packages\\",
-        "outputPath": "C:\\Project\\Mohit\\EcommApiCoreV3\\EcommApiCoreV3.Entities\\obj\\",
+        "projectPath": "G:\\E Drive\\Project\\Deepak Sir\\Ecom\\EcommApiCoreV3\\EcommApiCoreV3.Entities\\EcommApiCoreV3.Entities.csproj",
+        "packagesPath": "C:\\Users\\sonuk\\.nuget\\packages\\",
+        "outputPath": "G:\\E Drive\\Project\\Deepak Sir\\Ecom\\EcommApiCoreV3\\EcommApiCoreV3.Entities\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\deepak raheja\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\sonuk\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -55,7 +52,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.401\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.402\\RuntimeIdentifierGraph.json"
         }
       }
     }

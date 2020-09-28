@@ -22,8 +22,8 @@ namespace EcommApiCoreV3.Entities
         public bool OnSale { get; set; } = false;
         public bool TopSelling { get; set; } = false;
         public bool HotOffer { get; set; } = false;
-        public int Active { get; set; } = 0;
-        public string Subcatecode { get; set; }
+        public bool Active { get; set; } = false;
+        public string Subcatecode { get; set; } = "";
         //public string Large { get; set; }
         public string SubcategoryName { get; set; }
         public int SubCategoryID { get; set; } = 0;
@@ -42,7 +42,7 @@ namespace EcommApiCoreV3.Entities
         public string BannerImage { get; set; }
         public string FrontImage { get; set; }
         public string SupplierName { get; set; }
-        //public int price { get; set; }
+        public int price { get; set; }
         public string ArticalNo { get; set; }
         public int TagId { get; set; } = 0;
         public int FabricId { get; set; } = 0;
