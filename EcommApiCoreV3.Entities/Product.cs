@@ -62,6 +62,7 @@ namespace EcommApiCoreV3.Entities
 
         public string Color { get; set; }
         public string Size { get; set; }
+        public int Qty { get; set; } = 0;
     }
 }
 
