@@ -49,7 +49,7 @@ namespace EcommApiCoreV3.Entities
         public string BusinessPhone { get; set; }
         public bool IsVIPMember { get; set; } = false;
         public bool IsAgentCustomer { get; set; } = false;
-
+         
         public string AadharCard { get; set; }
 
     }
