@@ -107,6 +107,7 @@ namespace EcommApiCoreV3.Repository
                 parameters.Add("@IsAgent", obj.IsAgent);
                 parameters.Add("@StatusId", obj.StatusId);
                 parameters.Add("@IsVIPMember", obj.IsVIPMember);
+                parameters.Add("@AadharCard", obj.AadharCard);
                 var res = await SqlMapper.ExecuteScalarAsync(con, "p_Users_upd", param: parameters, commandType: StoredProcedure);
                 return Convert.ToInt32(res);
             }
