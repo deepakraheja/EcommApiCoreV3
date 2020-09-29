@@ -1,0 +1,27 @@
+-------------------------------------------------
+Error Occurrred At:9/29/2020 4:05:24 PM
+Something went wrong inside OrderController GetOrderByUserId action: Index was out of range. Must be non-negative and less than the size of the collection. (Parameter 'index')
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:9/29/2020 4:05:24 PM
+   at System.Collections.Generic.List`1.get_Item(Int32 index)
+   at EcommApiCoreV3.Controllers.OrderController.GetOrderByUserId(Order obj) in G:\E Drive\Project\Deepak Sir\Ecom\EcommApiCoreV3\EcommApiCoreV3\Controllers\OrderController.cs:line 118
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:9/29/2020 4:06:07 PM
+Something went wrong inside OrderController GetOrderByUserId action: Index was out of range. Must be non-negative and less than the size of the collection. (Parameter 'index')
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:9/29/2020 4:06:07 PM
+   at System.Collections.Generic.List`1.get_Item(Int32 index)
+   at EcommApiCoreV3.Controllers.OrderController.GetOrderByUserId(Order obj) in G:\E Drive\Project\Deepak Sir\Ecom\EcommApiCoreV3\EcommApiCoreV3\Controllers\OrderController.cs:line 118
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:9/29/2020 4:06:15 PM
+Something went wrong inside OrderController GetOrderByUserId action: Index was out of range. Must be non-negative and less than the size of the collection. (Parameter 'index')
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:9/29/2020 4:06:15 PM
+   at System.Collections.Generic.List`1.get_Item(Int32 index)
+   at EcommApiCoreV3.Controllers.OrderController.GetOrderByUserId(Order obj) in G:\E Drive\Project\Deepak Sir\Ecom\EcommApiCoreV3\EcommApiCoreV3\Controllers\OrderController.cs:line 118
+---------------------END-------------------------
