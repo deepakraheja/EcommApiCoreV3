@@ -31,7 +31,7 @@ namespace EcommApiCoreV3.Controllers
         //IEmailTemplateBAL _IEmailTemplateBAL;
         IUsersBAL _usersBAL;
         private IConverter _converter;
-        public ReportController(IHostingEnvironment hostingEnvironment,
+        public ReportController(IWebHostEnvironment hostingEnvironment,
             IOrderBAL OrderBAL,
             //IEmailTemplateBAL emailTemplateBAL, 
             IUsersBAL usersBAL,
@@ -45,7 +45,7 @@ namespace EcommApiCoreV3.Controllers
         }
 
 
-        [HttpGet]
+        [HttpPost]
         [Route("GenerateOrderDetail")]
         [AllowAnonymous]
         public IActionResult GenerateOrderDetail([FromBody] Order obj)
