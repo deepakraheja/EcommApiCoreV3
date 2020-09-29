@@ -45,7 +45,7 @@ namespace EcommApiCoreV3.Entities
         public string City { get; set; }
         public string State { get; set; }
         public bool IsAgent { get; set; } = false; 
-        public int StatusId { get; set; } = 0;
+        public int StatusId { get; set; } = 0;   
         public string BusinessPhone { get; set; }
         public bool IsVIPMember { get; set; } = false;
         public bool IsAgentCustomer { get; set; } = false;

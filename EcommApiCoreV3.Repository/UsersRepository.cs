@@ -24,7 +24,7 @@ namespace EcommApiCoreV3.Repository
 
                 parameters.Add("@BusinessPhone", obj.BusinessPhone);
                 parameters.Add("@BusinessType", obj.BusinessType);
-                parameters.Add("@Industry", obj.Industry);
+                parameters.Add("@Industry", obj.Industry);  
                 parameters.Add("@BusinessLicenseType", obj.BusinessLicenseType);
                 
                 parameters.Add("@GSTNo", obj.GSTNo); 
