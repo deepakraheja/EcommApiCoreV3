@@ -50,5 +50,7 @@ namespace EcommApiCoreV3.Entities
         public bool IsVIPMember { get; set; } = false;
         public bool IsAgentCustomer { get; set; } = false;
 
+        public string AadharCard { get; set; }
+
     }
 }

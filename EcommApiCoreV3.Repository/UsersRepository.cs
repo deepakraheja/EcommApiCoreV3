@@ -36,6 +36,7 @@ namespace EcommApiCoreV3.Repository
                 parameters.Add("@PinCode", obj.PinCode);
                 parameters.Add("@City", obj.City);
                 parameters.Add("@State", obj.State);
+                parameters.Add("@AadharCard", obj.AadharCard);
 
                 var res = await SqlMapper.ExecuteScalarAsync(con, "p_Users_ins", param: parameters, commandType: StoredProcedure);
                 return Convert.ToInt32(res);
