@@ -22,5 +22,9 @@
     <ProjectReference Include="..\mailinblue\mailinblue.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\ReportTemp\" />
+  </ItemGroup>
+
 
 </Project>

@@ -26,7 +26,8 @@ namespace EcommApiCoreV3.Controllers
             _IProductBAL = ProductBAL;
             webRootPath = hostingEnvironment.WebRootPath;
         }
-
+        
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public string Get(int id)
         {
