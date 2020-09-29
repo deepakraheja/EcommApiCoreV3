@@ -43,6 +43,9 @@ namespace EcommApiCoreV3.Controllers.Common
 
         public static string OrderInvoiceTemplate(List<Order> lst)
         {
+            
+           string Orderdate = DateTime.Parse(lst[0].OrderDate, new System.Globalization.CultureInfo("eng")).ToString("MMM dd, yyyy");
+
             var sb = new StringBuilder();
             sb.Append(@"
                         <html>
@@ -56,7 +59,7 @@ namespace EcommApiCoreV3.Controllers.Common
                                                 <h4>summery</h4>
                                                 <ul class='order-detail'>
                                                     <li><span>order ID:</span>" + lst[0].OrderNumber + @"</li>
-                                                    <li><span>Order Date:</span>" + Convert.ToDateTime(lst[0].OrderDate).ToString("MMM dd, yyyy") + @"</li>
+                                                    <li><span>Order Date:</span>" + Orderdate + @"</li>
                                                     <li><span>Order Total:</span>"
                                                        + lst[0].TotalAmount +
                                                      @"</li>

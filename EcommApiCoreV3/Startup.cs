@@ -272,6 +272,13 @@ namespace EcommApiCoreV3
             app.UseDirectoryBrowser(new DirectoryBrowserOptions
             {
                 FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
+                   Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "ProductImage")),
+                RequestPath = "/ReportGenerate",
+            });
+
+            app.UseDirectoryBrowser(new DirectoryBrowserOptions
+            {
+                FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
                  Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Json")),
                 RequestPath = "/Json"
             });

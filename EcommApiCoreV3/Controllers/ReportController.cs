@@ -21,6 +21,7 @@ using static EcommApiCoreV3.Controllers.Common.SendEmails;
 
 namespace EcommApiCoreV3.Controllers
 {
+    [Produces("application/json")]
     [Authorize]
     [Route("api/[controller]")]
     public class ReportController : BaseController<OrderController>
@@ -47,13 +48,12 @@ namespace EcommApiCoreV3.Controllers
 
         [HttpPost]
         [Route("GenerateOrderDetail")]
-        [AllowAnonymous]
-        public IActionResult GenerateOrderDetail([FromBody] Order obj)
+
+        public string GenerateOrderDetail([FromBody] Order obj)
         {
-            //Order obj = new Order();
-            //obj.StatusId = 0;
-            //obj.StartDate = "09/09/2020";
-            //obj.EndDate = "10/10/2020";
+
+            string FileName = DateTime.Now.ToString("ddMMyyyyHHmmss") + ".pdf";
+
             List<Order> lst = this._IOrderBAL.GetAllOrder(obj).Result;
             for (int i = 0; i < lst.Count; i++)
             {
@@ -74,7 +74,7 @@ namespace EcommApiCoreV3.Controllers
                 PaperSize = PaperKind.A4,
                 Margins = new MarginSettings { Top = 10 },
                 DocumentTitle = "Order Details Report",
-                Out = webRootPath + "\\ReportTemp\\" + DateTime.Now.ToString("ddMMyyyyHHmmss") + ".pdf"
+                Out = webRootPath + "\\ReportGenerate\\" + FileName
             };
             var objectSettings = new ObjectSettings
             {
@@ -92,16 +92,18 @@ namespace EcommApiCoreV3.Controllers
             var file = _converter.Convert(pdf);
 
             //return Ok("Successfully created PDF document.");
-            return File(file, "application/pdf", DateTime.Now.ToString("ddMMyyyyHHmmss") + ".pdf");
-            //return File(file, "application/pdf");
+            File(file, "application/pdf", DateTime.Now.ToString("ddMMyyyyHHmmss") + ".pdf");
+
+            return FileName;
         }
 
 
         [HttpPost]
         [Route("GenerateOrderInvoice")]
-        [AllowAnonymous]
-        public IActionResult GenerateOrderInvoice([FromBody] Order obj)
+
+        public string GenerateOrderInvoice([FromBody] Order obj)
         {
+
             List<Order> lst = this._IOrderBAL.GetOrderByOrderId(obj).Result;
             lst[0].OrderDetails = this._IOrderBAL.GetSuccessOrderDetailsByOrderId(obj).Result;
             foreach (var item in lst[0].OrderDetails)
@@ -119,7 +121,7 @@ namespace EcommApiCoreV3.Controllers
                 PaperSize = PaperKind.A4,
                 Margins = new MarginSettings { Top = 10 },
                 DocumentTitle = "Order Invoice Report",
-                Out = webRootPath + "\\ReportTemp\\" + FileName
+                Out = webRootPath + "\\ReportGenerate\\" + FileName
             };
             var objectSettings = new ObjectSettings
             {
@@ -137,8 +139,11 @@ namespace EcommApiCoreV3.Controllers
             var file = _converter.Convert(pdf);
 
             //return Ok("Successfully created PDF document.");
-            return File(file, "application/pdf", FileName);
+            File(file, "application/pdf", FileName);
             //return File(file, "application/pdf");
+
+            return FileName;
+
         }
 
         [HttpPost]
