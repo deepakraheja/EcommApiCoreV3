@@ -62,7 +62,13 @@ namespace EcommApiCoreV3.Entities
 
         public string Color { get; set; }
         public string Size { get; set; }
+        // Product Qty
         public int Qty { get; set; } = 0;
+        public int CartId { get; set; } = 0;
+        public int CartProductQty { get; set; } = 0;
+        public int SetNo { get; set; } = 0;
+        // cart Quantity 
+        public int Quantity { get; set; } = 0;
     }
 }
 

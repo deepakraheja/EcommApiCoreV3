@@ -357,6 +357,21 @@ namespace EcommApiCoreV3.Repository
                 throw (ex);
             }
         }
+        public async Task<List<Product>> GetProductInCartById(Product obj)
+        {
+            try
+            {
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@UserId", obj.UserId);
+                parameters.Add("@ProductId", obj.ProductID);
+                List<Product> lst = (await SqlMapper.QueryAsync<Product>(con, "p_GetProductInCartById", param: parameters, commandType: StoredProcedure)).ToList();
+                return lst;
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+        }
     }
     public class SetList
     {

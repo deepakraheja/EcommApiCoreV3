@@ -98,5 +98,9 @@ namespace EcommApiCoreV3.BAL
         {
             return _IProductRepository.GetProductCartQuantity(obj);
         }
+        public Task<List<Product>> GetProductInCartById(Product obj)
+        {
+            return _IProductRepository.GetProductInCartById(obj);
+        }
     }
 }
