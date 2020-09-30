@@ -281,6 +281,7 @@ namespace EcommApiCoreV3
                 FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
                  Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Json")),
                 RequestPath = "/Json"
+
             });
             //app.UseFileServer(new FileServerOptions()
             //{

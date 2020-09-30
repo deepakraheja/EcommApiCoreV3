@@ -28,13 +28,13 @@ namespace EcommApiCoreV3.Repository
         }
         public BaseRepository()
         {
-            string connectionString = "Data Source=148.72.232.166;Initial Catalog=Ecomm;User ID=sonu;Password=password_1234;";
-            //string connectionString = "Data Source=INSTANCE-1\\SQLEXPRESS;Initial Catalog=Ecomm;User ID=sa;Password=password_1234;";
+            //string connectionString = "Data Source=148.72.232.166;Initial Catalog=Ecomm;User ID=sonu;Password=password_1234;";
+            string connectionString = "Data Source=INSTANCE-1\\SQLEXPRESS;Initial Catalog=Ecomm;User ID=sa;Password=password_1234;";
             con = new SqlConnection(connectionString);
 
 
-            Errorlog = @"C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\wwwroot\errorlog";
-            //errorlog = @"C:\inetpub\wwwroot\EcommApi\wwwroot\errorlog";
+            //Errorlog = @"C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\wwwroot\errorlog";
+            Errorlog = @"C:\inetpub\wwwroot\EcommApiV3\wwwroot\errorlog";
 
            
             //**********************email setting*******************************

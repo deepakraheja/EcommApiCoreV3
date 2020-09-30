@@ -44,7 +44,7 @@ namespace EcommApiCoreV3.Controllers.Common
         public static string OrderInvoiceTemplate(List<Order> lst)
         {
             
-           string Orderdate = DateTime.Parse(lst[0].OrderDate, new System.Globalization.CultureInfo("eng")).ToString("MMM dd, yyyy");
+           string Orderdate = DateTime.Parse(lst[0].OrderDate, new System.Globalization.CultureInfo("en-US")).ToString("MMM dd, yyyy");
 
             var sb = new StringBuilder();
             sb.Append(@"
