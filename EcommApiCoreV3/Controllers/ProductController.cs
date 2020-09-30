@@ -26,7 +26,7 @@ namespace EcommApiCoreV3.Controllers
             _IProductBAL = ProductBAL;
             webRootPath = hostingEnvironment.WebRootPath;
         }
-        
+
         [AllowAnonymous]
         [HttpGet("{id}")]
         public string Get(int id)
@@ -391,6 +391,23 @@ namespace EcommApiCoreV3.Controllers
                 ErrorLogger.Log($"Something went wrong inside ProductController GetProductCartQuantity action: {ex.Message}");
                 ErrorLogger.Log(ex.StackTrace);
                 Logger.LogError($"Something went wrong inside ProductController GetProductCartQuantity action: {ex.Message}");
+                return null;
+            }
+        }
+
+        [HttpPost]
+        [Route("GetProductInCartById")]
+        public async Task<List<Product>> GetProductInCartById([FromBody] Product obj)
+        {
+            try
+            {
+                return await this._IProductBAL.GetProductInCartById(obj);
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Log($"Something went wrong inside ProductController GetProductInCartById action: {ex.Message}");
+                ErrorLogger.Log(ex.StackTrace);
+                Logger.LogError($"Something went wrong inside ProductController GetProductInCartById action: {ex.Message}");
                 return null;
             }
         }
