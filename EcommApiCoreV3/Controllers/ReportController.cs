@@ -48,10 +48,8 @@ namespace EcommApiCoreV3.Controllers
 
         [HttpPost]
         [Route("GenerateOrderDetail")]
-
         public string GenerateOrderDetail([FromBody] Order obj)
         {
-
             string FileName = DateTime.Now.ToString("ddMMyyyyHHmmss") + ".pdf";
 
             List<Order> lst = this._IOrderBAL.GetAllOrder(obj).Result;
@@ -92,15 +90,13 @@ namespace EcommApiCoreV3.Controllers
             var file = _converter.Convert(pdf);
 
             //return Ok("Successfully created PDF document.");
-            File(file, "application/pdf", DateTime.Now.ToString("ddMMyyyyHHmmss") + ".pdf");
-
+            File(file, "application/pdf", FileName);
             return FileName;
         }
 
 
         [HttpPost]
         [Route("GenerateOrderInvoice")]
-
         public string GenerateOrderInvoice([FromBody] Order obj)
         {
             try
