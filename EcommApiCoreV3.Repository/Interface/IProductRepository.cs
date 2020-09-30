@@ -31,5 +31,6 @@ namespace EcommApiCoreV3.Repository.Interface
         Task<List<ProductSizeSet>> SelectSETListbyRowID(string RowID);
         Task<List<ProductSizeSet>> SelectProductSizeColorWITHSETbyRowID(Cart obj);
         Task<List<Product>> GetProductCartQuantity(Product obj);
+        Task<List<Product>> GetProductInCartById(Product obj);
     }
 }
