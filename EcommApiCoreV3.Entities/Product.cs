@@ -30,7 +30,7 @@ namespace EcommApiCoreV3.Entities
         public int CategoryID { get; set; } = 0;
         public int MainCategoryID { get; set; } = 0;
         public string BrandName { get; set; }
-        public string[] BannerImg { get; set; }
+        //public string[] BannerImg { get; set; }
         public string[] SmallImg { get; set; }
         //public string[] ProductImg { get; set; }
 
