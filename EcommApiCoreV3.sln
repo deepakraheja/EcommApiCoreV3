@@ -3,15 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcommApiCoreV3", "EcommApiCoreV3\EcommApiCoreV3.csproj", "{FECA6AC4-702A-40AF-A62A-3648737E2232}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcommApiCoreV3", "EcommApiCoreV3\EcommApiCoreV3.csproj", "{FECA6AC4-702A-40AF-A62A-3648737E2232}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcommApiCoreV3.BAL", "EcommApiCoreV3.BAL\EcommApiCoreV3.BAL.csproj", "{1CEBDBF2-F4A9-4AFF-BD57-B0CF5FB05851}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcommApiCoreV3.BAL", "EcommApiCoreV3.BAL\EcommApiCoreV3.BAL.csproj", "{1CEBDBF2-F4A9-4AFF-BD57-B0CF5FB05851}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcommApiCoreV3.Entities", "EcommApiCoreV3.Entities\EcommApiCoreV3.Entities.csproj", "{1C6A3F6B-0CF7-4349-A2A9-612580A28E70}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcommApiCoreV3.Entities", "EcommApiCoreV3.Entities\EcommApiCoreV3.Entities.csproj", "{1C6A3F6B-0CF7-4349-A2A9-612580A28E70}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcommApiCoreV3.Repository", "EcommApiCoreV3.Repository\EcommApiCoreV3.Repository.csproj", "{07FC1C44-ED8B-4ADF-B5D4-55FE032AA5B3}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mailinblue", "mailinblue\mailinblue.csproj", "{6E918CDB-2EDD-481A-A1E2-82ABA20F71EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcommApiCoreV3.Repository", "EcommApiCoreV3.Repository\EcommApiCoreV3.Repository.csproj", "{07FC1C44-ED8B-4ADF-B5D4-55FE032AA5B3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +33,6 @@ Global
 		{07FC1C44-ED8B-4ADF-B5D4-55FE032AA5B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07FC1C44-ED8B-4ADF-B5D4-55FE032AA5B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07FC1C44-ED8B-4ADF-B5D4-55FE032AA5B3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6E918CDB-2EDD-481A-A1E2-82ABA20F71EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6E918CDB-2EDD-481A-A1E2-82ABA20F71EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6E918CDB-2EDD-481A-A1E2-82ABA20F71EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6E918CDB-2EDD-481A-A1E2-82ABA20F71EB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

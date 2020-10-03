@@ -18,6 +18,7 @@ using EcommApiCoreV3.Controllers.Common;
 using EcommApiCoreV3.Entities;
 using EcommApiCoreV3.JWT;
 using static EcommApiCoreV3.Controllers.Common.SendEmails;
+//using mailinblue;
 
 namespace EcommApiCoreV3.Controllers
 {
@@ -45,10 +46,151 @@ namespace EcommApiCoreV3.Controllers
         }
 
 
+
+        /*  [HttpPost] /* commented on 3 oct 2010 by deepak
+          [Route("SendEmail1")]
+          [AllowAnonymous]
+          public void SendEmail1()
+          {
+              try
+              {
+
+                  API sendinBlue = new mailinblue.API("nzysR4DgbSBG7dvK"); //add your api key here 
+
+                  Dictionary<string, Object> data = new Dictionary<string, Object>();
+                  Dictionary<string, string> to = new Dictionary<string, string>();
+                  to.Add("deepakrah1234@mailinator.com", "to whom!");
+
+                  //to.Add("deepak12345@mailinator.com", "to whom!");
+                  List<string> from_name = new List<string>();
+                  from_name.Add("esales@vikramcreations.com");
+
+                  //from_name.Add("from email!");
+                  //List<string> attachment = new List<string>();
+                  //attachment.Add("https://domain.com/path-to-file/filename1.pdf");
+                  //attachment.Add("https://domain.com/path-to-file/filename2.jpg");
+
+                  data.Add("to", to);
+                  data.Add("from", from_name);
+                  data.Add("subject", "hello");
+                  data.Add("html", "This is the test email.");
+                  //data.Add("attachment", attachment);
+
+                  Object sendEmail = sendinBlue.send_email(data);
+                  string InnerHtml = sendEmail.ToString();
+
+              }
+              catch (Exception exx)
+              {
+                  ErrorLogger.Log($"Something went wrong inside UsersController SendEmail action: {exx.Message}");
+                  ErrorLogger.Log(exx.StackTrace);
+                  string str = exx.Message.ToString();
+
+              }
+
+          }
+
+
+
+          [HttpPost]
+          [Route("SendEmail")]
+          [AllowAnonymous]
+          public void SendEmail()
+          {
+              string strFrom = "esales@vikramcreations.com";
+
+              SmtpClient smtpClient = new SmtpClient();
+              MailMessage message = new MailMessage();
+
+              string userId = "Loginwecart2014@gmail.com";// Convert.ToString(ConfigurationManager.AppSettings["MailUserId"]); //MAIL ID FOR AUTHENTICATION
+              string password = "nzysR4DgbSBG7dvK";// Convert.ToString(ConfigurationManager.AppSettings["MailPassword"]); ;//PASSWORD FOR AUTHENTICATION
+              bool EnableSsl = true;
+
+              bool flag = true;
+              string strSub = "Hello";
+              string strBody = "Hello, This is Email sending test using gmail.";
+
+              //  string addMessage = Convert.ToString(ConfigurationManager.AppSettings["Subject"]);
+              String host = "smtp-relay.sendinblue.com";// ConfigurationManager.AppSettings["mailServer"];
+              MailAddress FromAddress = new MailAddress(strFrom);
+              try
+              {
+                  smtpClient.EnableSsl = EnableSsl;//Convert.ToBoolean(EnableSsl);
+                  smtpClient.Port = 587;
+                  smtpClient.Host = host;
+                  message.From = FromAddress;
+                  message.To.Add("deepakrah1234@mailinator.com");
+                  //message.CC.Add(strCc);
+                  //message.Bcc.Add(strBcc);
+                  message.Subject = strSub;
+                  message.Body = strBody;
+                  message.IsBodyHtml = true;
+                  if (flag)
+                  {
+                      NetworkCredential oCredential = new NetworkCredential(userId, password);
+                      smtpClient.UseDefaultCredentials = false;
+                      smtpClient.Credentials = oCredential;
+                  }
+                  else
+                  {
+                      smtpClient.UseDefaultCredentials = true;
+
+                  }
+                  smtpClient.Send(message);
+
+              }
+              catch (Exception ex)
+              {
+                  string str = ex.Message.ToString();
+
+                  ErrorLogger.Log(ex.Message);
+                  ErrorLogger.Log(ex.StackTrace);
+
+              }
+
+
+
+              //try
+              //{
+              //    string smtpAddress = "smtp.gmail.com";
+              //    int portNumber = 587;
+              //    bool enableSSL = true;
+              //    string emailFromAddress = "esales@vikramcreations.com"; //Sender Email Address  
+              //    string password = "Sales@123"; //Sender Password  
+              //    string emailToAddress = "deepakrahejain@gmail.com"; //Receiver Email Address  
+              //    string subject = "Hello";
+              //    string body = "Hello, This is Email sending test using gmail.";
+
+              //    using (MailMessage mail = new MailMessage())
+              //    {
+              //        mail.From = new MailAddress(emailFromAddress);
+              //        mail.To.Add(emailToAddress);
+              //        mail.Subject = subject;
+              //        mail.Body = body;
+              //        mail.IsBodyHtml = true;
+              //        //mail.Attachments.Add(new Attachment("D:\\TestFile.txt"));//--Uncomment this to send any attachment  
+              //        using (SmtpClient smtp = new SmtpClient(smtpAddress, portNumber))
+              //        {
+              //            smtp.Credentials = new NetworkCredential(emailFromAddress, password);
+              //            smtp.EnableSsl = enableSSL;
+              //            smtp.Send(mail);
+
+              //        }
+
+              //    }
+              //}
+              //catch (Exception ex)
+              //{
+              //    Logger.LogError($"Something went wrong inside UsersController GetAllUsers action: {ex.Message}");
+
+              //}
+          }*/
+
+
         [HttpPost]
-        [Route("SendEmail")]
+        [Route("SendEmailWithGmail")]
         [AllowAnonymous]
-        public void SendEmail()
+        public void SendEmailWithGmail()
         {
             string strFrom = "esales@vikramcreations.com";
 
@@ -56,23 +198,23 @@ namespace EcommApiCoreV3.Controllers
             MailMessage message = new MailMessage();
 
             string userId = "esales@vikramcreations.com";// Convert.ToString(ConfigurationManager.AppSettings["MailUserId"]); //MAIL ID FOR AUTHENTICATION
-            string password = "rfEa9HDNvPCQtdxL";// Convert.ToString(ConfigurationManager.AppSettings["MailPassword"]); ;//PASSWORD FOR AUTHENTICATION
-            //bool EnableSsl = true;
+            string password = "Sales@123";// Convert.ToString(ConfigurationManager.AppSettings["MailPassword"]); ;//PASSWORD FOR AUTHENTICATION
+            bool EnableSsl = true;
 
             bool flag = true;
             string strSub = "Hello";
             string strBody = "Hello, This is Email sending test using gmail.";
 
             //  string addMessage = Convert.ToString(ConfigurationManager.AppSettings["Subject"]);
-            String host = "smtp-relay.sendinblue.com";// ConfigurationManager.AppSettings["mailServer"];
+            String host = "smtp.gmail.com";// ConfigurationManager.AppSettings["mailServer"];
             MailAddress FromAddress = new MailAddress(strFrom);
             try
             {
-                //smtpClient.EnableSsl = EnableSsl;//Convert.ToBoolean(EnableSsl);
                 smtpClient.Port = 587;
+                smtpClient.EnableSsl = EnableSsl;//Convert.ToBoolean(EnableSsl);
                 smtpClient.Host = host;
                 message.From = FromAddress;
-                message.To.Add("deepakrah1234@mailinator.com");
+                message.To.Add("deepakrahejain@mailinator.com");
                 //message.CC.Add(strCc);
                 //message.Bcc.Add(strBcc);
                 message.Subject = strSub;
@@ -92,53 +234,14 @@ namespace EcommApiCoreV3.Controllers
                 smtpClient.Send(message);
 
             }
-            catch (Exception ex)
+            catch (Exception exx)
             {
-                string str = ex.Message.ToString();
-
-                ErrorLogger.Log(ex.Message);
-                ErrorLogger.Log(ex.StackTrace);
+                ErrorLogger.Log($"Something went wrong inside UsersController SendEmailWithGmail action: {exx.Message}");
+                ErrorLogger.Log(exx.StackTrace);
+                string str = exx.Message.ToString();
 
             }
-
-
-
-            //try
-            //{
-            //    string smtpAddress = "smtp.gmail.com";
-            //    int portNumber = 587;
-            //    bool enableSSL = true;
-            //    string emailFromAddress = "esales@vikramcreations.com"; //Sender Email Address  
-            //    string password = "Sales@123"; //Sender Password  
-            //    string emailToAddress = "deepakrahejain@gmail.com"; //Receiver Email Address  
-            //    string subject = "Hello";
-            //    string body = "Hello, This is Email sending test using gmail.";
-
-            //    using (MailMessage mail = new MailMessage())
-            //    {
-            //        mail.From = new MailAddress(emailFromAddress);
-            //        mail.To.Add(emailToAddress);
-            //        mail.Subject = subject;
-            //        mail.Body = body;
-            //        mail.IsBodyHtml = true;
-            //        //mail.Attachments.Add(new Attachment("D:\\TestFile.txt"));//--Uncomment this to send any attachment  
-            //        using (SmtpClient smtp = new SmtpClient(smtpAddress, portNumber))
-            //        {
-            //            smtp.Credentials = new NetworkCredential(emailFromAddress, password);
-            //            smtp.EnableSsl = enableSSL;
-            //            smtp.Send(mail);
-
-            //        }
-
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    Logger.LogError($"Something went wrong inside UsersController GetAllUsers action: {ex.Message}");
-
-            //}
         }
-
 
 
         [HttpPost]
@@ -162,7 +265,7 @@ namespace EcommApiCoreV3.Controllers
             {
                 ErrorLogger.Log($"Something went wrong inside UsersController UserRegistration action: {ex.Message}");
                 ErrorLogger.Log(ex.StackTrace);
-                
+
                 Logger.LogError($"Something went wrong inside UsersController UserRegistration action: {ex.Message}");
                 return -1;
             }

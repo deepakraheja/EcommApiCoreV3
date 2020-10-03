@@ -5,6 +5,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="libwkhtmltox.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="libwkhtmltox.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="DinkToPdf" Version="1.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.8" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.8" />
@@ -19,7 +29,6 @@
     <ProjectReference Include="..\EcommApiCoreV3.BAL\EcommApiCoreV3.BAL.csproj" />
     <ProjectReference Include="..\EcommApiCoreV3.Entities\EcommApiCoreV3.Entities.csproj" />
     <ProjectReference Include="..\EcommApiCoreV3.Repository\EcommApiCoreV3.Repository.csproj" />
-    <ProjectReference Include="..\mailinblue\mailinblue.csproj" />
   </ItemGroup>
 
   <ItemGroup>

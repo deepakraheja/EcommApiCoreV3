@@ -1,6 +1,0 @@
-C:\Project\Mohit\EcommApiCore\mailinblue\bin\Release\mailinblue.dll
-C:\Project\Mohit\EcommApiCore\mailinblue\bin\Release\Newtonsoft.Json.dll
-C:\Project\Mohit\EcommApiCore\mailinblue\obj\Release\mailinblue.csproj.CoreCompileInputs.cache
-C:\Project\Mohit\EcommApiCore\mailinblue\obj\Release\mailinblue.csproj.CopyComplete
-C:\Project\Mohit\EcommApiCore\mailinblue\obj\Release\mailinblue.dll
-C:\Project\Mohit\EcommApiCore\mailinblue\obj\Release\mailinblue.csprojAssemblyReference.cache

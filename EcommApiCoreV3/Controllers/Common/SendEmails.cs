@@ -19,7 +19,7 @@ using System.Diagnostics;
 //using sib_api_v3_sdk.Client;
 //using sib_api_v3_sdk.Model;
 
-using mailinblue;
+//using mailinblue;
 
 namespace EcommApiCoreV3.Controllers.Common
 {
@@ -58,7 +58,7 @@ namespace EcommApiCoreV3.Controllers.Common
             _IOrderBAL = OrderBAL;
         }
 
-       // static string UsesmtpSSL = Startup.UsesmtpSSL;
+        // static string UsesmtpSSL = Startup.UsesmtpSSL;
         //static string enableMail = Startup.enableMail;
         static string mailServer = Startup.mailServer;
         static string userId = Startup.userId;
@@ -426,133 +426,204 @@ namespace EcommApiCoreV3.Controllers.Common
             SendEmailInBackgroundThread(objMailContent);
         }
 
+
         public void SendEmailInBackgroundThread(MailContent objMailContent)
         {
             //Thread bgThread = new Thread(new ParameterizedThreadStart(SendAttachment));
             //bgThread.IsBackground = true;
             //bgThread.Start(objMailContent);
 
+            SendEmailWithGmail(objMailContent);
 
-            //SendAttachment(objMailContent, UserName);
+            //SendAttachment(objMailContent);
 
-            SendMailBySendBlue(objMailContent);
+            //SendMailBySendBlue(objMailContent);
         }
-        public static void SendMailBySendBlue(Object objMail)
+
+
+
+        public void SendEmailWithGmail(Object objMail)
         {
             MailContent objMC = (MailContent)objMail;
-           
+
+            string strFrom = "esales@vikramcreations.com";
+
             SmtpClient smtpClient = new SmtpClient();
-            MailMessage mailMessage = new MailMessage();
+            MailMessage message = new MailMessage();
 
-
+            string userId = "esales@vikramcreations.com";// Convert.ToString(ConfigurationManager.AppSettings["MailUserId"]); //MAIL ID FOR AUTHENTICATION
+            string password = "Sales@123";// Convert.ToString(ConfigurationManager.AppSettings["MailPassword"]); ;//PASSWORD FOR AUTHENTICATION
+            bool EnableSsl = true;
 
             bool flag = true;
-            //bool UseSMTPSSL = false;
-            //if (!string.IsNullOrEmpty(authenticate))
-            //{
-            //    flag = Convert.ToBoolean(authenticate);
-            //}
-            //if (!string.IsNullOrEmpty(UsesmtpSSL))
-            //{
-            //    UseSMTPSSL = Convert.ToBoolean(UsesmtpSSL);
-            //}
+            //string strSub = "Hello";
+            //gdstring strBody = "Hello, This is Email sending test using gmail.";
 
-            string host = mailServer;
-
-            string address = fromEmailID;
-                                  
-            if (!String.IsNullOrEmpty(objMC.From))
-            {
-                address = objMC.From;
-            }
-
-            MailAddress from = new MailAddress(address, objMC.displayName);
-
-            if (objMC.CopyTo.Count > 0)
-            {
-                foreach (string copyTo in objMC.CopyTo)
-                {
-                    if (!string.IsNullOrEmpty(copyTo))
-                    {
-                        mailMessage.CC.Add(new MailAddress(copyTo));
-                    }
-                }
-            }
-
-
+            //  string addMessage = Convert.ToString(ConfigurationManager.AppSettings["Subject"]);
+            String host = "smtp.gmail.com";// ConfigurationManager.AppSettings["mailServer"];
+            MailAddress FromAddress = new MailAddress(strFrom);
             try
             {
-
-                //smtpClient.EnableSsl = false;
-                smtpClient.Host = host;
-                mailMessage.From = from;
                 smtpClient.Port = 587;
-                mailMessage.To.Add(objMC.toEmailaddress);
-                mailMessage.Subject = objMC.subject;
-                mailMessage.IsBodyHtml = true;
+                smtpClient.EnableSsl = EnableSsl;//Convert.ToBoolean(EnableSsl);
+                smtpClient.Host = host;
+                message.From = FromAddress;
 
-                if (objMC.EventData != null)
-                {
-                    mailMessage.AlternateViews.Add(objMC.EventData);
 
-                    System.Net.Mime.ContentType typeHTML = new System.Net.Mime.ContentType("text/html");
-                    AlternateView viewHTML = AlternateView.CreateAlternateViewFromString(objMC.emailBody, typeHTML);
-                    viewHTML.TransferEncoding = System.Net.Mime.TransferEncoding.SevenBit;
-                    mailMessage.AlternateViews.Add(viewHTML);
-                }
-                else
-                {
-                    mailMessage.Body = objMC.emailBody;
-                }
-                if (objMC.strAttachment != null)
-                {
-                    foreach (Attachment a in objMC.strAttachment)
-                    {
+                message.To.Add(objMC.toEmailaddress);
+                message.Subject = objMC.subject;
+                message.Body = objMC.emailBody;
+                message.IsBodyHtml = true;
 
-                        mailMessage.Attachments.Add(a);
 
-                    }
-                }
+                //message.To.Add("deepakrahejain@mailinator.com");
+                //message.CC.Add(strCc);
+                //message.Bcc.Add(strBcc);
+                //message.Subject = strSub;
+                //message.Body = strBody;
+                //message.IsBodyHtml = true;
+
                 if (flag)
                 {
-                    NetworkCredential credentials = new NetworkCredential(userId, password);
+                    NetworkCredential oCredential = new NetworkCredential(userId, password);
                     smtpClient.UseDefaultCredentials = false;
-                    smtpClient.Credentials = credentials;
+                    smtpClient.Credentials = oCredential;
                 }
                 else
                 {
                     smtpClient.UseDefaultCredentials = true;
+
                 }
-
-               // string sendMail = AllowSendMails;
-
-
-                //if (string.IsNullOrEmpty(sendMail) || (sendMail.ToUpper() != "NO"))
-                //{
-                    if (!string.IsNullOrEmpty(objMC.emailBody))
-                    {
-                        smtpClient.Send(mailMessage);
-                        smtpClient.Dispose();
-                    }
-
-                //}
-
-
-                // update Mail log status of IsDelivered
-                //MailBoxManager.UpdateDeliveryStatus(MailerLogID, true, "Successfully Send.");
+                smtpClient.Send(message);
 
             }
-            catch (Exception ex)
+            catch (Exception exx)
             {
-                ErrorLogger.Log(ex.Message);
-                ErrorLogger.Log(ex.StackTrace);
-                //update Mail log status of IsDelivered = False and Logtext = ex.mesage
-                //logger.ErrorFormat(ex.Message);
-                throw ex;
+                ErrorLogger.Log($"Something went wrong inside UsersController SendEmailWithGmail action: {exx.Message}");
+                ErrorLogger.Log(exx.StackTrace);
+                string str = exx.Message.ToString();
+
             }
-
-
         }
+
+
+
+        //public static void SendMailBySendBlue(Object objMail)
+        //{
+        //    MailContent objMC = (MailContent)objMail;
+
+        //    SmtpClient smtpClient = new SmtpClient();
+        //    MailMessage mailMessage = new MailMessage();
+
+
+
+        //    bool flag = true;
+        //    //bool UseSMTPSSL = false;
+        //    //if (!string.IsNullOrEmpty(authenticate))
+        //    //{
+        //    //    flag = Convert.ToBoolean(authenticate);
+        //    //}
+        //    //if (!string.IsNullOrEmpty(UsesmtpSSL))
+        //    //{
+        //    //    UseSMTPSSL = Convert.ToBoolean(UsesmtpSSL);
+        //    //}
+
+        //    string host = mailServer;
+
+        //    string address = fromEmailID;
+
+        //    if (!String.IsNullOrEmpty(objMC.From))
+        //    {
+        //        address = objMC.From;
+        //    }
+
+        //    MailAddress from = new MailAddress(address, objMC.displayName);
+
+        //    if (objMC.CopyTo.Count > 0)
+        //    {
+        //        foreach (string copyTo in objMC.CopyTo)
+        //        {
+        //            if (!string.IsNullOrEmpty(copyTo))
+        //            {
+        //                mailMessage.CC.Add(new MailAddress(copyTo));
+        //            }
+        //        }
+        //    }
+
+
+        //    try
+        //    {
+
+        //        //smtpClient.EnableSsl = false;
+        //        smtpClient.Host = host;
+        //        mailMessage.From = from;
+        //        smtpClient.Port = 587;
+        //        mailMessage.To.Add(objMC.toEmailaddress);
+        //        mailMessage.Subject = objMC.subject;
+        //        mailMessage.IsBodyHtml = true;
+
+        //        if (objMC.EventData != null)
+        //        {
+        //            mailMessage.AlternateViews.Add(objMC.EventData);
+
+        //            System.Net.Mime.ContentType typeHTML = new System.Net.Mime.ContentType("text/html");
+        //            AlternateView viewHTML = AlternateView.CreateAlternateViewFromString(objMC.emailBody, typeHTML);
+        //            viewHTML.TransferEncoding = System.Net.Mime.TransferEncoding.SevenBit;
+        //            mailMessage.AlternateViews.Add(viewHTML);
+        //        }
+        //        else
+        //        {
+        //            mailMessage.Body = objMC.emailBody;
+        //        }
+        //        if (objMC.strAttachment != null)
+        //        {
+        //            foreach (Attachment a in objMC.strAttachment)
+        //            {
+
+        //                mailMessage.Attachments.Add(a);
+
+        //            }
+        //        }
+        //        if (flag)
+        //        {
+        //            NetworkCredential credentials = new NetworkCredential(userId, password);
+        //            smtpClient.UseDefaultCredentials = false;
+        //            smtpClient.Credentials = credentials;
+        //        }
+        //        else
+        //        {
+        //            smtpClient.UseDefaultCredentials = true;
+        //        }
+
+        //        // string sendMail = AllowSendMails;
+
+
+        //        //if (string.IsNullOrEmpty(sendMail) || (sendMail.ToUpper() != "NO"))
+        //        //{
+        //        if (!string.IsNullOrEmpty(objMC.emailBody))
+        //        {
+        //            smtpClient.Send(mailMessage);
+        //            smtpClient.Dispose();
+        //        }
+
+        //        //}
+
+
+        //        // update Mail log status of IsDelivered
+        //        //MailBoxManager.UpdateDeliveryStatus(MailerLogID, true, "Successfully Send.");
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ErrorLogger.Log(ex.Message);
+        //        ErrorLogger.Log(ex.StackTrace);
+        //        //update Mail log status of IsDelivered = False and Logtext = ex.mesage
+        //        //logger.ErrorFormat(ex.Message);
+        //        throw ex;
+        //    }
+
+
+        //}
 
         //public static void SendMailBySendBlue(MailContent objMailContent)
         //{
@@ -608,184 +679,184 @@ namespace EcommApiCoreV3.Controllers.Common
         //    }
 
         //}
-        public static void SendAttachment(Object objMail, string UserName)
-        {
-            MailContent objMailContent = (MailContent)objMail;
-            System.Net.Mime.ContentType typeHTML = new System.Net.Mime.ContentType("text/html");
-            AlternateView viewHTML = AlternateView.CreateAlternateViewFromString(objMailContent.emailBody, typeHTML);
-            viewHTML.TransferEncoding = System.Net.Mime.TransferEncoding.SevenBit;
-            //mailMessage.AlternateViews.Add(viewHTML);
+        //public static void SendAttachment(Object objMail)
+        //{
+        //    MailContent objMailContent = (MailContent)objMail;
+        //    System.Net.Mime.ContentType typeHTML = new System.Net.Mime.ContentType("text/html");
+        //    AlternateView viewHTML = AlternateView.CreateAlternateViewFromString(objMailContent.emailBody, typeHTML);
+        //    viewHTML.TransferEncoding = System.Net.Mime.TransferEncoding.SevenBit;
+        //    //mailMessage.AlternateViews.Add(viewHTML);
 
-            try
-            {
-                API sendinBlue = new mailinblue.API("sHnhr4w0fTbga7c3"); //add your api key here 
+        //    try
+        //    {
+        //        API sendinBlue = new mailinblue.API("sHnhr4w0fTbga7c3"); //add your api key here 
 
-                Dictionary<string, Object> data = new Dictionary<string, Object>();
-                Dictionary<string, string> to = new Dictionary<string, string>();
-                to.Add(objMailContent.toEmailaddress, "to whom!");
+        //        Dictionary<string, Object> data = new Dictionary<string, Object>();
+        //        Dictionary<string, string> to = new Dictionary<string, string>();
+        //        to.Add(objMailContent.toEmailaddress, "to whom!");
 
-                //to.Add("deepak12345@mailinator.com", "to whom!");
-                List<string> from_name = new List<string>();
-                from_name.Add("esales@vikramcreations.com");
+        //        //to.Add("deepak12345@mailinator.com", "to whom!");
+        //        List<string> from_name = new List<string>();
+        //        from_name.Add("esales@vikramcreations.com");
 
-                //from_name.Add("from email!");
-                //List<string> attachment = new List<string>();
-                //attachment.Add("https://domain.com/path-to-file/filename1.pdf");
-                //attachment.Add("https://domain.com/path-to-file/filename2.jpg");
+        //        //from_name.Add("from email!");
+        //        //List<string> attachment = new List<string>();
+        //        //attachment.Add("https://domain.com/path-to-file/filename1.pdf");
+        //        //attachment.Add("https://domain.com/path-to-file/filename2.jpg");
 
-                data.Add("to", to);
-                data.Add("from", from_name);
-                data.Add("subject", objMailContent.subject);
-                data.Add("html", objMailContent.emailBody);
-                //data.Add("attachment", attachment);
+        //        data.Add("to", to);
+        //        data.Add("from", from_name);
+        //        data.Add("subject", objMailContent.subject);
+        //        data.Add("html", objMailContent.emailBody);
+        //        //data.Add("attachment", attachment);
 
-                Object sendEmail = sendinBlue.send_email(data);
-                string InnerHtml = sendEmail.ToString();
+        //        Object sendEmail = sendinBlue.send_email(data);
+        //        string InnerHtml = sendEmail.ToString();
 
-                // Get your account information, plan and credits details
-                //GetAccount result = apiInstance.GetAccount();
+        //        // Get your account information, plan and credits details
+        //        //GetAccount result = apiInstance.GetAccount();
 
-                //Debug.WriteLine(result);
-            }
-            catch (Exception ex)
-            {
-                throw (ex);
-            }
-
-
-            //commented on 12sep2020
-
-            /* MailContent objMC = (MailContent)objMail;
-            if (objMC.toEmailaddress.StartsWith("admin"))
-            {
-
-            }
-
-            SmtpClient smtpClient = new SmtpClient();
-            MailMessage mailMessage = new MailMessage();
+        //        //Debug.WriteLine(result);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw (ex);
+        //    }
 
 
+        //    //commented on 12sep2020
 
-            bool flag = false;
-            bool UseSMTPSSL = false;
-            if (!string.IsNullOrEmpty(authenticate))
-            {
-                flag = Convert.ToBoolean(authenticate);
-            }
-            if (!string.IsNullOrEmpty(UsesmtpSSL))
-            {
-                UseSMTPSSL = Convert.ToBoolean(UsesmtpSSL);
-            }
+        //    /* MailContent objMC = (MailContent)objMail;
+        //    if (objMC.toEmailaddress.StartsWith("admin"))
+        //    {
 
-            string host = mailServer;
+        //    }
 
-            string address = fromEmailID;
+        //    SmtpClient smtpClient = new SmtpClient();
+        //    MailMessage mailMessage = new MailMessage();
 
 
-            ////if (UserName != null)
-            //if (objMC.BranchId > 0)
-            //{
 
-            //    Branch obj = new Branch();
-            //    string email = obj.GetEmailId(objMC.BranchId);
-            //    if (email != "")
-            //    {
-            //        address = email;
-            //    }
-            //}
+        //    bool flag = false;
+        //    bool UseSMTPSSL = false;
+        //    if (!string.IsNullOrEmpty(authenticate))
+        //    {
+        //        flag = Convert.ToBoolean(authenticate);
+        //    }
+        //    if (!string.IsNullOrEmpty(UsesmtpSSL))
+        //    {
+        //        UseSMTPSSL = Convert.ToBoolean(UsesmtpSSL);
+        //    }
 
-            if (!String.IsNullOrEmpty(objMC.From))
-            {
-                address = objMC.From;
-            }
+        //    string host = mailServer;
 
-            MailAddress from = new MailAddress(address, objMC.displayName);
-
-            if (objMC.CopyTo.Count > 0)
-            {
-                foreach (string copyTo in objMC.CopyTo)
-                {
-                    if (!string.IsNullOrEmpty(copyTo))
-                    {
-                        mailMessage.CC.Add(new MailAddress(copyTo));
-                    }
-                }
-            }
+        //    string address = fromEmailID;
 
 
-            try
-            {
+        //    ////if (UserName != null)
+        //    //if (objMC.BranchId > 0)
+        //    //{
 
-                smtpClient.EnableSsl = false;
-                smtpClient.Host = host;
-                mailMessage.From = from;
-                smtpClient.Port = 25;
-                mailMessage.To.Add(objMC.toEmailaddress);
-                mailMessage.Subject = objMC.subject;
-                mailMessage.IsBodyHtml = true;
+        //    //    Branch obj = new Branch();
+        //    //    string email = obj.GetEmailId(objMC.BranchId);
+        //    //    if (email != "")
+        //    //    {
+        //    //        address = email;
+        //    //    }
+        //    //}
 
-                if (objMC.EventData != null)
-                {
-                    mailMessage.AlternateViews.Add(objMC.EventData);
+        //    if (!String.IsNullOrEmpty(objMC.From))
+        //    {
+        //        address = objMC.From;
+        //    }
 
-                    System.Net.Mime.ContentType typeHTML = new System.Net.Mime.ContentType("text/html");
-                    AlternateView viewHTML = AlternateView.CreateAlternateViewFromString(objMC.emailBody, typeHTML);
-                    viewHTML.TransferEncoding = System.Net.Mime.TransferEncoding.SevenBit;
-                    mailMessage.AlternateViews.Add(viewHTML);
-                }
-                else
-                {
-                    mailMessage.Body = objMC.emailBody;
-                }
-                if (objMC.strAttachment != null)
-                {
-                    foreach (Attachment a in objMC.strAttachment)
-                    {
+        //    MailAddress from = new MailAddress(address, objMC.displayName);
 
-                        mailMessage.Attachments.Add(a);
-
-                    }
-                }
-                if (flag)
-                {
-                    NetworkCredential credentials = new NetworkCredential(userId, password);
-                    smtpClient.UseDefaultCredentials = false;
-                    smtpClient.Credentials = credentials;
-                }
-                else
-                {
-                    smtpClient.UseDefaultCredentials = true;
-                }
-
-                string sendMail = AllowSendMails;
+        //    if (objMC.CopyTo.Count > 0)
+        //    {
+        //        foreach (string copyTo in objMC.CopyTo)
+        //        {
+        //            if (!string.IsNullOrEmpty(copyTo))
+        //            {
+        //                mailMessage.CC.Add(new MailAddress(copyTo));
+        //            }
+        //        }
+        //    }
 
 
-                if (string.IsNullOrEmpty(sendMail) || (sendMail.ToUpper() != "NO"))
-                {
-                    if (!string.IsNullOrEmpty(objMC.emailBody))
-                    {
-                        smtpClient.Send(mailMessage);
-                        smtpClient.Dispose();
-                    }
+        //    try
+        //    {
 
-                }
+        //        smtpClient.EnableSsl = false;
+        //        smtpClient.Host = host;
+        //        mailMessage.From = from;
+        //        smtpClient.Port = 25;
+        //        mailMessage.To.Add(objMC.toEmailaddress);
+        //        mailMessage.Subject = objMC.subject;
+        //        mailMessage.IsBodyHtml = true;
+
+        //        if (objMC.EventData != null)
+        //        {
+        //            mailMessage.AlternateViews.Add(objMC.EventData);
+
+        //            System.Net.Mime.ContentType typeHTML = new System.Net.Mime.ContentType("text/html");
+        //            AlternateView viewHTML = AlternateView.CreateAlternateViewFromString(objMC.emailBody, typeHTML);
+        //            viewHTML.TransferEncoding = System.Net.Mime.TransferEncoding.SevenBit;
+        //            mailMessage.AlternateViews.Add(viewHTML);
+        //        }
+        //        else
+        //        {
+        //            mailMessage.Body = objMC.emailBody;
+        //        }
+        //        if (objMC.strAttachment != null)
+        //        {
+        //            foreach (Attachment a in objMC.strAttachment)
+        //            {
+
+        //                mailMessage.Attachments.Add(a);
+
+        //            }
+        //        }
+        //        if (flag)
+        //        {
+        //            NetworkCredential credentials = new NetworkCredential(userId, password);
+        //            smtpClient.UseDefaultCredentials = false;
+        //            smtpClient.Credentials = credentials;
+        //        }
+        //        else
+        //        {
+        //            smtpClient.UseDefaultCredentials = true;
+        //        }
+
+        //        string sendMail = AllowSendMails;
 
 
-                // update Mail log status of IsDelivered
-                //MailBoxManager.UpdateDeliveryStatus(MailerLogID, true, "Successfully Send.");
+        //        if (string.IsNullOrEmpty(sendMail) || (sendMail.ToUpper() != "NO"))
+        //        {
+        //            if (!string.IsNullOrEmpty(objMC.emailBody))
+        //            {
+        //                smtpClient.Send(mailMessage);
+        //                smtpClient.Dispose();
+        //            }
 
-            }
-            catch (Exception ex)
-            {
-                //ErrorLogger.Log(ex.Message);
-                //ErrorLogger.Log(ex.StackTrace);
-                //update Mail log status of IsDelivered = False and Logtext = ex.mesage
-                //logger.ErrorFormat(ex.Message);
-                throw ex;
-            }*/
-        }
+        //        }
 
 
+        //        // update Mail log status of IsDelivered
+        //        //MailBoxManager.UpdateDeliveryStatus(MailerLogID, true, "Successfully Send.");
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //ErrorLogger.Log(ex.Message);
+        //        //ErrorLogger.Log(ex.StackTrace);
+        //        //update Mail log status of IsDelivered = False and Logtext = ex.mesage
+        //        //logger.ErrorFormat(ex.Message);
+        //        throw ex;
+        //    }*/
+        //}
+
+        
 
         //public static void SendAttachment(Object objMail, string UserName)
         //{
