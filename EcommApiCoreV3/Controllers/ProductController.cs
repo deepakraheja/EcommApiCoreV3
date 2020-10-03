@@ -222,8 +222,8 @@ namespace EcommApiCoreV3.Controllers
                 }
                 else
                 {
-                    if (obj.BannerImg != null)
-                        _utilities.SaveImage(NewProductId, obj.BannerImg, "bannerImage", webRootPath);
+                    //if (obj.BannerImg != null)
+                    //    _utilities.SaveImage(NewProductId, obj.BannerImg, "bannerImage", webRootPath);
                     if (obj.SmallImg != null)
                         _utilities.SaveImage(NewProductId, obj.SmallImg, "frontImage", webRootPath);
                     //_utilities.SaveImage(NewProductId, obj.ProductImg, "productImages", webRootPath);
