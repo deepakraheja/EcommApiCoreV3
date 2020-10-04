@@ -31,11 +31,11 @@ namespace EcommApiCoreV3.Entities
         public int LookupColorId { get; set; }
         public bool IsEdit { get; set; } = false;
         public int[] ArrayColor { get; set; }
-        public string[] ArraySize { get; set; }
+        public int[] ArraySize { get; set; }
 
         public int SelectedQty { get; set; } = 1;
 
-        public Boolean IsSelected { get; set; } = false;
+        public bool IsSelected { get; set; } = false;
 
     }
 }
