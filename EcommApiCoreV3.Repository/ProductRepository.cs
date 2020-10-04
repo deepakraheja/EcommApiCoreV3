@@ -268,7 +268,7 @@ namespace EcommApiCoreV3.Repository
                 parameters.Add("@AvailableColors", obj.AvailableColors); //bit
                 //parameters.Add("@Size", obj.SizeId); //nvarchar commented on 5 aug 2020
 
-                parameters.Add("@Size", obj.Size); //nvarchar
+                parameters.Add("@Size", obj.SizeId); //nvarchar
                 parameters.Add("@SetNo", obj.SetNo);
                 parameters.Add("@LookupColorId", obj.LookupColorId); //nvarchar
                 parameters.Add("@Discount", obj.Discount); //decimal
