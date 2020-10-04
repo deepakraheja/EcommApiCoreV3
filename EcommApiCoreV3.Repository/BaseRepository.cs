@@ -32,16 +32,16 @@ namespace EcommApiCoreV3.Repository
             //***********************************TESTING SERVER*******************************************************
             //********************************************************************************************************
 
-            //string connectionString = "Data Source=148.72.232.166;Initial Catalog=Ecomm;User ID=sonu;Password=password_1234;";
-            //Errorlog = @"C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\wwwroot\errorlog";
+            string connectionString = "Data Source=148.72.232.166;Initial Catalog=Ecomm;User ID=sonu;Password=password_1234;";
+            Errorlog = @"C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\wwwroot\errorlog";
 
             //***********************************PRODUCTION SERVER*******************************************************
             //********************************************************************************************************
 
-            string connectionString = "Data Source=INSTANCE-1\\SQLEXPRESS;Initial Catalog=Ecomm;User ID=sa;Password=password_1234;";
-            Errorlog = @"C:\inetpub\wwwroot\EcommApiV3\wwwroot\errorlog";
-
-            con = new SqlConnection(connectionString);
+            //string connectionString = "Data Source=INSTANCE-1\\SQLEXPRESS;Initial Catalog=Ecomm;User ID=sa;Password=password_1234;";
+            //Errorlog = @" C:\inetpub\wwwroot\EcommApiV3\wwwroot\errorlog";
+       
+        con = new SqlConnection(connectionString);
 
             //**********************email setting*******************************
 

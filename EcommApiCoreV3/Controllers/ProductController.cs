@@ -237,6 +237,7 @@ namespace EcommApiCoreV3.Controllers
             {
                 ErrorLogger.Log($"Something went wrong inside ProductController SaveProduct action: {ex.Message}");
                 ErrorLogger.Log(ex.StackTrace);
+                
                 Logger.LogError($"Something went wrong inside ProductController SaveProduct action: {ex.Message}");
                 return -1;
             }
