@@ -256,7 +256,7 @@ namespace EcommApiCoreV3.Controllers
                     {
                         foreach (var itemSize in obj.ArraySize)
                         {
-                            obj.Size = itemSize;
+                            obj.SizeId = itemSize;
                             obj.LookupColorId = itemColor;
                             ProductSizeColorId = await this._IProductBAL.SaveProductSizeColor(obj);
                         }
