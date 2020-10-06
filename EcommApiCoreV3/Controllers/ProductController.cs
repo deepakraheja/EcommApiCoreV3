@@ -139,6 +139,7 @@ namespace EcommApiCoreV3.Controllers
         }
         ///return await this._IProductBAL.GetProductBybyRowID(obj);
         [HttpPost]
+        [AllowAnonymous]
         [Route("GetWithSetProductByRowID")]
         public async Task<List<Product>> GetWithSetProductByRowID([FromBody] Product obj)
         {

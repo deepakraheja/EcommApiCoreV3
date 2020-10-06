@@ -34,7 +34,7 @@ namespace EcommApiCoreV3.Entities
         public string[] SmallImg { get; set; }
         //public string[] ProductImg { get; set; }
 
-        public string RowID { get; set; }
+        public string RowID { get; set; } = "";
         public string Type { get; set; }
         public string ImagePath { get; set; }
         public string Title { get; set; }
@@ -42,7 +42,8 @@ namespace EcommApiCoreV3.Entities
         public string BannerImage { get; set; }
         public string FrontImage { get; set; }
         public string SupplierName { get; set; }
-        public int price { get; set; }
+        public int Price { get; set; } = 0;
+        public int SalePrice { get; set; } = 0;
         public string ArticalNo { get; set; }
         public int TagId { get; set; } = 0;
         public int FabricId { get; set; } = 0;
