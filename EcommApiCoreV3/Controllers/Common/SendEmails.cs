@@ -97,12 +97,13 @@ namespace EcommApiCoreV3.Controllers.Common
                     break;
                 case EStatus.PasswordReset:
                     {
+                        
                         Users emailParameters = new Users()
                         {
                             Name = objuserInfo[0].Name,
                             email = objuserInfo[0].email,
-                            Link = WebSiteURL + "pages/ResetPassword/" + objuserInfo[0].UserID,
-                            Subject = "Password reset successfully.",
+                            Link = "<a href ='" + WebSiteURL + "/pages/ResetPassword/" + Convert.ToString(objuserInfo[0].UserID) + "' target = '_blank' style='text-decoration:none;'>Link </a>",
+                            Subject = "Password Reset",
                             XMLFilePath = "2",
                         };
                         SendEmail(emailParameters);
@@ -128,7 +129,7 @@ namespace EcommApiCoreV3.Controllers.Common
                             Name = objuserInfo[0].Name,
                             email = objuserInfo[0].email,
                             MobileNo = objuserInfo[0].MobileNo,
-                            Subject = "New Order Completion.",
+                            Subject = "New Order Completion",
                             XMLFilePath = "3",
                             OrderDetails = GenerateNewOrderDetails(lst),
                             OrderID = lst[0].OrderNumber,
@@ -145,7 +146,7 @@ namespace EcommApiCoreV3.Controllers.Common
                             Name = objuserInfo[0].Name,
                             email = objuserInfo[0].email,
                             LoginURL = WebSiteURL,
-                            Subject = "Registration Approval.",
+                            Subject = "Registration Approval",
                             XMLFilePath = "4",
                         };
                         SendEmail(emailParameters);
@@ -157,7 +158,7 @@ namespace EcommApiCoreV3.Controllers.Common
                         {
                             Name = objuserInfo[0].Name,
                             email = objuserInfo[0].email,
-                            Subject = "Password reset confirmation.",
+                            Subject = "Password reset confirmation",
                             XMLFilePath = "5",
                         };
                         SendEmail(emailParameters);
@@ -183,7 +184,7 @@ namespace EcommApiCoreV3.Controllers.Common
                             Name = objuserInfo[0].Name,
                             email = objuserInfo[0].email,
                             MobileNo = objuserInfo[0].MobileNo,
-                            Subject = "Dispatched Confirmation.",
+                            Subject = "Dispatched Confirmation",
                             XMLFilePath = "6",
                             OrderDetails = GenerateOrderDetails(lst),
                             OrderID = lst[0].OrderNumber,
@@ -213,7 +214,7 @@ namespace EcommApiCoreV3.Controllers.Common
                             Name = objuserInfo[0].Name,
                             email = objuserInfo[0].email,
                             MobileNo = objuserInfo[0].MobileNo,
-                            Subject = "Delivered Confirmation.",
+                            Subject = "Delivered Confirmation",
                             XMLFilePath = "7",
                             OrderDetails = GenerateOrderDetails(lst),
                             OrderID = lst[0].OrderNumber,
@@ -341,8 +342,8 @@ namespace EcommApiCoreV3.Controllers.Common
             for (int i = 0; i < lst[0].OrderDetails.Count; i++)
             {
                 orderdetailsStr += "<tr>" +
-                                            "<td>" +
-                                            GetProductImage(lst, i)
+                                            "<td>" +""
+                                            //GetProductImage(lst, i)
                                             + "</td>" +
                                             "<td>" + lst[0].OrderDetails[i].ProductName + "</td>" +
                                             "<td>" + lst[0].OrderDetails[i].Quantity + "</td>" +
@@ -356,13 +357,13 @@ namespace EcommApiCoreV3.Controllers.Common
         {
             if (lst[0].OrderDetails[index].SetNo > 0)
             {
-                //return "<img style='width: 100px;' src= 'http://ecomapi.uccnoida.com/ProductImage/" + lst[0].OrderDetails[index].ProductId + "/productSetImage/" + lst[0].OrderDetails[index].SetNo + "/" + lst[0].OrderDetails[index].ProductImg[0] + ">";
-                return "<img style='width: 100px;' src='http://ecomapi.uccnoida.com/ProductImage/13/productSetImage/2/13-07222020054952-1.jpg'/>'";
+                return "<img style='width: 100px;' src= 'http://34.67.65.213/EcommApiV3/ProductImage/" + lst[0].OrderDetails[index].ProductId + "/productSetImage/" + lst[0].OrderDetails[index].SetNo + "/" + lst[0].OrderDetails[index].ProductImg[0] + ">";
+                //return "<img style='width: 100px;' src='http://34.67.65.213/EcommApiV3/ProductImage/13/productSetImage/2/13-07222020054952-1.jpg'/>'";
             }
             if (lst[0].OrderDetails[index].SetNo == 0)
             {
-                //return "<img style='width: 100px;' src= http://ecomapi.uccnoida.com/ProductImage/" + lst[0].OrderDetails[index].ProductId + "/productColorImage/" + lst[0].OrderDetails[index].ProductSizeColorId + "/" + lst[0].OrderDetails[index].ProductImg[0] + ">";
-                return "<img style='width: 100px;' src='http://ecomapi.uccnoida.com/ProductImage/13/productSetImage/2/13-07222020054952-1.jpg'/>'";
+                return "<img style='width: 100px;' src= http://34.67.65.213/EcommApiV3/ProductImage/" + lst[0].OrderDetails[index].ProductId + "/productColorImage/" + lst[0].OrderDetails[index].ProductSizeColorId + "/" + lst[0].OrderDetails[index].ProductImg[0] + ">";
+                //return "<img style='width: 100px;' src='http://34.67.65.213/EcommApiV3/ProductImage/13/productSetImage/2/13-07222020054952-1.jpg'/>'";
             }
             return "";
         }
@@ -856,7 +857,7 @@ namespace EcommApiCoreV3.Controllers.Common
         //    }*/
         //}
 
-        
+
 
         //public static void SendAttachment(Object objMail, string UserName)
         //{

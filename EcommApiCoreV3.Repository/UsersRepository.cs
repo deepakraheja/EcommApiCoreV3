@@ -167,7 +167,7 @@ namespace EcommApiCoreV3.Repository
             {
                 DynamicParameters parameters = new DynamicParameters();
                 parameters.Add("@UserID", obj.UserID);
-                parameters.Add("@password", obj.password);
+                parameters.Add("@password", obj.NewPassword);
                 var res = await SqlMapper.ExecuteAsync(con, "p_ResetPassword", param: parameters, commandType: StoredProcedure);
                 return Convert.ToInt32(res);
             }

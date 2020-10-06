@@ -181,12 +181,14 @@ namespace EcommApiCoreV3.Controllers
                 Users objUser = new Users();
                 objUser.OrderID = obj[0].OrderId.ToString();
                 objUser.UserID = obj[0].CreatedBy;
+               
                 if (obj[0].OrderStatusId == 1)
                     sendEmails.setMailContent(objUser, EStatus.NewOrderCompletion.ToString());
                 if (obj[0].OrderStatusId == 3)
-                    sendEmails.setMailContent(objUser, EStatus.DispatchedConfirmation.ToString());
+                   // sendEmails.setMailContent(objUser, EStatus.DispatchedConfirmation.ToString());
                 if (obj[0].OrderStatusId == 4)
                     sendEmails.setMailContent(objUser, EStatus.DeliveredConfirmation.ToString());
+
                 return res;
 
             }

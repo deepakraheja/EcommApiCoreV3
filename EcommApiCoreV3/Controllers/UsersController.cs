@@ -379,7 +379,7 @@ namespace EcommApiCoreV3.Controllers
                 }
                 else
                 {
-                    return -1;
+                    return 0;
                 }
             }
             catch (Exception ex)
