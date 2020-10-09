@@ -20,10 +20,11 @@ namespace EcommApiCoreV3.Entities
         public int OrderDetailsID { get; set; } = 0;
         public int ProductSizeColorId { get; set; } = 0;
         public int ProductSizeId { get; set; } = 0;
-        public int Price { get; set; } = 0;
+        public double Price { get; set; } = 0;
+        public double SalePrice { get; set; } = 0;
         public int Quantity { get; set; } = 0;
-        public int Discount { get; set; } = 0;
-        public List<Order> OrderDetails { get; set; }
+        public decimal Discount { get; set; } = 0;
+        public List<Order> OrderDetails { get; set; } = new List<Order>();
         public string[] ProductImg { get; set; }
         public string ProductName { get; set; }
         public int SetNo { get; set; }
@@ -38,5 +39,7 @@ namespace EcommApiCoreV3.Entities
         public bool IsSelected { get; set; } = false;
         public string SelectedOrderDetailsIds { get; set; }
         public string StatusName { get; set; }
+        public string GUID { get; set; } = "";
+        public List<Users> ListUsers { get; set; } = new List<Users>();
     }
 }
