@@ -18,6 +18,7 @@ using EcommApiCoreV3.Controllers.Common;
 using EcommApiCoreV3.Entities;
 using EcommApiCoreV3.JWT;
 using static EcommApiCoreV3.Controllers.Common.SendEmails;
+using EcommApiCoreV3.Services;
 //using mailinblue;
 
 namespace EcommApiCoreV3.Controllers
@@ -318,6 +319,27 @@ namespace EcommApiCoreV3.Controllers
                 return null;
             }
         }
+
+        [HttpPost]
+        [Route("GetUserInfo")]
+        public async Task<List<Users>> GetUserInfo()
+        {
+            try
+            {
+                Users obj = new Users();
+                obj.UserID = UserService.LoggedInUser;
+                return await this._usersBAL.GetUserInfo(obj);
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Log($"Something went wrong inside UsersController GetAllUsers action: {ex.Message}");
+                ErrorLogger.Log(ex.StackTrace);
+
+                Logger.LogError($"Something went wrong inside UsersController GetAllUsers action: {ex.Message}");
+                return null;
+            }
+        }
+
         [HttpPost]
         [Route("UpdateUser")]
         public async Task<int> UpdateUser([FromBody] Users obj)
