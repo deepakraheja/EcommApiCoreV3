@@ -11,7 +11,7 @@ namespace EcommApiCoreV3.Repository
 {
     public class OrderRepository : BaseRepository, IOrderRepository
     {
-        public async Task<int> SaveOrder(Order obj)
+        public async Task<List<Order>> SaveOrder(Order obj)
         {
             try
             {
@@ -36,8 +36,10 @@ namespace EcommApiCoreV3.Repository
                 parameters.Add("@Tax", obj.Tax);
                 parameters.Add("@ShippingCharge", obj.ShippingCharge);
                 parameters.Add("@TotalAmount", obj.TotalAmount);
-                var res = await SqlMapper.ExecuteScalarAsync(con, "p_SaveOrder", param: parameters, commandType: StoredProcedure);
-                return Convert.ToInt32(res);
+                //var res = await SqlMapper.ExecuteScalarAsync(con, "p_SaveOrder", param: parameters, commandType: StoredProcedure);
+                //return Convert.ToInt32(res);
+                List<Order> lst = (await SqlMapper.QueryAsync<Order>(con, "p_SaveOrder", param: parameters, commandType: StoredProcedure)).ToList();
+                return lst;
             }
             catch (Exception ex)
             {
@@ -184,6 +186,80 @@ namespace EcommApiCoreV3.Repository
                 DynamicParameters parameters = new DynamicParameters();
                 parameters.Add("@OrderId", obj.OrderId);
                 List<Order> lst = (await SqlMapper.QueryAsync<Order>(con, "p_GetSuccessOrderDetailsByOrderId", param: parameters, commandType: StoredProcedure)).ToList();
+                return lst;
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+        }
+
+        public async Task<List<Order>> GetPrintOrderByGUID(Order obj)
+        {
+            try
+            {
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@GUID", obj.GUID);
+                //List<Order> lst = (await SqlMapper.QueryAsync<Order>(con, "p_GetPrintOrderByGUID", param: parameters, commandType: StoredProcedure)).ToList();
+
+                var lst = await SqlMapper.QueryMultipleAsync(con, "p_GetPrintOrderByGUID", param: parameters, commandType: StoredProcedure);
+                List<Order> lstOrder = new List<Order>();
+
+                List<Order> lstOrderDetails = new List<Order>();
+                List<Users> lstUsers = new List<Users>();
+
+                lstOrder = lst.Read<Order>().ToList();
+                lstOrderDetails = lst.Read<Order>().ToList();
+                lstUsers = lst.Read<Users>().ToList();
+                foreach (var item in lstOrderDetails)
+                {
+                    lstOrder[0].OrderDetails.Add(item);
+                }
+                foreach (var item in lstUsers)
+                {
+                    lstOrder[0].ListUsers.Add(item);
+                }
+
+                return lstOrder;
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+        }
+
+        public async Task<List<Order>> GetNewOrderByGUID(Order obj)
+        {
+            try
+            {
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@GUID", obj.GUID);
+                var lst = await SqlMapper.QueryMultipleAsync(con, "p_GetNewOrderByGUID", param: parameters, commandType: StoredProcedure);
+                List<Order> lstOrder = new List<Order>();
+
+                List<Order> lstOrderDetails = new List<Order>();
+
+                lstOrder = lst.Read<Order>().ToList();
+                lstOrderDetails = lst.Read<Order>().ToList();
+                foreach (var item in lstOrderDetails)
+                {
+                    lstOrder[0].OrderDetails.Add(item);
+                }
+                return lstOrder;
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+        }
+
+        public async Task<List<Order>> GetPrintOrderDetailsByOrderId(Order obj)
+        {
+            try
+            {
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@OrderId", obj.OrderId);
+                List<Order> lst = (await SqlMapper.QueryAsync<Order>(con, "p_GetPrintOrderDetailsByOrderId", param: parameters, commandType: StoredProcedure)).ToList();
                 return lst;
             }
             catch (Exception ex)
