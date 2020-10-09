@@ -111,10 +111,22 @@ namespace EcommApiCoreV3.Controllers.Common
                     break;
                 case EStatus.NewOrderCompletion:
                     {
+                        //Order obj = new Order();
+                        //obj.OrderId = Convert.ToInt32(objUser.OrderID);
+                        //List<Order> lst = this._IOrderBAL.GetOrderByOrderId(obj).Result;
+                        //lst[0].OrderDetails = this._IOrderBAL.GetSuccessOrderDetailsByOrderId(obj).Result;
+                        //foreach (var item in lst[0].OrderDetails)
+                        //{
+                        //    if (item.SetNo > 0)
+                        //        item.ProductImg = _utilities.ProductImage(item.ProductId, "productSetImage", webRootPath, item.SetNo);
+                        //    else
+                        //        item.ProductImg = _utilities.ProductImage(item.ProductId, "productColorImage", webRootPath, item.ProductSizeColorId);
+                        //}
                         Order obj = new Order();
-                        obj.OrderId = Convert.ToInt32(objUser.OrderID);
-                        List<Order> lst = this._IOrderBAL.GetOrderByOrderId(obj).Result;
-                        lst[0].OrderDetails = this._IOrderBAL.GetSuccessOrderDetailsByOrderId(obj).Result;
+                        obj.GUID = objUser.GUID;
+                        List<Order> lst = this._IOrderBAL.GetPrintOrderByGUID(obj).Result;
+                        //obj.OrderId = lst[0].OrderId;
+                        //lst[0].OrderDetails = this._IOrderBAL.GetPrintOrderDetailsByOrderId(obj).Result;
                         foreach (var item in lst[0].OrderDetails)
                         {
                             if (item.SetNo > 0)
@@ -122,6 +134,7 @@ namespace EcommApiCoreV3.Controllers.Common
                             else
                                 item.ProductImg = _utilities.ProductImage(item.ProductId, "productColorImage", webRootPath, item.ProductSizeColorId);
                         }
+
                         objUser.UserID = lst[0].UserID;
                         objuserInfo = GetUserInfo(objUser, sendOnType);
                         Users emailParameters = new Users()
@@ -357,12 +370,12 @@ namespace EcommApiCoreV3.Controllers.Common
         {
             if (lst[0].OrderDetails[index].SetNo > 0)
             {
-                return "<img style='width: 100px;' src= 'http://34.67.65.213/EcommApiV3/ProductImage/" + lst[0].OrderDetails[index].ProductId + "/productSetImage/" + lst[0].OrderDetails[index].SetNo + "/" + lst[0].OrderDetails[index].ProductImg[0] + ">";
+                return "<img style='width: 100px;' src= 'http://34.67.65.213/EcommApiV3/ProductImage/" + lst[0].OrderDetails[index].ProductId + "/productSetImage/" + lst[0].OrderDetails[index].SetNo + "/" + (lst[0].OrderDetails[index].ProductImg.Length == 0 ? "" : lst[0].OrderDetails[index].ProductImg[0]) + ">";
                 //return "<img style='width: 100px;' src='http://34.67.65.213/EcommApiV3/ProductImage/13/productSetImage/2/13-07222020054952-1.jpg'/>'";
             }
             if (lst[0].OrderDetails[index].SetNo == 0)
             {
-                return "<img style='width: 100px;' src= http://34.67.65.213/EcommApiV3/ProductImage/" + lst[0].OrderDetails[index].ProductId + "/productColorImage/" + lst[0].OrderDetails[index].ProductSizeColorId + "/" + lst[0].OrderDetails[index].ProductImg[0] + ">";
+                return "<img style='width: 100px;' src= http://34.67.65.213/EcommApiV3/ProductImage/" + lst[0].OrderDetails[index].ProductId + "/productColorImage/" + lst[0].OrderDetails[index].ProductSizeColorId + "/" + (lst[0].OrderDetails[index].ProductImg.Length==0?"": lst[0].OrderDetails[index].ProductImg[0]) + ">";
                 //return "<img style='width: 100px;' src='http://34.67.65.213/EcommApiV3/ProductImage/13/productSetImage/2/13-07222020054952-1.jpg'/>'";
             }
             return "";

@@ -44,7 +44,8 @@ namespace EcommApiCoreV3.Controllers
                 Users objUser = new Users();
                 objUser.OrderID = lst[0].OrderId.ToString();
                 objUser.UserID = obj.UserID;
-                //sendEmails.setMailContent(objUser, EStatus.NewOrderCompletion.ToString());
+                objUser.GUID = lst[0].GUID;
+                sendEmails.setMailContent(objUser, EStatus.NewOrderCompletion.ToString());
                 return lst[0].GUID;
             }
             catch (Exception ex)
