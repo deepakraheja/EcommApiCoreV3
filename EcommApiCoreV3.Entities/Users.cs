@@ -51,6 +51,7 @@ namespace EcommApiCoreV3.Entities
         public bool IsAgentCustomer { get; set; } = false;
          
         public string AadharCard { get; set; }
+        public string GUID { get; set; } = "";
 
     }
 }
