@@ -26,7 +26,7 @@ namespace EcommApiCoreV3.Services
 
         private int CurrentUser()
         {
-            string userId = "";
+            string userId = "0";
 
             if (_httpcontext != null)
             {
@@ -42,9 +42,6 @@ namespace EcommApiCoreV3.Services
                 }
             }
             return Convert.ToInt32(userId);
-
         }
-
-        
     }
 }
