@@ -17,7 +17,7 @@ namespace EcommApiCoreV3.BAL
             _OrderRepository = OrderRepository;
         }
 
-        public Task<int> SaveOrder(Order obj)
+        public Task<List<Order>> SaveOrder(Order obj)
         {
             return _OrderRepository.SaveOrder(obj);
         }
@@ -56,6 +56,18 @@ namespace EcommApiCoreV3.BAL
         public Task<List<Order>> GetSuccessOrderDetailsByOrderId(Order obj)
         {
             return _OrderRepository.GetSuccessOrderDetailsByOrderId(obj);
+        }
+        public Task<List<Order>> GetPrintOrderByGUID(Order obj)
+        {
+            return _OrderRepository.GetPrintOrderByGUID(obj);
+        }
+        public Task<List<Order>> GetPrintOrderDetailsByOrderId(Order obj)
+        {
+            return _OrderRepository.GetPrintOrderDetailsByOrderId(obj);
+        }
+        public Task<List<Order>> GetNewOrderByGUID(Order obj)
+        {
+            return _OrderRepository.GetNewOrderByGUID(obj);
         }
     }
 }

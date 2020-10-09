@@ -8,7 +8,7 @@ namespace EcommApiCoreV3.BAL.Interface
 {
     public interface IOrderBAL
     {
-        Task<int> SaveOrder(Order obj);
+        Task<List<Order>> SaveOrder(Order obj);
         Task<List<Order>> GetOrderByOrderId(Order obj);
         Task<List<Order>> GetOrderDetailsByOrderId(Order obj);
         Task<List<Order>> GetOrderByUserId(Order obj);
@@ -18,5 +18,8 @@ namespace EcommApiCoreV3.BAL.Interface
         Task<int> UpdateOrderDetailStatus(OrderStatusHistory obj);
         Task<List<Order>> GetDashboardSummary();
         Task<List<Order>> GetSuccessOrderDetailsByOrderId(Order obj);
+        Task<List<Order>> GetPrintOrderByGUID(Order obj);
+        Task<List<Order>> GetPrintOrderDetailsByOrderId(Order obj);
+        Task<List<Order>> GetNewOrderByGUID(Order obj);
     }
 }
