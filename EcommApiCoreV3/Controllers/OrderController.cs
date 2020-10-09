@@ -13,7 +13,7 @@ using static EcommApiCoreV3.Controllers.Common.SendEmails;
 
 namespace EcommApiCoreV3.Controllers
 {
-
+    [Produces("application/json")]
     [Authorize]
     [Route("api/[controller]")]
     public class OrderController : BaseController<OrderController>
@@ -34,25 +34,25 @@ namespace EcommApiCoreV3.Controllers
 
         [HttpPost]
         [Route("SaveOrder")]
-        public async Task<int> SaveOrder([FromBody] Order obj)
+        public async Task<string> SaveOrder([FromBody] Order obj)
         {
             try
             {
-                int orderId = await this._IOrderBAL.SaveOrder(obj);
+                List<Order> lst = await this._IOrderBAL.SaveOrder(obj);
                 SendEmails sendEmails = new SendEmails(_usersBAL, _IEmailTemplateBAL, _IOrderBAL);
                 SendEmails.webRootPath = webRootPath;
                 Users objUser = new Users();
-                objUser.OrderID = orderId.ToString();
+                objUser.OrderID = lst[0].OrderId.ToString();
                 objUser.UserID = obj.UserID;
-                sendEmails.setMailContent(objUser, EStatus.NewOrderCompletion.ToString());
-                return orderId;
+                //sendEmails.setMailContent(objUser, EStatus.NewOrderCompletion.ToString());
+                return lst[0].GUID;
             }
             catch (Exception ex)
             {
                 ErrorLogger.Log($"Something went wrong inside OrderController SaveOrder action: {ex.Message}");
                 ErrorLogger.Log(ex.StackTrace);
                 Logger.LogError($"Something went wrong inside OrderController SaveOrder action: {ex.Message}");
-                return -1;
+                return null;
             }
         }
 
@@ -109,12 +109,67 @@ namespace EcommApiCoreV3.Controllers
         }
 
         [HttpPost]
+        [Route("GetSuccessPrintOrderByGUID")]
+        public async Task<List<Order>> GetSuccessPrintOrderByGUID([FromBody] Order obj)
+        {
+            try
+            {
+                List<Order> lst = this._IOrderBAL.GetPrintOrderByGUID(obj).Result;
+                //obj.OrderId = lst[0].OrderId;
+                //lst[0].OrderDetails = this._IOrderBAL.GetPrintOrderDetailsByOrderId(obj).Result;
+                foreach (var item in lst[0].OrderDetails)
+                {
+                    if (item.SetNo > 0)
+                        item.ProductImg = _utilities.ProductImage(item.ProductId, "productSetImage", webRootPath, item.SetNo);
+                    else
+                        item.ProductImg = _utilities.ProductImage(item.ProductId, "productColorImage", webRootPath, item.ProductSizeColorId);
+                }
+                return await Task.Run(() => new List<Order>(lst));
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Log($"Something went wrong inside OrderController GetSuccessPrintOrderByGUID action: {ex.Message}");
+                ErrorLogger.Log(ex.StackTrace);
+                Logger.LogError($"Something went wrong inside OrderController GetSuccessPrintOrderByGUID action: {ex.Message}");
+                return null;
+            }
+        }
+
+        [HttpPost]
+        [Route("GetNewOrderByGUID")]
+        public async Task<List<Order>> GetNewOrderByGUID([FromBody] Order obj)
+        {
+            try
+            {
+                List<Order> lst = this._IOrderBAL.GetNewOrderByGUID(obj).Result;
+                //obj.OrderId = lst[0].OrderId;
+                //lst[0].OrderDetails = this._IOrderBAL.GetPrintOrderDetailsByOrderId(obj).Result;
+                foreach (var item in lst[0].OrderDetails)
+                {
+                    if (item.SetNo > 0)
+                        item.ProductImg = _utilities.ProductImage(item.ProductId, "productSetImage", webRootPath, item.SetNo);
+                    else
+                        item.ProductImg = _utilities.ProductImage(item.ProductId, "productColorImage", webRootPath, item.ProductSizeColorId);
+                }
+                return await Task.Run(() => new List<Order>(lst));
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Log($"Something went wrong inside OrderController GetSuccessPrintOrderByGUID action: {ex.Message}");
+                ErrorLogger.Log(ex.StackTrace);
+                Logger.LogError($"Something went wrong inside OrderController GetSuccessPrintOrderByGUID action: {ex.Message}");
+                return null;
+            }
+        }
+
+        [HttpPost]
         [Route("GetOrderByUserId")]
         public async Task<List<Order>> GetOrderByUserId([FromBody] Order obj)
         {
             try
             {
                 List<Order> lst = this._IOrderBAL.GetOrderByUserId(obj).Result;
+                obj.OrderId = lst[0].OrderId;
                 lst[0].OrderDetails = this._IOrderBAL.GetOrderDetailsByUserId(obj).Result;
                 foreach (var item in lst[0].OrderDetails)
                 {
