@@ -40,5 +40,11 @@ namespace EcommApiCoreV3.Controllers
         {
             return await _lookupBAL.GetOrderStatus();
         }
+        [HttpPost]
+        [Route("GetHSN")]
+        public async Task<List<LookupHSN>> GetHSN()
+        {
+            return await _lookupBAL.GetHSN();
+        }
     }
 }
