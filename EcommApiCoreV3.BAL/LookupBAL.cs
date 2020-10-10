@@ -28,5 +28,9 @@ namespace EcommApiCoreV3.BAL
         {
             return _lookupRepository.GetOrderStatus();
         }
+        public Task<List<LookupHSN>> GetHSN()
+        {
+            return _lookupRepository.GetHSN();
+        }
     }
 }
