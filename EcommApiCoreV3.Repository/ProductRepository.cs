@@ -245,6 +245,7 @@ namespace EcommApiCoreV3.Repository
                 parameters.Add("@SetType", obj.SetType);
                 parameters.Add("@minimum", obj.minimum);
                 parameters.Add("@VideoURL", obj.VideoURL);
+                parameters.Add("@LookupHSNId", obj.LookupHSNId);
                 var res = await SqlMapper.ExecuteScalarAsync(con, "p_Product_ins", param: parameters, commandType: StoredProcedure);
                 return Convert.ToInt32(res);
             }

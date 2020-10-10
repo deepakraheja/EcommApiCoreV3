@@ -51,5 +51,18 @@ namespace EcommApiCoreV3.Repository
                 throw (ex);
             }
         }
+        public async Task<List<LookupHSN>> GetHSN()
+        {
+            try
+            {
+                DynamicParameters parameters = new DynamicParameters();
+                List<LookupHSN> lst = (await SqlMapper.QueryAsync<LookupHSN>(con, "p_LookupHSN_Sel", param: parameters, commandType: StoredProcedure)).ToList();
+                return lst;
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+        }
     }
 }
