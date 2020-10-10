@@ -92,7 +92,7 @@ namespace EcommApiCoreV3.Controllers
                 {
                     if (item.SetNo > 0)
                     {
-                        List<Cart> lstselect = lst.Where(x => x.SetNo == item.SetNo).ToList();
+                        List<Cart> lstselect = lst.Where(x => x.SetNo == item.SetNo && x.ProductId==item.ProductId).ToList();
 
                         if (lstselect.Count > 0)
                         {
