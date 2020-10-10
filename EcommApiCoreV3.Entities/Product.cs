@@ -70,6 +70,7 @@ namespace EcommApiCoreV3.Entities
         public int SetNo { get; set; } = 0;
         // cart Quantity 
         public int Quantity { get; set; } = 0;
+        public int LookupHSNId { get; set; }
     }
 }
 
