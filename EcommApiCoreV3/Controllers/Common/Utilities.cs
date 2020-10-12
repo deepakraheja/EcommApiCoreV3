@@ -9,6 +9,7 @@ using EcommApiCoreV3.BAL.Interface;
 using EcommApiCoreV3.Entities;
 using EcommApiCoreV3.Repository;
 using EcommApiCoreV3.Repository.Interface;
+using System.Drawing;
 
 namespace EcommApiCoreV3.Controllers.Common
 {
@@ -36,39 +37,67 @@ namespace EcommApiCoreV3.Controllers.Common
                         string fileNameWitPath = FolderPath + filename;
                         if (FileSource[i].Contains("data:image/jpeg;base64,") || FileSource[i].Contains("data:image/jpg;base64,") || FileSource[i].Contains("data:image/png;base64,"))
                         {
-                            using (FileStream fs = new FileStream(fileNameWitPath, FileMode.Create))
+                            //using (FileStream fs = new FileStream(fileNameWitPath, FileMode.Create))
+                            //{
+                            //    using (BinaryWriter bw = new BinaryWriter(fs))
+                            //    {
+                            int Img_Height = 1000;
+                            int Img_Width = 736;
+                            if (FileSource[i].Contains("data:image/jpeg;base64,"))
                             {
-                                using (BinaryWriter bw = new BinaryWriter(fs))
-                                {
-                                    if (FileSource[i].Contains("data:image/jpeg;base64,"))
-                                    {
-                                        byte[] data = Convert.FromBase64String(FileSource[i].Replace("data:image/jpeg;base64,", ""));
-                                        bw.Write(data);
-                                        bw.Close();
-                                    }
-                                    if (FileSource[i].Contains("data:image/jpg;base64,"))
-                                    {
-                                        byte[] data = Convert.FromBase64String(FileSource[i].Replace("data:image/jpg;base64,", ""));
-                                        bw.Write(data);
-                                        bw.Close();
-                                    }
-                                    if (FileSource[i].Contains("data:image/png;base64,"))
-                                    {
-                                        byte[] data = Convert.FromBase64String(FileSource[i].Replace("data:image/png;base64,", ""));
-                                        bw.Write(data);
-                                        bw.Close();
-                                    }
-                                    if (Type == "bannerImage" || Type == "frontImage")
-                                    {
-                                        ProductRepository obj = new ProductRepository();
-                                        Product product = new Product();
-                                        product.ImagePath = filename;
-                                        product.ProductID = ProductId;
-                                        product.Type = Type;
-                                        obj.SaveProductImages(product);
-                                    }
-                                }
+                                byte[] data = Convert.FromBase64String(FileSource[i].Replace("data:image/jpeg;base64,", ""));
+                                //bw.Write(data);
+                                //bw.Close();
+
+                                Bitmap bmpFromString = Base64StringToBitmap(data);
+
+                                ImageCompress imgCompress = ImageCompress.GetImageCompressObject;
+                                imgCompress.GetImage = new System.Drawing.Bitmap(bmpFromString);
+                                imgCompress.Height = Img_Height;
+                                imgCompress.Width = Img_Width;
+                                imgCompress.Save(filename, FolderPath);
+
                             }
+                            if (FileSource[i].Contains("data:image/jpg;base64,"))
+                            {
+                                byte[] data = Convert.FromBase64String(FileSource[i].Replace("data:image/jpg;base64,", ""));
+                                //bw.Write(data);
+                                //bw.Close();
+
+                                Bitmap bmpFromString = Base64StringToBitmap(data);
+
+                                ImageCompress imgCompress = ImageCompress.GetImageCompressObject;
+                                imgCompress.GetImage = new System.Drawing.Bitmap(bmpFromString);
+                                imgCompress.Height = Img_Height;
+                                imgCompress.Width = Img_Width;
+                                imgCompress.Save(filename, FolderPath);
+                            }
+                            if (FileSource[i].Contains("data:image/png;base64,"))
+                            {
+                                byte[] data = Convert.FromBase64String(FileSource[i].Replace("data:image/png;base64,", ""));
+                                //bw.Write(data);
+                                //bw.Close();
+
+                                Bitmap bmpFromString = Base64StringToBitmap(data);
+
+                                ImageCompress imgCompress = ImageCompress.GetImageCompressObject;
+                                imgCompress.GetImage = new System.Drawing.Bitmap(bmpFromString);
+                                imgCompress.Height = Img_Height;
+                                imgCompress.Width = Img_Width;
+                                imgCompress.Save(filename, FolderPath);
+                            }
+                            if (Type == "bannerImage" || Type == "frontImage")
+                            {
+                                ProductRepository obj = new ProductRepository();
+                                Product product = new Product();
+                                product.ImagePath = filename;
+                                product.ProductID = ProductId;
+                                product.Type = Type;
+                                obj.SaveProductImages(product);
+                            }
+
+                            //    }
+                            //}
                         }
                     }
 
@@ -135,6 +164,24 @@ namespace EcommApiCoreV3.Controllers.Common
             {
                 File.Delete(filePath);
             }
+        }
+
+        public static Bitmap Base64StringToBitmap(byte[] byteBuffer)
+        {
+            Bitmap bmpReturn = null;
+            //Convert Base64 string to byte[]
+            //byte[] byteBuffer = Convert.FromBase64String(base64String);
+            MemoryStream memoryStream = new MemoryStream(byteBuffer);
+
+            memoryStream.Position = 0;
+
+            bmpReturn = (Bitmap)Bitmap.FromStream(memoryStream);
+
+            memoryStream.Close();
+            memoryStream = null;
+            byteBuffer = null;
+
+            return bmpReturn;
         }
     }
 }
