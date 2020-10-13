@@ -14,6 +14,7 @@ using EcommApiCoreV3.Repository.Interface;
 
 
 using System.Diagnostics;
+using EcommApiCoreV3.Repository;
 
 //using sib_api_v3_sdk.Api;
 //using sib_api_v3_sdk.Client;
@@ -23,7 +24,7 @@ using System.Diagnostics;
 
 namespace EcommApiCoreV3.Controllers.Common
 {
-    public class SendEmails
+    public class SendEmails:BaseRepository
     {
         public enum EStatus
         {
@@ -370,12 +371,12 @@ namespace EcommApiCoreV3.Controllers.Common
         {
             if (lst[0].OrderDetails[index].SetNo > 0)
             {
-                return "<img style='width: 100px;' src= 'http://34.67.65.213/EcommApiV3/ProductImage/" + lst[0].OrderDetails[index].ProductId + "/productSetImage/" + lst[0].OrderDetails[index].SetNo + "/" + (lst[0].OrderDetails[index].ProductImg.Length == 0 ? "" : lst[0].OrderDetails[index].ProductImg[0]) + ">";
+                return "<img style='width: 100px;' src= '" + ProductImagePath + lst[0].OrderDetails[index].ProductId + "/productSetImage/" + lst[0].OrderDetails[index].SetNo + "/" + (lst[0].OrderDetails[index].ProductImg.Length == 0 ? "" : lst[0].OrderDetails[index].ProductImg[0]) + "'>";
                 //return "<img style='width: 100px;' src='http://34.67.65.213/EcommApiV3/ProductImage/13/productSetImage/2/13-07222020054952-1.jpg'/>'";
             }
             if (lst[0].OrderDetails[index].SetNo == 0)
             {
-                return "<img style='width: 100px;' src= http://34.67.65.213/EcommApiV3/ProductImage/" + lst[0].OrderDetails[index].ProductId + "/productColorImage/" + lst[0].OrderDetails[index].ProductSizeColorId + "/" + (lst[0].OrderDetails[index].ProductImg.Length==0?"": lst[0].OrderDetails[index].ProductImg[0]) + ">";
+                return "<img style='width: 100px;' src= '" + ProductImagePath + lst[0].OrderDetails[index].ProductId + "/productColorImage/" + lst[0].OrderDetails[index].ProductSizeColorId + "/" + (lst[0].OrderDetails[index].ProductImg.Length==0?"": lst[0].OrderDetails[index].ProductImg[0]) + "'>";
                 //return "<img style='width: 100px;' src='http://34.67.65.213/EcommApiV3/ProductImage/13/productSetImage/2/13-07222020054952-1.jpg'/>'";
             }
             return "";
