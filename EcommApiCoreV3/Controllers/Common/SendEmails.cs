@@ -24,7 +24,7 @@ using EcommApiCoreV3.Repository;
 
 namespace EcommApiCoreV3.Controllers.Common
 {
-    public class SendEmails:BaseRepository
+    public class SendEmails : BaseRepository
     {
         public enum EStatus
         {
@@ -98,7 +98,7 @@ namespace EcommApiCoreV3.Controllers.Common
                     break;
                 case EStatus.PasswordReset:
                     {
-                        
+
                         Users emailParameters = new Users()
                         {
                             Name = objuserInfo[0].Name,
@@ -243,22 +243,9 @@ namespace EcommApiCoreV3.Controllers.Common
         public string GenerateNewOrderDetails(List<Order> lst)
         {
             string StyleStr = "<style>" +
-                                "table {" +
-                                            "font - family: arial, sans - serif;" +
-                                            "border - collapse: collapse;" +
-                                        "width: 100 %;" +
-                                        "}" +
-
-                                        "td, th {" +
-                                        "border: 1px solid #dddddd;" +
-                                        "border: 1px solid #dddddd;" +
-                                        "text - align: left;" +
-                                        "padding: 8px;" +
-                                        "}" +
-
-                                        "tr: nth - child(even) {" +
-                                                "background - color: #dddddd;" +
-                                        "}" +
+                                "table { border: 1px solid black; border - collapse: collapse; width: 80 %;}" +
+                                "th {  background - color: black;  color: white; }" +
+                                "td { border: 1px solid black; height: 35px; vertical - align: bottom; }" +
                                 "</style>";
             string orderdetailsHeaderStr = "<table>" +
                                           "<tr>" +
@@ -327,22 +314,9 @@ namespace EcommApiCoreV3.Controllers.Common
         public string GenerateOrderDetails(List<Order> lst)
         {
             string StyleStr = "<style>" +
-                                "table {" +
-                                            "font - family: arial, sans - serif;" +
-                                            "border - collapse: collapse;" +
-                                        "width: 100 %;" +
-                                        "}" +
-
-                                        "td, th {" +
-                                        "border: 1px solid #dddddd;" +
-                                        "border: 1px solid #dddddd;" +
-                                        "text - align: left;" +
-                                        "padding: 8px;" +
-                                        "}" +
-
-                                        "tr: nth - child(even) {" +
-                                                "background - color: #dddddd;" +
-                                        "}" +
+                                "table { border: 1px solid black; border - collapse: collapse; width: 80 %;}" +
+                                "th {  background - color: black;  color: white; }" +
+                                "td { border: 1px solid black; height: 35px; vertical - align: bottom; }" +
                                 "</style>";
             string orderdetailsHeaderStr = "<table>" +
                                           "<tr>" +
@@ -356,7 +330,7 @@ namespace EcommApiCoreV3.Controllers.Common
             for (int i = 0; i < lst[0].OrderDetails.Count; i++)
             {
                 orderdetailsStr += "<tr>" +
-                                            "<td>" +""
+                                            "<td>" + ""
                                             //GetProductImage(lst, i)
                                             + "</td>" +
                                             "<td>" + lst[0].OrderDetails[i].ProductName + "</td>" +
@@ -376,7 +350,7 @@ namespace EcommApiCoreV3.Controllers.Common
             }
             if (lst[0].OrderDetails[index].SetNo == 0)
             {
-                return "<img style='width: 100px;' src= '" + ProductImagePath + lst[0].OrderDetails[index].ProductId + "/productColorImage/" + lst[0].OrderDetails[index].ProductSizeColorId + "/" + (lst[0].OrderDetails[index].ProductImg.Length==0?"": lst[0].OrderDetails[index].ProductImg[0]) + "'>";
+                return "<img style='width: 100px;' src= '" + ProductImagePath + lst[0].OrderDetails[index].ProductId + "/productColorImage/" + lst[0].OrderDetails[index].ProductSizeColorId + "/" + (lst[0].OrderDetails[index].ProductImg.Length == 0 ? "" : lst[0].OrderDetails[index].ProductImg[0]) + "'>";
                 //return "<img style='width: 100px;' src='http://34.67.65.213/EcommApiV3/ProductImage/13/productSetImage/2/13-07222020054952-1.jpg'/>'";
             }
             return "";
