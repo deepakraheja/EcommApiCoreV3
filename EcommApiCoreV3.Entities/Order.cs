@@ -41,5 +41,8 @@ namespace EcommApiCoreV3.Entities
         public string StatusName { get; set; }
         public string GUID { get; set; } = "";
         public List<Users> ListUsers { get; set; } = new List<Users>();
+        public decimal AdditionalDiscount { get; set; }
+        public decimal AdditionalDiscountAmount { get; set; }
+        public string HSNCode { get; set; }
     }
 }

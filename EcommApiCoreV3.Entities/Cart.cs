@@ -27,11 +27,17 @@ namespace EcommApiCoreV3.Entities
         public int SetNo { get; set; } = 0;
         public string RowID { get; set; }
         public int GSTRate { get; set; }
+        public decimal AdditionalDiscount { get; set; }
+        public decimal AdditionalDiscountAmount
+        {
+            get { return Convert.ToDecimal((SalePrice * Quantity) * AdditionalDiscount / 100); }
+        }
         public double GSTAmount
         {
-            get { return Convert.ToDouble(((SalePrice * Quantity) * GSTRate / 100).ToString("0.00")); }
+            get { return Convert.ToDouble((((SalePrice * Quantity)- AdditionalDiscountAmount) * GSTRate / 100).ToString("0.00")); }
         }
         public int TotalPieces { get; set; }
         public int SetType { get; set; } = 0;
+        
     }
 }
