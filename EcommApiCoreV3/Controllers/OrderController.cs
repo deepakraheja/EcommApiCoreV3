@@ -38,6 +38,7 @@ namespace EcommApiCoreV3.Controllers
         {
             try
             {
+                obj.UserID = UserService.LoggedInUser;
                 List<Order> lst = await this._IOrderBAL.SaveOrder(obj);
                 SendEmails sendEmails = new SendEmails(_usersBAL, _IEmailTemplateBAL, _IOrderBAL);
                 SendEmails.webRootPath = webRootPath;
