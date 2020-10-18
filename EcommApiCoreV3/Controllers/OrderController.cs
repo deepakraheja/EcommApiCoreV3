@@ -166,10 +166,12 @@ namespace EcommApiCoreV3.Controllers
 
         [HttpPost]
         [Route("GetOrderByUserId")]
-        public async Task<List<Order>> GetOrderByUserId([FromBody] Order obj)
+        public async Task<List<Order>> GetOrderByUserId()
         {
             try
             {
+                Order obj = new Order();
+                obj.UserID = UserService.LoggedInUser;
                 List<Order> lst = this._IOrderBAL.GetOrderByUserId(obj).Result;
                 obj.OrderId = lst[0].OrderId;
                 lst[0].OrderDetails = this._IOrderBAL.GetOrderDetailsByUserId(obj).Result;
