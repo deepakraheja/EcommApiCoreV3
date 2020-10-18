@@ -245,6 +245,7 @@ namespace EcommApiCoreV3.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         [Route("SaveProductSizeColor")]
         public async Task<int> SaveProductSizeColor([FromBody] ProductSizeColor obj)
         {

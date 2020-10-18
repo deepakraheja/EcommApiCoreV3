@@ -23,7 +23,7 @@ namespace EcommApiCoreV3.Entities
 
         public string[] Prodsize { get; set; }
 
-        public decimal Discount { get; set; } = 0;
+        public double Discount { get; set; } = 0.0000;
         public bool DiscountAvailable { get; set; } = false;
         public int CreatedBy { get; set; } = 0;
         public int Modifiedby { get; set; } = 0;
