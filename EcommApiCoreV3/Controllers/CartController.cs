@@ -169,11 +169,13 @@ namespace EcommApiCoreV3.Controllers
 
         [HttpPost]
         [Route("GetCartProcessedById")]
-        public async Task<List<Cart>> GetCartProcessedById([FromBody] Cart obj)
+        public async Task<List<Cart>> GetCartProcessedById()
         {
             try
             {
                 //return await this._ICartBAL.GetCartById(obj);
+                Cart obj = new Cart();
+                obj.UserID = UserService.LoggedInUser;
                 List<Cart> lst = this._ICartBAL.GetCartProcessedById(obj).Result;
                 foreach (var item in lst)
                 {
