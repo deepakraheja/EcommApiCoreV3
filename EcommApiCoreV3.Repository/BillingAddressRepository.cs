@@ -25,8 +25,8 @@ namespace EcommApiCoreV3.Repository
                 parameters.Add("@City", obj.City);
                 parameters.Add("@State", obj.State);
                 parameters.Add("@ZipCode", obj.ZipCode);
-                parameters.Add("@EmailId", obj.EmailId);
-                parameters.Add("@Phone", obj.Phone);
+                //parameters.Add("@EmailId", obj.EmailId);
+                //parameters.Add("@Phone", obj.Phone);
                 parameters.Add("@Country", obj.Country);
                 parameters.Add("@CreatedDate", obj.CreatedDate);
                 List<BillingAddress> lst = (await SqlMapper.QueryAsync<BillingAddress>(con, "p_BillingAddress_Save", param: parameters, commandType: StoredProcedure)).ToList();
