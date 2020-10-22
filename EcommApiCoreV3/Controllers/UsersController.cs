@@ -372,6 +372,7 @@ namespace EcommApiCoreV3.Controllers
         {
             try
             {
+                obj.UserID = UserService.LoggedInUser;
                 return await this._usersBAL.UpdatePwd(obj);
             }
             catch (Exception ex)
@@ -420,12 +421,12 @@ namespace EcommApiCoreV3.Controllers
         {
             try
             {
-                int res = await this._usersBAL.ResetPassword(obj);
-                if (res > 0)
+                List<Users> lstUser = await this._usersBAL.ResetPassword(obj);
+                if (lstUser.Count > 0)
                 {
                     SendEmails sendEmails = new SendEmails(_usersBAL, _IEmailTemplateBAL, _IOrderBAL);
                     Users objUsers = new Users();
-                    objUsers.UserID = obj.UserID;
+                    objUsers.UserID = lstUser[0].UserID;
                     sendEmails.setMailContent(objUsers, EStatus.PasswordResetConfirmation.ToString());
                     return 1;
                 }

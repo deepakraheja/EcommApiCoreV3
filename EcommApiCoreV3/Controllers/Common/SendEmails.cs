@@ -103,7 +103,7 @@ namespace EcommApiCoreV3.Controllers.Common
                         {
                             Name = objuserInfo[0].Name,
                             email = objuserInfo[0].email,
-                            Link = "<a href ='" + WebSiteURL + "/pages/ResetPassword/" + Convert.ToString(objuserInfo[0].UserID) + "' target = '_blank' style='text-decoration:none;'>Link </a>",
+                            Link = "<a href ='" + WebSiteURL + "/pages/ResetPassword/" + objuserInfo[0].GUID + "' target = '_blank' style='text-decoration:none;'>Link </a>",
                             Subject = "Password Reset",
                             XMLFilePath = "2",
                         };
