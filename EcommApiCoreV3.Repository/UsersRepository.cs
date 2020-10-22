@@ -161,15 +161,15 @@ namespace EcommApiCoreV3.Repository
                 throw (ex);
             }
         }
-        public async Task<int> ResetPassword(Users obj)
+        public async Task<List<Users>> ResetPassword(Users obj)
         {
             try
             {
                 DynamicParameters parameters = new DynamicParameters();
-                parameters.Add("@UserID", obj.UserID);
+                parameters.Add("@GUID", obj.GUID);
                 parameters.Add("@password", obj.NewPassword);
-                var res = await SqlMapper.ExecuteAsync(con, "p_ResetPassword", param: parameters, commandType: StoredProcedure);
-                return Convert.ToInt32(res);
+                List<Users> lst = (await SqlMapper.QueryAsync<Users>(con, "p_ResetPassword", param: parameters, commandType: StoredProcedure)).ToList();
+                return lst;
             }
             catch (Exception ex)
             {
