@@ -44,7 +44,7 @@ namespace EcommApiCoreV3.BAL
         {
             return _users.ValidEmail(obj);
         }
-        public Task<int> ResetPassword(Users obj)
+        public Task<List<Users>> ResetPassword(Users obj)
         {
             return _users.ResetPassword(obj);
         }
