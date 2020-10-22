@@ -15,6 +15,7 @@ using EcommApiCoreV3.Repository.Interface;
 
 using System.Diagnostics;
 using EcommApiCoreV3.Repository;
+using Microsoft.AspNetCore.Mvc.ViewComponents;
 
 //using sib_api_v3_sdk.Api;
 //using sib_api_v3_sdk.Client;
@@ -243,23 +244,29 @@ namespace EcommApiCoreV3.Controllers.Common
         public string GenerateNewOrderDetails(List<Order> lst)
         {
             string StyleStr = "<style>" +
-                                "table { border: 1px solid black; border - collapse: collapse; width: 80 %;}" +
-                                "th {  background - color: black;  color: white; }" +
-                                "td { border: 1px solid black; height: 35px; vertical - align: bottom; }" +
+                                "table { border: 1px solid; border-collapse: collapse; width: 80%;}" +
+                                "th { border: 1px solid; background-color: black; color: white; }" +
+                                "td { border: 1px solid; height: 35px; vertical-align: bottom; }" +
                                 "</style>";
             string orderdetailsHeaderStr = "<table>" +
                                           "<tr>" +
                                             "<th>Product Image</th>" +
                                             "<th>Product Name</th>" +
                                             "<th>price</th>" +
-                                            "<th>Qty</th>" +
+                                            "<th>Qty</th>";
+            if (lst[0].OrderDetails[0].AdditionalDiscount > 0)
+            {
+                orderdetailsHeaderStr += "<th>Add. Discount (%)</th>" +
+                                            "<th>Add. Discount Amount</th>";
+            }
+            orderdetailsHeaderStr += "<th>Total Amount</th>" +
                                             "<th>GST Rate(%)</th>" +
                                             "<th>GST Amount</th>" +
                                             "<th>Total</th>" +
                                           "</tr>";
 
             string orderdetailsStr = "";
-            double TotalGSTAmount = 0, Total = 0;
+            double TotalGSTAmount = 0, Total = 0, TotalQty = 0, TotalAdditionalDiscountAmount = 0, TotalAmountWithDis = 0;
 
             for (int i = 0; i < lst[0].OrderDetails.Count; i++)
             {
@@ -268,48 +275,81 @@ namespace EcommApiCoreV3.Controllers.Common
                                             GetProductImage(lst, i)
                                             + "</td>" +
                                             "<td>" + lst[0].OrderDetails[i].ProductName + "</td>" +
-                                            "<td>" + lst[0].OrderDetails[i].Price + "</td>" +
-                                            "<td>" + lst[0].OrderDetails[i].Quantity + "</td>" +
-                                            "<td>" + lst[0].OrderDetails[i].GSTRate + "</td>" +
-                                            "<td>" + lst[0].OrderDetails[i].GSTAmount + "</td>" +
-                                            "<td>" + (lst[0].OrderDetails[i].Price * lst[0].OrderDetails[i].Quantity) + lst[0].OrderDetails[i].GSTAmount + "</td>" +
+                                            "<td style='text-align: right;'>" + lst[0].OrderDetails[i].SalePrice.ToString("0.00") + "</td>" +
+                                            "<td>" + lst[0].OrderDetails[i].Quantity + "</td>";
+                if (lst[0].OrderDetails[i].AdditionalDiscount > 0)
+                {
+                    orderdetailsStr += "<td style='text-align: right;'>" + lst[0].OrderDetails[i].AdditionalDiscount + "%</td>" +
+                                       "<td style='text-align: right;'>" + lst[0].OrderDetails[i].AdditionalDiscountAmount.ToString("0.00") + "</td>";
+                }
+
+                orderdetailsStr += "<td style='text-align: right;'>" + (Convert.ToDecimal(lst[0].OrderDetails[i].SalePrice * lst[0].OrderDetails[i].Quantity) - lst[0].OrderDetails[i].AdditionalDiscountAmount).ToString("0.00") + "</td>" +
+                                            "<td style='text-align: right;'>" + lst[0].OrderDetails[i].GSTRate.ToString("0.00") + "%</td>" +
+                                            "<td style='text-align: right;'>" + lst[0].OrderDetails[i].GSTAmount.ToString("0.00") + "</td>" +
+                                            "<td style='text-align: right;'>" + Convert.ToDouble((lst[0].OrderDetails[i].SalePrice * lst[0].OrderDetails[i].Quantity) - Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscountAmount) + lst[0].OrderDetails[i].GSTAmount).ToString("0.00") + "</td>" +
                                           "</tr>";
+                TotalQty += lst[0].OrderDetails[i].Quantity;
+                TotalAdditionalDiscountAmount += Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscountAmount);
+                TotalAmountWithDis += lst[0].OrderDetails[i].SalePrice * lst[0].OrderDetails[i].Quantity - Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscountAmount);
                 TotalGSTAmount += lst[0].OrderDetails[i].GSTAmount;
-                Total += (lst[0].OrderDetails[i].Price * lst[0].OrderDetails[i].Quantity) + lst[0].OrderDetails[i].GSTAmount;
+                Total += (lst[0].OrderDetails[i].SalePrice * lst[0].OrderDetails[i].Quantity) - Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscountAmount) + lst[0].OrderDetails[i].GSTAmount;
             }
             string SubTotal = "<tr>" +
-                                    "<td colspan='5'>" +
+                                    "<td colspan='3'>" +
                                         "<b>Subtotal</b>" +
                                     "</td>" +
                                     "<td>" +
-                                        "<b>" + TotalGSTAmount + "</b>" +
+                                        "<b>" + TotalQty + "</b>" +
+                                    "</td>";
+            if (lst[0].OrderDetails[0].AdditionalDiscount > 0)
+            {
+                SubTotal += "<td></td>" +
+                                    "<td style='text-align: right;'>" +
+                                        "<b>" + TotalAdditionalDiscountAmount.ToString("0.00") + "</b>" +
+                                    "</td>";
+            }
+            SubTotal += "<td style='text-align: right;'>" +
+                                    "<b>" + TotalAmountWithDis.ToString("0.00") + "</b>" +
                                     "</td>" +
-                                    "<td>" +
-                                        "<span style='float: right; font-size: 16px; line-height: 20px; color: var(--theme-deafult); font-weight: 400;'>" +
-                                        Total + "</span>" +
+                                    "<td></td>" +
+                                    "<td style='text-align: right;'>" +
+                                        "<b>" + TotalGSTAmount.ToString("0.00") + "</b>" +
+                                    "</td>" +
+                                    "<td style='text-align: right;'><b>" +
+                                        Total.ToString("0.00") + "</b>" +
                                     "</td>" +
                                 "</tr>" +
 
                                 "<tr>" +
-                                    "<td colspan='5'>" +
-                                        "<b> Shipping</b>" +
-                                    "</td>" +
-                                    "<td colspan='2'>" +
-                                        "<span style='float: right; font-size: 16px; line-height: 20px; color: var(--theme-deafult); font-weight: 400;'>" +
-                                             "<b>Free Shipping</b></span>" +
+                                    "<td colspan='6'>" +
+                                        "<b> Packing</b>" +
+                                    "</td>";
+            if (lst[0].OrderDetails[0].AdditionalDiscount > 0)
+            {
+                SubTotal += "<td></td>" +
+                                    "<td></td>";
+            }
+            SubTotal += "<td colspan='2' style='text-align: right;'>" +
+                                             "<b>Free Packing</b>" +
                                     "</td>" +
                                 "</tr>" +
                                 "<tr class='total'>" +
                                     "<td colspan='6'>" +
                                         "<b>Total</b>" +
-                                    "</td>" +
-                                    "<td>" +
-                                        "<span style='float: right; font-size: 16px; line-height: 20px; color: var(--theme-deafult); font-weight: 400;'>" +
-                                            Total + "</span>" +
+                                    "</td>";
+            if (lst[0].OrderDetails[0].AdditionalDiscount > 0)
+            {
+                SubTotal += "<td></td>" +
+                                    "<td></td>";
+            }
+            SubTotal += "<td></td>" + 
+                        "<td style='text-align: right;'>" +
+                                        "<span style='float: right; font-size: 16px; line-height: 20px; color: var(--theme-deafult); font-weight: 400;'><b>" +
+                                            Total.ToString("0.00") + "</b></span>" +
                                     "</td>" +
                                 "</tr>";
 
-            return StyleStr + orderdetailsHeaderStr + orderdetailsStr + SubTotal + "</table>";
+            return orderdetailsHeaderStr + orderdetailsStr + SubTotal + "</table>" + StyleStr;
         }
         public string GenerateOrderDetails(List<Order> lst)
         {
