@@ -52,6 +52,7 @@ namespace EcommApiCoreV3.Entities
          
         public string AadharCard { get; set; }
         public string GUID { get; set; } = "";
+        public string[] UserDocument { get; set; }
 
     }
 }
