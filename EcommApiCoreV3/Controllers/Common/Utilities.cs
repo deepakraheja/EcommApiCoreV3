@@ -261,5 +261,22 @@ namespace EcommApiCoreV3.Controllers.Common
                 }
             }
         }
+
+        public string[] UserDocument(int UserId, string WebRootPath)
+        {
+            string[] ImageRepresentation = new string[0];
+            string folderPath;
+            folderPath = WebRootPath + "\\UserDocument\\" + UserId + "\\";
+            if (Directory.Exists(folderPath))
+            {
+                string[] AllFiles = Directory.GetFiles(folderPath, "*", SearchOption.AllDirectories);
+                ImageRepresentation = new string[AllFiles.Length];
+                for (int i = 0; i < AllFiles.Length; i++)
+                {
+                    ImageRepresentation[i] = AllFiles[i].Split('\\').LastOrDefault();
+                }
+            }
+            return ImageRepresentation;
+        }
     }
 }

@@ -313,7 +313,14 @@ namespace EcommApiCoreV3.Controllers
         {
             try
             {
-                return await this._usersBAL.GetAllUsers();
+                //return await this._usersBAL.GetAllUsers();
+                List<Users> lst = await this._usersBAL.GetAllUsers();
+                for (int i = 0; i < lst.Count; i++)
+                {
+                    lst[i].UserDocument = _utilities.UserDocument(lst[i].UserID, webRootPath);
+                }
+
+                return await Task.Run(() => new List<Users>(lst));
             }
             catch (Exception ex)
             {
@@ -591,6 +598,42 @@ namespace EcommApiCoreV3.Controllers
                 ErrorLogger.Log(ex.StackTrace);
 
                 Logger.LogError($"Something went wrong inside UsersController AgentCustomerStatusChange action: {ex.Message}");
+                return -1;
+            }
+        }
+
+        [HttpPost]
+        [Route("DeleteUserDocument")]
+        public async Task<int> DeleteUserDocument([FromBody] Product obj)
+        {
+            try
+            {
+                _utilities.DeleteProductImage(obj.ImagePath, webRootPath);
+                return await Task.Run(() => 1);
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Log($"Something went wrong inside UserController DeleteUserDocument action: {ex.Message}");
+                ErrorLogger.Log(ex.StackTrace);
+                Logger.LogError($"Something went wrong inside UserController DeleteUserDocument action: {ex.Message}");
+                return -1;
+            }
+        }
+
+        [HttpPost]
+        [Route("SaveUserDocumentImages")]
+        public async Task<int> SaveUserDocumentImages([FromBody] Users obj)
+        {
+            try
+            {
+                _utilities.SaveUserDocumentImages(obj.UserID, obj.UserDocument, webRootPath);
+                return await Task.Run(() => obj.UserID);
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Log($"Something went wrong inside UserController SaveUserDocumentImages action: {ex.Message}");
+                ErrorLogger.Log(ex.StackTrace);
+                Logger.LogError($"Something went wrong inside UserController SaveUserDocumentImages action: {ex.Message}");
                 return -1;
             }
         }
