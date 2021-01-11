@@ -183,5 +183,83 @@ namespace EcommApiCoreV3.Controllers.Common
 
             return bmpReturn;
         }
+
+        public void SaveUserDocumentImages(int UserId, string[] FileSource, string WebRootPath)
+        {
+            if (UserId > 0)
+            {
+                if (FileSource.Length > 0)
+                {
+                    string FolderPath;
+                    FolderPath = WebRootPath + "\\UserDocument\\" + UserId + "\\";
+                    bool folderExists = System.IO.Directory.Exists(FolderPath);
+                    if (!folderExists)
+                        Directory.CreateDirectory(FolderPath);
+                    DirectoryInfo directory = new DirectoryInfo(FolderPath);
+                    //foreach (FileInfo file in directory.GetFiles())
+                    //{
+                    //    file.Delete();
+                    //}
+                    for (int i = 0; i < FileSource.Length; i++)
+                    {
+                        string filename = UserId.ToString() + '-' + DateTime.Now.ToString("MMddyyyyhhmmss") + "-" + (i + 1) + ".jpg";
+                        string fileNameWitPath = FolderPath + filename;
+                        if (FileSource[i].Contains("data:image/jpeg;base64,") || FileSource[i].Contains("data:image/jpg;base64,") || FileSource[i].Contains("data:image/png;base64,"))
+                        {
+                            //using (FileStream fs = new FileStream(fileNameWitPath, FileMode.Create))
+                            //{
+                            //    using (BinaryWriter bw = new BinaryWriter(fs))
+                            //    {
+                            //int Img_Height = 285;
+                            //int Img_Width = 285;
+                            if (FileSource[i].Contains("data:image/jpeg;base64,"))
+                            {
+                                byte[] data = Convert.FromBase64String(FileSource[i].Replace("data:image/jpeg;base64,", ""));
+                                //bw.Write(data);
+                                //bw.Close();
+
+                                Bitmap bmpFromString = Base64StringToBitmap(data);
+
+                                ImageCompress imgCompress = ImageCompress.GetImageCompressObject;
+                                imgCompress.GetImage = new System.Drawing.Bitmap(bmpFromString);
+                                //imgCompress.Height = Img_Height;
+                                //imgCompress.Width = Img_Width;
+                                imgCompress.Save(filename, FolderPath);
+
+                            }
+                            if (FileSource[i].Contains("data:image/jpg;base64,"))
+                            {
+                                byte[] data = Convert.FromBase64String(FileSource[i].Replace("data:image/jpg;base64,", ""));
+                                //bw.Write(data);
+                                //bw.Close();
+
+                                Bitmap bmpFromString = Base64StringToBitmap(data);
+
+                                ImageCompress imgCompress = ImageCompress.GetImageCompressObject;
+                                imgCompress.GetImage = new System.Drawing.Bitmap(bmpFromString);
+                                //imgCompress.Height = Img_Height;
+                                //imgCompress.Width = Img_Width;
+                                imgCompress.Save(filename, FolderPath);
+                            }
+                            if (FileSource[i].Contains("data:image/png;base64,"))
+                            {
+                                byte[] data = Convert.FromBase64String(FileSource[i].Replace("data:image/png;base64,", ""));
+                                //bw.Write(data);
+                                //bw.Close();
+
+                                Bitmap bmpFromString = Base64StringToBitmap(data);
+
+                                ImageCompress imgCompress = ImageCompress.GetImageCompressObject;
+                                imgCompress.GetImage = new System.Drawing.Bitmap(bmpFromString);
+                                //imgCompress.Height = Img_Height;
+                                //imgCompress.Width = Img_Width;
+                                imgCompress.Save(filename, FolderPath);
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
     }
 }
