@@ -19,6 +19,7 @@ using EcommApiCoreV3.Entities;
 using EcommApiCoreV3.JWT;
 using static EcommApiCoreV3.Controllers.Common.SendEmails;
 using EcommApiCoreV3.Services;
+using Microsoft.AspNetCore.Hosting;
 //using mailinblue;
 
 namespace EcommApiCoreV3.Controllers
@@ -31,12 +32,14 @@ namespace EcommApiCoreV3.Controllers
         IEmailTemplateBAL _IEmailTemplateBAL;
         private readonly ApplicationSettings _appSettings;
         IOrderBAL _IOrderBAL;
-        public UsersController(IUsersBAL usersBAL, IOptions<ApplicationSettings> appSettings, IEmailTemplateBAL emailTemplateBAL, IOrderBAL OrderBAL)
+        Utilities _utilities = new Utilities();
+        public UsersController(IUsersBAL usersBAL, IOptions<ApplicationSettings> appSettings, IEmailTemplateBAL emailTemplateBAL, IOrderBAL OrderBAL, IWebHostEnvironment hostingEnvironment)
         {
             _usersBAL = usersBAL;
             _appSettings = appSettings.Value;
             _IEmailTemplateBAL = emailTemplateBAL;
             _IOrderBAL = OrderBAL;
+            webRootPath = hostingEnvironment.WebRootPath;
         }
 
         [HttpGet]
@@ -255,6 +258,8 @@ namespace EcommApiCoreV3.Controllers
                 int res = await this._usersBAL.UserRegistration(obj);
                 if (res > 1)
                 {
+                    if (obj.UserDocument != null)
+                        _utilities.SaveUserDocumentImages(res, obj.UserDocument, webRootPath);
                     SendEmails sendEmails = new SendEmails(_usersBAL, _IEmailTemplateBAL, _IOrderBAL);
                     Users objUsers = new Users();
                     objUsers.UserID = res;
@@ -308,7 +313,14 @@ namespace EcommApiCoreV3.Controllers
         {
             try
             {
-                return await this._usersBAL.GetAllUsers();
+                //return await this._usersBAL.GetAllUsers();
+                List<Users> lst = await this._usersBAL.GetAllUsers();
+                for (int i = 0; i < lst.Count; i++)
+                {
+                    lst[i].UserDocument = _utilities.UserDocument(lst[i].UserID, webRootPath);
+                }
+
+                return await Task.Run(() => new List<Users>(lst));
             }
             catch (Exception ex)
             {
@@ -586,6 +598,42 @@ namespace EcommApiCoreV3.Controllers
                 ErrorLogger.Log(ex.StackTrace);
 
                 Logger.LogError($"Something went wrong inside UsersController AgentCustomerStatusChange action: {ex.Message}");
+                return -1;
+            }
+        }
+
+        [HttpPost]
+        [Route("DeleteUserDocument")]
+        public async Task<int> DeleteUserDocument([FromBody] Product obj)
+        {
+            try
+            {
+                _utilities.DeleteProductImage(obj.ImagePath, webRootPath);
+                return await Task.Run(() => 1);
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Log($"Something went wrong inside UserController DeleteUserDocument action: {ex.Message}");
+                ErrorLogger.Log(ex.StackTrace);
+                Logger.LogError($"Something went wrong inside UserController DeleteUserDocument action: {ex.Message}");
+                return -1;
+            }
+        }
+
+        [HttpPost]
+        [Route("SaveUserDocumentImages")]
+        public async Task<int> SaveUserDocumentImages([FromBody] Users obj)
+        {
+            try
+            {
+                _utilities.SaveUserDocumentImages(obj.UserID, obj.UserDocument, webRootPath);
+                return await Task.Run(() => obj.UserID);
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Log($"Something went wrong inside UserController SaveUserDocumentImages action: {ex.Message}");
+                ErrorLogger.Log(ex.StackTrace);
+                Logger.LogError($"Something went wrong inside UserController SaveUserDocumentImages action: {ex.Message}");
                 return -1;
             }
         }
