@@ -19,6 +19,7 @@ using EcommApiCoreV3.Entities;
 using EcommApiCoreV3.JWT;
 using static EcommApiCoreV3.Controllers.Common.SendEmails;
 using EcommApiCoreV3.Services;
+using Microsoft.AspNetCore.Hosting;
 //using mailinblue;
 
 namespace EcommApiCoreV3.Controllers
@@ -31,12 +32,14 @@ namespace EcommApiCoreV3.Controllers
         IEmailTemplateBAL _IEmailTemplateBAL;
         private readonly ApplicationSettings _appSettings;
         IOrderBAL _IOrderBAL;
-        public UsersController(IUsersBAL usersBAL, IOptions<ApplicationSettings> appSettings, IEmailTemplateBAL emailTemplateBAL, IOrderBAL OrderBAL)
+        Utilities _utilities = new Utilities();
+        public UsersController(IUsersBAL usersBAL, IOptions<ApplicationSettings> appSettings, IEmailTemplateBAL emailTemplateBAL, IOrderBAL OrderBAL, IWebHostEnvironment hostingEnvironment)
         {
             _usersBAL = usersBAL;
             _appSettings = appSettings.Value;
             _IEmailTemplateBAL = emailTemplateBAL;
             _IOrderBAL = OrderBAL;
+            webRootPath = hostingEnvironment.WebRootPath;
         }
 
         [HttpGet]
@@ -255,6 +258,8 @@ namespace EcommApiCoreV3.Controllers
                 int res = await this._usersBAL.UserRegistration(obj);
                 if (res > 1)
                 {
+                    if (obj.UserDocument != null)
+                        _utilities.SaveUserDocumentImages(res, obj.UserDocument, webRootPath);
                     SendEmails sendEmails = new SendEmails(_usersBAL, _IEmailTemplateBAL, _IOrderBAL);
                     Users objUsers = new Users();
                     objUsers.UserID = res;
