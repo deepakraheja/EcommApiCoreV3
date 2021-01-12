@@ -7,6 +7,13 @@ namespace EcommApiCoreV3.Entities
     public class Order : BillingAddress
     {
         public int OrderId { get; set; } = 0;
+        private string invoiceNo; // field
+        public string InvoiceNo   // property
+        {
+            get { return Convert.ToInt32(invoiceNo).ToString("000"); }   // get method
+            set { invoiceNo = value; }  // set method
+        }
+        //public int InvoiceNo { get; set; } = 0;
         public string OrderNumber { get; set; }
         public string OrderDate { get; set; }
         public int PaymentTypeId { get; set; } = 0;
@@ -44,5 +51,8 @@ namespace EcommApiCoreV3.Entities
         public decimal AdditionalDiscount { get; set; }
         public decimal AdditionalDiscountAmount { get; set; }
         public string HSNCode { get; set; }
+        public string TransportName { get; set; }
+        public string Bilty { get; set; }
+        public string DispatchDate { get; set; }
     }
 }
