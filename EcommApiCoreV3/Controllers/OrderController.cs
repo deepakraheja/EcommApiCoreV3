@@ -146,13 +146,16 @@ namespace EcommApiCoreV3.Controllers
                 List<Order> lst = this._IOrderBAL.GetNewOrderByGUID(obj).Result;
                 //obj.OrderId = lst[0].OrderId;
                 //lst[0].OrderDetails = this._IOrderBAL.GetPrintOrderDetailsByOrderId(obj).Result;
-                foreach (var item in lst[0].OrderDetails)
-                {
-                    if (item.SetNo > 0)
-                        item.ProductImg = _utilities.ProductImage(item.ProductId, "productSetImage", webRootPath, item.SetNo);
-                    else
-                        item.ProductImg = _utilities.ProductImage(item.ProductId, "productColorImage", webRootPath, item.ProductSizeColorId);
-                }
+
+
+                /*   foreach (var item in lst[0].OrderDetails)  //commnented on 10 jan 2021 by deepak
+                   {
+                       if (item.SetNo > 0)
+                           item.ProductImg = _utilities.ProductImage(item.ProductId, "productSetImage", webRootPath, item.SetNo);
+                       else
+                           item.ProductImg = _utilities.ProductImage(item.ProductId, "productColorImage", webRootPath, item.ProductSizeColorId);
+                   }*/  //commnented on 10 jan 2021 by deepak
+
                 return await Task.Run(() => new List<Order>(lst));
             }
             catch (Exception ex)
@@ -175,13 +178,16 @@ namespace EcommApiCoreV3.Controllers
                 List<Order> lst = this._IOrderBAL.GetOrderByUserId(obj).Result;
                 obj.OrderId = lst[0].OrderId;
                 lst[0].OrderDetails = this._IOrderBAL.GetOrderDetailsByUserId(obj).Result;
+
+                /*   foreach (var item in lst[0].OrderDetails)  //commnented on 10 jan 2021 by deepak
                 foreach (var item in lst[0].OrderDetails)
-                {
-                    if (item.SetNo > 0)
-                        item.ProductImg = _utilities.ProductImage(item.ProductId, "productSetImage", webRootPath, item.SetNo);
-                    else
-                        item.ProductImg = _utilities.ProductImage(item.ProductId, "productColorImage", webRootPath, item.ProductSizeColorId);
-                }
+              {
+                  if (item.SetNo > 0)
+                      item.ProductImg = _utilities.ProductImage(item.ProductId, "productSetImage", webRootPath, item.SetNo);
+                  else
+                      item.ProductImg = _utilities.ProductImage(item.ProductId, "productColorImage", webRootPath, item.ProductSizeColorId);
+               }*/  //commnented on 10 jan 2021 by deepak
+
                 return await Task.Run(() => new List<Order>(lst));
             }
             catch (Exception ex)

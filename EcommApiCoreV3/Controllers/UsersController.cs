@@ -260,6 +260,7 @@ namespace EcommApiCoreV3.Controllers
                 {
                     if (obj.UserDocument != null)
                         _utilities.SaveUserDocumentImages(res, obj.UserDocument, webRootPath);
+                   
                     SendEmails sendEmails = new SendEmails(_usersBAL, _IEmailTemplateBAL, _IOrderBAL);
                     Users objUsers = new Users();
                     objUsers.UserID = res;

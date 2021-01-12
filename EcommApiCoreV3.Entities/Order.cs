@@ -51,6 +51,7 @@ namespace EcommApiCoreV3.Entities
         public decimal AdditionalDiscount { get; set; }
         public decimal AdditionalDiscountAmount { get; set; }
         public string HSNCode { get; set; }
+        public string FrontImage { get; set; } = "";
         public string TransportName { get; set; }
         public string Bilty { get; set; }
         public string DispatchDate { get; set; }
