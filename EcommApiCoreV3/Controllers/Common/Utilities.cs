@@ -202,9 +202,17 @@ namespace EcommApiCoreV3.Controllers.Common
                     //}
                     for (int i = 0; i < FileSource.Length; i++)
                     {
-                        string filename = UserId.ToString() + '-' + DateTime.Now.ToString("MMddyyyyhhmmss") + "-" + (i + 1) + ".jpg";
+                        string filename = UserId.ToString() + '-' + DateTime.Now.ToString("MMddyyyyhhmmss") + "-" + (i + 1);
+                        if (FileSource[i].Contains("data:application/pdf;base64,"))
+                        {
+                            filename = filename + ".pdf";
+                        }
+                        else
+                        {
+                            filename = filename + ".jpg";
+                        }
                         string fileNameWitPath = FolderPath + filename;
-                        if (FileSource[i].Contains("data:image/jpeg;base64,") || FileSource[i].Contains("data:image/jpg;base64,") || FileSource[i].Contains("data:image/png;base64,"))
+                        if (FileSource[i].Contains("data:image/jpeg;base64,") || FileSource[i].Contains("data:image/jpg;base64,") || FileSource[i].Contains("data:image/png;base64,") || FileSource[i].Contains("data:application/pdf;base64,"))
                         {
                             //using (FileStream fs = new FileStream(fileNameWitPath, FileMode.Create))
                             //{
@@ -254,6 +262,18 @@ namespace EcommApiCoreV3.Controllers.Common
                                 //imgCompress.Height = Img_Height;
                                 //imgCompress.Width = Img_Width;
                                 imgCompress.Save(filename, FolderPath);
+                            }
+                            if (FileSource[i].Contains("data:application/pdf;base64,"))
+                            {
+                                using (FileStream fs = new FileStream(fileNameWitPath, FileMode.Create))
+                                {
+                                    using (BinaryWriter bw = new BinaryWriter(fs))
+                                    {
+                                        byte[] data = Convert.FromBase64String(FileSource[i].Replace("data:application/pdf;base64,", ""));
+                                        bw.Write(data);
+                                        bw.Close();
+                                    }
+                                }
                             }
                         }
                     }
