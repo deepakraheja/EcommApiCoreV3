@@ -54,5 +54,6 @@ namespace EcommApiCoreV3.Entities
         public string GUID { get; set; } = "";
         public string[] UserDocument { get; set; }
 
+        public string TemplateType { get; set; } = "";
     }
 }
