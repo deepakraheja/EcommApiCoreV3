@@ -21,5 +21,6 @@ namespace EcommApiCoreV3.BAL.Interface
         Task<List<Order>> GetPrintOrderByGUID(Order obj);
         Task<List<Order>> GetPrintOrderDetailsByOrderId(Order obj);
         Task<List<Order>> GetNewOrderByGUID(Order obj);
+        Task<List<Order>> GetEmailOrderByOrderID(Order obj);
     }
 }

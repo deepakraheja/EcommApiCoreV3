@@ -69,5 +69,9 @@ namespace EcommApiCoreV3.BAL
         {
             return _OrderRepository.GetNewOrderByGUID(obj);
         }
+        public Task<List<Order>> GetEmailOrderByOrderID(Order obj)
+        {
+            return _OrderRepository.GetEmailOrderByOrderID(obj);
+        }
     }
 }
