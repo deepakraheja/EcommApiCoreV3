@@ -103,9 +103,9 @@ namespace EcommApiCoreV3.Controllers
             }
             catch (Exception ex)
             {
-                ErrorLogger.Log($"Something went wrong inside OrderController GetOrderByOrderId action: {ex.Message}");
+                ErrorLogger.Log($"Something went wrong inside OrderController GetSuccessOrderByOrderId action: {ex.Message}");
                 ErrorLogger.Log(ex.StackTrace);
-                Logger.LogError($"Something went wrong inside OrderController GetOrderByOrderId action: {ex.Message}");
+                Logger.LogError($"Something went wrong inside OrderController GetSuccessOrderByOrderId action: {ex.Message}");
                 return null;
             }
         }
@@ -160,9 +160,9 @@ namespace EcommApiCoreV3.Controllers
             }
             catch (Exception ex)
             {
-                ErrorLogger.Log($"Something went wrong inside OrderController GetSuccessPrintOrderByGUID action: {ex.Message}");
+                ErrorLogger.Log($"Something went wrong inside OrderController GetNewOrderByGUID action: {ex.Message}");
                 ErrorLogger.Log(ex.StackTrace);
-                Logger.LogError($"Something went wrong inside OrderController GetSuccessPrintOrderByGUID action: {ex.Message}");
+                Logger.LogError($"Something went wrong inside OrderController GetNewOrderByGUID action: {ex.Message}");
                 return null;
             }
         }
@@ -222,9 +222,9 @@ namespace EcommApiCoreV3.Controllers
             }
             catch (Exception ex)
             {
-                ErrorLogger.Log($"Something went wrong inside OrderController GetOrderByUserId action: {ex.Message}");
+                ErrorLogger.Log($"Something went wrong inside OrderController GetAllOrder action: {ex.Message}");
                 ErrorLogger.Log(ex.StackTrace);
-                Logger.LogError($"Something went wrong inside OrderController GetOrderByUserId action: {ex.Message}");
+                Logger.LogError($"Something went wrong inside OrderController GetAllOrder action: {ex.Message}");
                 return null;
             }
         }
@@ -245,10 +245,15 @@ namespace EcommApiCoreV3.Controllers
                 SendEmails.webRootPath = webRootPath;
                 Users objUser = new Users();
                 objUser.OrderID = obj[0].OrderId.ToString();
-                objUser.UserID = obj[0].CreatedBy;
+                //objUser.UserID = obj[0].CreatedBy;
+                objUser.UserID = UserService.LoggedInUser;
+                objUser.OrderID = Convert.ToString( obj[0].OrderId);
+                
+                //if (obj[0].OrderStatusId == 1)
+                //    sendEmails.setMailContent(objUser, EStatus.NewOrderCompletion.ToString());
 
-                if (obj[0].OrderStatusId == 1)
-                    sendEmails.setMailContent(objUser, EStatus.NewOrderCompletion.ToString());
+                if (obj[0].OrderStatusId == 2)
+                    sendEmails.setMailContent(objUser, EStatus.NewOrderProcess.ToString());
                 if (obj[0].OrderStatusId == 3)
                     sendEmails.setMailContent(objUser, EStatus.DispatchedConfirmation.ToString());
                 if (obj[0].OrderStatusId == 4)
@@ -276,9 +281,9 @@ namespace EcommApiCoreV3.Controllers
             }
             catch (Exception ex)
             {
-                ErrorLogger.Log($"Something went wrong inside OrderController GetDashboardAllOrder action: {ex.Message}");
+                ErrorLogger.Log($"Something went wrong inside OrderController GetDashboardSummary action: {ex.Message}");
                 ErrorLogger.Log(ex.StackTrace);
-                Logger.LogError($"Something went wrong inside OrderController GetDashboardAllOrder action: {ex.Message}");
+                Logger.LogError($"Something went wrong inside OrderController GetDashboardSummary action: {ex.Message}");
                 return null;
             }
         }

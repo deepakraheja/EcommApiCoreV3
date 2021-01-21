@@ -100,6 +100,11 @@ namespace EcommApiCoreV3
             get;
             private set;
         }
+        public static string ServiceURL
+        {
+            get;
+            private set;
+        }
         public Startup(IHostEnvironment env)
         {
             Configuration = new ConfigurationBuilder().SetBasePath(env.ContentRootPath).AddJsonFile("appSettings.json").Build();
@@ -262,6 +267,27 @@ namespace EcommApiCoreV3
             
 
             });
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "UserDocument")),
+                RequestPath = "/UserDocument",
+
+
+            });
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images")),
+                RequestPath = "/images",
+            });
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
+                  Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "htmlTemplate")),
+                RequestPath = "/htmlTemplate",
+            });
 
             //app.UseDirectoryBrowser(new DirectoryBrowserOptions
             //{
@@ -337,6 +363,7 @@ namespace EcommApiCoreV3
             //AllowSendMails = Configuration["EmailSetting:AllowSendMails"];
             //UserName = Configuration["EmailSetting:UserName"];
             WebSiteURL = Configuration["EmailSetting:WebSiteURL"];
+            ServiceURL = Configuration["EmailSetting:ServiceURL"];
         }
     }
 

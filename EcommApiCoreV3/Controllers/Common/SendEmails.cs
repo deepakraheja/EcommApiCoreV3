@@ -16,6 +16,11 @@ using EcommApiCoreV3.Repository.Interface;
 using System.Diagnostics;
 using EcommApiCoreV3.Repository;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
+using System.IO;
+using System.Text;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Web;
 
 //using sib_api_v3_sdk.Api;
 //using sib_api_v3_sdk.Client;
@@ -37,7 +42,8 @@ namespace EcommApiCoreV3.Controllers.Common
             RegistrationApproval = 4,
             PasswordResetConfirmation = 5,
             DispatchedConfirmation = 6,
-            DeliveredConfirmation = 7
+            DeliveredConfirmation = 7,
+            NewOrderProcess = 8,
         }
         //public static readonly logger = "";//LogManager.GetLogger(typeof(SendEmails));
         private static IConfiguration configuration;
@@ -62,16 +68,46 @@ namespace EcommApiCoreV3.Controllers.Common
 
         // static string UsesmtpSSL = Startup.UsesmtpSSL;
         //static string enableMail = Startup.enableMail;
-        static string mailServer = Startup.mailServer;
-        static string userId = Startup.userId;
-        static string password = Startup.password;
+        //static string mailServer = Startup.mailServer;
+        //static string userId = Startup.userId;
+        //static string password = Startup.password;
         //static string authenticate = Startup.authenticate;
         //static string AdminEmailID = Startup.AdminEmailID;
-        static string fromEmailID = Startup.fromEmailID;
+        //static string fromEmailID = Startup.fromEmailID;
         //static string DomainName = Startup.DomainName;
         //static string AllowSendMails = Startup.AllowSendMails;
         //static string UserName = Startup.UserName;
         static string WebSiteURL = Startup.WebSiteURL;
+        static string ServiceURL = Startup.ServiceURL;
+        public string GetHtmlTemplateAsString(string urlAddress)
+        {
+
+            string MailerBody = "";
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(urlAddress);
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                Stream receiveStream = response.GetResponseStream();
+                StreamReader readStream = null;
+
+                if (response.CharacterSet == null)
+                {
+                    readStream = new StreamReader(receiveStream);
+                }
+                else
+                {
+                    readStream = new StreamReader(receiveStream, Encoding.GetEncoding(response.CharacterSet));
+                }
+
+                MailerBody = readStream.ReadToEnd();
+
+                response.Close();
+                readStream.Close();
+            }
+
+            return MailerBody;
+        }
 
         public void setMailContent(Users objUser, string Type, string subject = null, string emailBody = null)
         {
@@ -113,10 +149,12 @@ namespace EcommApiCoreV3.Controllers.Common
                     break;
                 case EStatus.NewOrderCompletion:
                     {
-                        //Order obj = new Order();
-                        //obj.OrderId = Convert.ToInt32(objUser.OrderID);
+                        Order obj = new Order();
+                        obj.OrderId = Convert.ToInt32(objUser.OrderID);
+                        List<Order> lst = this._IOrderBAL.GetEmailOrderByOrderID(obj).Result;
+
                         //List<Order> lst = this._IOrderBAL.GetOrderByOrderId(obj).Result;
-                        //lst[0].OrderDetails = this._IOrderBAL.GetSuccessOrderDetailsByOrderId(obj).Result;
+                        //lst[0].OrderDetails = this._IOrderBAL.GetOrderDetailsByOrderId(obj).Result;
                         //foreach (var item in lst[0].OrderDetails)
                         //{
                         //    if (item.SetNo > 0)
@@ -124,19 +162,6 @@ namespace EcommApiCoreV3.Controllers.Common
                         //    else
                         //        item.ProductImg = _utilities.ProductImage(item.ProductId, "productColorImage", webRootPath, item.ProductSizeColorId);
                         //}
-                        Order obj = new Order();
-                        obj.GUID = objUser.GUID;
-                        List<Order> lst = this._IOrderBAL.GetPrintOrderByGUID(obj).Result;
-                        //obj.OrderId = lst[0].OrderId;
-                        //lst[0].OrderDetails = this._IOrderBAL.GetPrintOrderDetailsByOrderId(obj).Result;
-                        foreach (var item in lst[0].OrderDetails)
-                        {
-                            if (item.SetNo > 0)
-                                item.ProductImg = _utilities.ProductImage(item.ProductId, "productSetImage", webRootPath, item.SetNo);
-                            else
-                                item.ProductImg = _utilities.ProductImage(item.ProductId, "productColorImage", webRootPath, item.ProductSizeColorId);
-                        }
-
                         objUser.UserID = lst[0].UserID;
                         objuserInfo = GetUserInfo(objUser, sendOnType);
                         Users emailParameters = new Users()
@@ -144,13 +169,17 @@ namespace EcommApiCoreV3.Controllers.Common
                             Name = objuserInfo[0].Name,
                             email = objuserInfo[0].email,
                             MobileNo = objuserInfo[0].MobileNo,
-                            Subject = "New Order Completion",
+                            Subject = "Your order started processing",
                             XMLFilePath = "3",
                             OrderDetails = GenerateNewOrderDetails(lst),
                             OrderID = lst[0].OrderNumber,
                             OrderDate = lst[0].OrderDate,
-                            DeliveryAddress = lst[0].Address + ", " + lst[0].City + "<br/>" + lst[0].State + "<br/>" + lst[0].Country + ", " + lst[0].ZipCode
+                            DeliveryAddress = lst[0].Address + ", " + lst[0].City + "<br/>" + lst[0].State + "<br/>" + lst[0].Country + ", " + lst[0].ZipCode,
+                            TemplateType = "NewOrderProcess.html"
                         };
+
+
+                        //SendOrderSMS(lst[0].OrderNumber, objuserInfo[0].Name, objuserInfo[0].MobileNo, 2);
                         SendEmail(emailParameters);
                     }
                     break;
@@ -183,15 +212,17 @@ namespace EcommApiCoreV3.Controllers.Common
                     {
                         Order obj = new Order();
                         obj.OrderId = Convert.ToInt32(objUser.OrderID);
-                        List<Order> lst = this._IOrderBAL.GetOrderByOrderId(obj).Result;
-                        lst[0].OrderDetails = this._IOrderBAL.GetOrderDetailsByOrderId(obj).Result;
-                        foreach (var item in lst[0].OrderDetails)
-                        {
-                            if (item.SetNo > 0)
-                                item.ProductImg = _utilities.ProductImage(item.ProductId, "productSetImage", webRootPath, item.SetNo);
-                            else
-                                item.ProductImg = _utilities.ProductImage(item.ProductId, "productColorImage", webRootPath, item.ProductSizeColorId);
-                        }
+                        List<Order> lst = this._IOrderBAL.GetEmailOrderByOrderID(obj).Result;
+
+                        //List<Order> lst = this._IOrderBAL.GetOrderByOrderId(obj).Result;
+                        //lst[0].OrderDetails = this._IOrderBAL.GetOrderDetailsByOrderId(obj).Result;
+                        //foreach (var item in lst[0].OrderDetails)
+                        //{
+                        //    if (item.SetNo > 0)
+                        //        item.ProductImg = _utilities.ProductImage(item.ProductId, "productSetImage", webRootPath, item.SetNo);
+                        //    else
+                        //        item.ProductImg = _utilities.ProductImage(item.ProductId, "productColorImage", webRootPath, item.ProductSizeColorId);
+                        //}
                         objUser.UserID = lst[0].UserID;
                         objuserInfo = GetUserInfo(objUser, sendOnType);
                         Users emailParameters = new Users()
@@ -199,13 +230,15 @@ namespace EcommApiCoreV3.Controllers.Common
                             Name = objuserInfo[0].Name,
                             email = objuserInfo[0].email,
                             MobileNo = objuserInfo[0].MobileNo,
-                            Subject = "Dispatched Confirmation",
+                            Subject = "Your order is dispatched",
                             XMLFilePath = "6",
-                            OrderDetails = GenerateOrderDetails(lst),
+                            OrderDetails = GenerateNewOrderDetails(lst),
                             OrderID = lst[0].OrderNumber,
                             OrderDate = lst[0].OrderDate,
-                            DeliveryAddress = lst[0].Address + ", " + lst[0].City + "<br/>" + lst[0].State + "<br/>" + lst[0].Country + ", " + lst[0].ZipCode
+                            DeliveryAddress = lst[0].Address + ", " + lst[0].City + "<br/>" + lst[0].State + "<br/>" + lst[0].Country + ", " + lst[0].ZipCode,
+                            TemplateType = "DispatchedConfirmation.html"
                         };
+                        //SendOrderSMS(lst[0].OrderNumber, objuserInfo[0].Name, objuserInfo[0].MobileNo, 3);
                         SendEmail(emailParameters);
                     }
                     break;
@@ -213,15 +246,17 @@ namespace EcommApiCoreV3.Controllers.Common
                     {
                         Order obj = new Order();
                         obj.OrderId = Convert.ToInt32(objUser.OrderID);
-                        List<Order> lst = this._IOrderBAL.GetOrderByOrderId(obj).Result;
-                        lst[0].OrderDetails = this._IOrderBAL.GetOrderDetailsByOrderId(obj).Result;
-                        foreach (var item in lst[0].OrderDetails)
-                        {
-                            if (item.SetNo > 0)
-                                item.ProductImg = _utilities.ProductImage(item.ProductId, "productSetImage", webRootPath, item.SetNo);
-                            else
-                                item.ProductImg = _utilities.ProductImage(item.ProductId, "productColorImage", webRootPath, item.ProductSizeColorId);
-                        }
+                        List<Order> lst = this._IOrderBAL.GetEmailOrderByOrderID(obj).Result;
+
+                        //List<Order> lst = this._IOrderBAL.GetOrderByOrderId(obj).Result;
+                        //lst[0].OrderDetails = this._IOrderBAL.GetOrderDetailsByOrderId(obj).Result;
+                        //foreach (var item in lst[0].OrderDetails)
+                        //{
+                        //    if (item.SetNo > 0)
+                        //        item.ProductImg = _utilities.ProductImage(item.ProductId, "productSetImage", webRootPath, item.SetNo);
+                        //    else
+                        //        item.ProductImg = _utilities.ProductImage(item.ProductId, "productColorImage", webRootPath, item.ProductSizeColorId);
+                        //}
                         objUser.UserID = lst[0].UserID;
                         objuserInfo = GetUserInfo(objUser, sendOnType);
                         Users emailParameters = new Users()
@@ -229,13 +264,15 @@ namespace EcommApiCoreV3.Controllers.Common
                             Name = objuserInfo[0].Name,
                             email = objuserInfo[0].email,
                             MobileNo = objuserInfo[0].MobileNo,
-                            Subject = "Delivered Confirmation",
+                            Subject = "Your order is delivered",
                             XMLFilePath = "7",
-                            OrderDetails = GenerateOrderDetails(lst),
+                            OrderDetails = GenerateNewOrderDetails(lst),
                             OrderID = lst[0].OrderNumber,
                             OrderDate = lst[0].OrderDate,
-                            DeliveryAddress = lst[0].Address + ", " + lst[0].City + "<br/>" + lst[0].State + "<br/>" + lst[0].Country + ", " + lst[0].ZipCode
+                            DeliveryAddress = lst[0].Address + ", " + lst[0].City + "<br/>" + lst[0].State + "<br/>" + lst[0].Country + ", " + lst[0].ZipCode,
+                            TemplateType = "DeliveredConfirmation.html"
                         };
+                        //SendOrderSMS(lst[0].OrderNumber, objuserInfo[0].Name, objuserInfo[0].MobileNo, 4);
                         SendEmail(emailParameters);
                     }
                     break;
@@ -248,21 +285,21 @@ namespace EcommApiCoreV3.Controllers.Common
                                 "th { border: 1px solid; background-color: black; color: white; }" +
                                 "td { border: 1px solid; height: 35px; vertical-align: bottom; }" +
                                 "</style>";
-            string orderdetailsHeaderStr = "<table>" +
-                                          "<tr>" +
-                                            "<th>Product Image</th>" +
-                                            "<th>Product Name</th>" +
-                                            "<th>price</th>" +
-                                            "<th>Qty</th>";
+            string orderdetailsHeaderStr = "<table style='width: 100%;'>" +
+                                          "<tr style='background-color: black;color: white;'>" +
+                                            "<th style='text-align: center;'>Product Image</th>" +
+                                            "<th style='text-align: center;'>Product Name</th>" +
+                                            "<th style='text-align: center;'>Price</th>" +
+                                            "<th style='text-align: center;'>Qty</th>";
             if (lst[0].OrderDetails[0].AdditionalDiscount > 0)
             {
-                orderdetailsHeaderStr += "<th>Add. Discount (%)</th>" +
-                                            "<th>Add. Discount Amount</th>";
+                orderdetailsHeaderStr += "<th style='text-align: center;'>Add. Discount (%)</th>" +
+                                            "<th style='text-align: center;'>Add. Discount Amount</th>";
             }
-            orderdetailsHeaderStr += "<th>Total Amount</th>" +
-                                            "<th>GST Rate(%)</th>" +
-                                            "<th>GST Amount</th>" +
-                                            "<th>Total</th>" +
+            orderdetailsHeaderStr += "<th style='text-align: right;'>Total Amount</th>" +
+                                            "<th style='text-align: center;'>GST Rate(%)</th>" +
+                                            "<th style='text-align: center;'>GST Amount</th>" +
+                                            "<th style='text-align: center;'>Total</th>" +
                                           "</tr>";
 
             string orderdetailsStr = "";
@@ -271,20 +308,20 @@ namespace EcommApiCoreV3.Controllers.Common
             for (int i = 0; i < lst[0].OrderDetails.Count; i++)
             {
                 orderdetailsStr += "<tr>" +
-                                            "<td>" +
+                                            "<td style='text-align: center;'>" +
                                             GetProductImage(lst, i)
                                             + "</td>" +
-                                            "<td>" + lst[0].OrderDetails[i].ProductName + "</td>" +
+                                            "<td style='text-align: center;'>" + lst[0].OrderDetails[i].ProductName + "</td>" +
                                             "<td style='text-align: right;'>" + lst[0].OrderDetails[i].SalePrice.ToString("0.00") + "</td>" +
-                                            "<td>" + lst[0].OrderDetails[i].Quantity + "</td>";
+                                            "<td style='text-align: center;'>" + lst[0].OrderDetails[i].Quantity + "</td>";
                 if (lst[0].OrderDetails[i].AdditionalDiscount > 0)
                 {
-                    orderdetailsStr += "<td style='text-align: right;'>" + lst[0].OrderDetails[i].AdditionalDiscount + "%</td>" +
+                    orderdetailsStr += "<td style='text-align: right;'>" + lst[0].OrderDetails[i].AdditionalDiscount + "</td>" +
                                        "<td style='text-align: right;'>" + lst[0].OrderDetails[i].AdditionalDiscountAmount.ToString("0.00") + "</td>";
                 }
 
                 orderdetailsStr += "<td style='text-align: right;'>" + (Convert.ToDecimal(lst[0].OrderDetails[i].SalePrice * lst[0].OrderDetails[i].Quantity) - lst[0].OrderDetails[i].AdditionalDiscountAmount).ToString("0.00") + "</td>" +
-                                            "<td style='text-align: right;'>" + lst[0].OrderDetails[i].GSTRate.ToString("0.00") + "%</td>" +
+                                            "<td style='text-align: center;'>" + lst[0].OrderDetails[i].GSTRate.ToString() + "</td>" +
                                             "<td style='text-align: right;'>" + lst[0].OrderDetails[i].GSTAmount.ToString("0.00") + "</td>" +
                                             "<td style='text-align: right;'>" + Convert.ToDouble((lst[0].OrderDetails[i].SalePrice * lst[0].OrderDetails[i].Quantity) - Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscountAmount) + lst[0].OrderDetails[i].GSTAmount).ToString("0.00") + "</td>" +
                                           "</tr>";
@@ -294,11 +331,13 @@ namespace EcommApiCoreV3.Controllers.Common
                 TotalGSTAmount += lst[0].OrderDetails[i].GSTAmount;
                 Total += (lst[0].OrderDetails[i].SalePrice * lst[0].OrderDetails[i].Quantity) - Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscountAmount) + lst[0].OrderDetails[i].GSTAmount;
             }
-            string SubTotal = "<tr>" +
+            string SubTotal = "<tr><td colspan='8'></td></tr>";
+            SubTotal += "<tr><td colspan='8'></td></tr>";
+            SubTotal += "<tr>" +
                                     "<td colspan='3'>" +
                                         "<b>Subtotal</b>" +
                                     "</td>" +
-                                    "<td>" +
+                                    "<td style='text-align: center;'>" +
                                         "<b>" + TotalQty + "</b>" +
                                     "</td>";
             if (lst[0].OrderDetails[0].AdditionalDiscount > 0)
@@ -351,35 +390,35 @@ namespace EcommApiCoreV3.Controllers.Common
 
             return orderdetailsHeaderStr + orderdetailsStr + SubTotal + "</table>" + StyleStr;
         }
-        public string GenerateOrderDetails(List<Order> lst)
-        {
-            string StyleStr = "<style>" +
-                                "table { border: 1px solid black; border - collapse: collapse; width: 80 %;}" +
-                                "th {  background - color: black;  color: white; }" +
-                                "td { border: 1px solid black; height: 35px; vertical - align: bottom; }" +
-                                "</style>";
-            string orderdetailsHeaderStr = "<table>" +
-                                          "<tr>" +
-                                            "<th>Product Image</th>" +
-                                            "<th>Product Name</th>" +
-                                            "<th>Qty</th>" +
-                                            "<th>price</th>" +
-                                          "</tr>";
+        //public string GenerateOrderDetails(List<Order> lst)
+        //{
+        //    string StyleStr = "<style>" +
+        //                        "table { border: 1px solid black; border - collapse: collapse; width: 80 %;}" +
+        //                        "th {  background - color: black;  color: white; }" +
+        //                        "td { border: 1px solid black; height: 35px; vertical - align: bottom; }" +
+        //                        "</style>";
+        //    string orderdetailsHeaderStr = "<table>" +
+        //                                  "<tr>" +
+        //                                    "<th>Product Image</th>" +
+        //                                    "<th>Product Name</th>" +
+        //                                    "<th>Qty</th>" +
+        //                                    "<th>price</th>" +
+        //                                  "</tr>";
 
-            string orderdetailsStr = "";
-            for (int i = 0; i < lst[0].OrderDetails.Count; i++)
-            {
-                orderdetailsStr += "<tr>" +
-                                            "<td>" + ""
-                                            //GetProductImage(lst, i)
-                                            + "</td>" +
-                                            "<td>" + lst[0].OrderDetails[i].ProductName + "</td>" +
-                                            "<td>" + lst[0].OrderDetails[i].Quantity + "</td>" +
-                                            "<td>" + lst[0].OrderDetails[i].Price + "</td>" +
-                                          "</tr>";
-            }
-            return StyleStr + orderdetailsHeaderStr + orderdetailsStr + "</table>";
-        }
+        //    string orderdetailsStr = "";
+        //    for (int i = 0; i < lst[0].OrderDetails.Count; i++)
+        //    {
+        //        orderdetailsStr += "<tr>" +
+        //                                    "<td>" + ""
+        //                                    //GetProductImage(lst, i)
+        //                                    + "</td>" +
+        //                                    "<td>" + lst[0].OrderDetails[i].ProductName + "</td>" +
+        //                                    "<td>" + lst[0].OrderDetails[i].Quantity + "</td>" +
+        //                                    "<td>" + lst[0].OrderDetails[i].Price + "</td>" +
+        //                                  "</tr>";
+        //    }
+        //    return StyleStr + orderdetailsHeaderStr + orderdetailsStr + "</table>";
+        //}
 
         public string GetProductImage(List<Order> lst, int index)
         {
@@ -390,8 +429,9 @@ namespace EcommApiCoreV3.Controllers.Common
             }
             if (lst[0].OrderDetails[index].SetNo == 0)
             {
-                return "<img style='width: 100px;' src= '" + ProductImagePath + lst[0].OrderDetails[index].ProductId + "/productColorImage/" + lst[0].OrderDetails[index].ProductSizeColorId + "/" + (lst[0].OrderDetails[index].ProductImg.Length == 0 ? "" : lst[0].OrderDetails[index].ProductImg[0]) + "'>";
-                //return "<img style='width: 100px;' src='http://34.67.65.213/EcommApiV3/ProductImage/13/productSetImage/2/13-07222020054952-1.jpg'/>'";
+                ErrorLogger.Log("<img style = 'width: 100px;' src = '" + ProductImagePath + lst[0].OrderDetails[index].ProductId + "/frontImage/" + lst[0].OrderDetails[index].FrontImage);
+                //return "<img style='width: 100px;' src= '" + ProductImagePath + lst[0].OrderDetails[index].ProductId + "/productColorImage/" + lst[0].OrderDetails[index].ProductSizeColorId + "/" + (lst[0].OrderDetails[index].ProductImg.Length == 0 ? "" : lst[0].OrderDetails[index].ProductImg[0]) + "'>";
+                return "<img style='width: 100px;' src= '" + ProductImagePath + lst[0].OrderDetails[index].ProductId + "/frontImage/" + lst[0].OrderDetails[index].FrontImage + "'>";
             }
             return "";
         }
@@ -404,7 +444,11 @@ namespace EcommApiCoreV3.Controllers.Common
                     EmailType = objEP.XMLFilePath
                 };
                 List<EmailTemplate> objET = _IEmailTemplateBAL.GetEmailTemplate(objEmailTemplate).Result;
-                string template = objET[0].Template;
+                string template = "";
+                if (objEP.TemplateType == "")
+                    template = objET[0].Template;
+                else
+                    template = GetHtmlTemplateAsString(ServiceURL + "\\htmlTemplate\\" + objEP.TemplateType);
                 template = template.Replace("[Name]", objEP.Name ?? "");
                 template = template.Replace("[Email]", objEP.email ?? "");
                 template = template.Replace("[Password]", objEP.password ?? "");
@@ -418,9 +462,67 @@ namespace EcommApiCoreV3.Controllers.Common
                 template = template.Replace("[LoginURL]", objEP.LoginURL ?? "");
                 return template;
             }
-            catch (Exception)
+            catch (Exception exx)
             {
+                ErrorLogger.Log($"Something went wrong inside SendEmail.cs GetMailBody action: {exx.Message}");
+                ErrorLogger.Log(exx.StackTrace);
                 return "";
+            }
+        }
+        public void SendOrderSMS(string OrderNumber, string FName, string Phone, int type)
+        {
+            try
+            {
+                String url = "https://2factor.in/API/R1/";
+                HttpWebRequest httpWReq = (HttpWebRequest)WebRequest.Create(url);
+                ASCIIEncoding encoding = new ASCIIEncoding();
+                string template_name = "";
+                if (type == 1)
+                    template_name = HttpUtility.UrlEncode("OrderConfirmation");
+                if (type == 2)
+                    template_name = HttpUtility.UrlEncode("OrderProcessed");
+                if (type == 3)
+                    template_name = HttpUtility.UrlEncode("OrderDispatched"); 
+                if (type == 4)
+                    template_name = HttpUtility.UrlEncode("OrderDelivered");
+                string var1 = HttpUtility.UrlEncode(FName);
+                string var2 = HttpUtility.UrlEncode(OrderNumber);
+                string postData = "module=TRANS_SMS";
+                postData += "&apikey=4f4e2253-3adb-11eb-83d4-0200cd936042";
+                postData += "&to=" + Phone;
+                postData += "&from=ALBABA";
+                postData += "&templatename=" + template_name;
+                postData += "&var1=" + var1;
+                postData += "&var2=" + var2;
+                byte[] data = encoding.GetBytes(postData);
+                httpWReq.Method = "POST";
+                httpWReq.ContentType = "application/x-www-form-urlencoded";
+                httpWReq.ContentLength = data.Length;
+                using (Stream stream = httpWReq.GetRequestStream())
+                {
+                    stream.Write(data, 0, data.Length);
+                }
+                HttpWebResponse response = (HttpWebResponse)httpWReq.GetResponse();
+                string responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+                System.Diagnostics.Debug.Print(responseString);
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Log($"Something went wrong inside SendEmail.cs SendOrderSMS action: {ex.Message}");
+                ErrorLogger.Log(ex.StackTrace);
+            }
+        }
+        public void SendSMS(string MobileNo, string msg)
+        {
+            string urlParameters = "";
+            string api_key = "c47c40de-e3cf-11ea-9fa5-0200cd936042";
+            string URL = "https://2factor.in/API/V1/" + api_key + "/SMS/+91" + MobileNo.ToString() + "/" + msg.ToString();
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri(URL);
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            HttpResponseMessage response = client.GetAsync(urlParameters).Result;  // Blocking call! Program will wait here until a response is received or a timeout occurs.
+            if (response.IsSuccessStatusCode)
+            {
             }
         }
         public List<Users> GetUserInfo(Users objUser, EStatus obj)
