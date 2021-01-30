@@ -55,5 +55,6 @@ namespace EcommApiCoreV3.Entities
         public string TransportName { get; set; }
         public string Bilty { get; set; }
         public string DispatchDate { get; set; }
+        public List<Users> ListAgentUsers { get; set; } = new List<Users>();
     }
 }
