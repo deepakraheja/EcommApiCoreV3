@@ -236,10 +236,12 @@ namespace EcommApiCoreV3.Repository
 
                 List<Order> lstOrderDetails = new List<Order>();
                 List<Users> lstUsers = new List<Users>();
+                List<Users> lstAgentUser = new List<Users>();
 
                 lstOrder = lst.Read<Order>().ToList();
                 lstOrderDetails = lst.Read<Order>().ToList();
                 lstUsers = lst.Read<Users>().ToList();
+                lstAgentUser = lst.Read<Users>().ToList();
                 foreach (var item in lstOrderDetails)
                 {
                     lstOrder[0].OrderDetails.Add(item);
@@ -247,6 +249,20 @@ namespace EcommApiCoreV3.Repository
                 foreach (var item in lstUsers)
                 {
                     lstOrder[0].ListUsers.Add(item);
+                }
+                if (lstAgentUser.Count > 0)
+                {
+                    foreach (var item in lstAgentUser)
+                    {
+                        lstOrder[0].ListAgentUsers.Add(item);
+                    }
+                }
+                else
+                {
+                    foreach (var item in lstUsers)
+                    {
+                        lstOrder[0].ListAgentUsers.Add(item);
+                    }
                 }
 
                 return lstOrder;
