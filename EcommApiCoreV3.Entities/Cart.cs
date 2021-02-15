@@ -8,6 +8,7 @@ namespace EcommApiCoreV3.Entities
     public class Cart
     {
         public int CartId { get; set; } = 0;
+        public int WishListId { get; set; } = 0;
         public int UserID { get; set; } = 0;
         public int ProductSizeColorId { get; set; } = 0;
         public int ProductSizeId { get; set; } = 0;
