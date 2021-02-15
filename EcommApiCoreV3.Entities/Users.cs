@@ -55,5 +55,7 @@ namespace EcommApiCoreV3.Entities
         public string[] UserDocument { get; set; }
 
         public string TemplateType { get; set; } = "";
+
+        public string OrderDetailsID { get; set; }
     }
 }

@@ -56,5 +56,7 @@ namespace EcommApiCoreV3.Entities
         public string Bilty { get; set; }
         public string DispatchDate { get; set; }
         public List<Users> ListAgentUsers { get; set; } = new List<Users>();
+
+        public string TrackingURL { get; set; }
     }
 }

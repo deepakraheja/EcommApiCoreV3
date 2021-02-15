@@ -243,12 +243,14 @@ namespace EcommApiCoreV3.Controllers
 
                 SendEmails sendEmails = new SendEmails(_usersBAL, _IEmailTemplateBAL, _IOrderBAL);
                 SendEmails.webRootPath = webRootPath;
+             
                 Users objUser = new Users();
                 objUser.OrderID = obj[0].OrderId.ToString();
                 //objUser.UserID = obj[0].CreatedBy;
                 objUser.UserID = UserService.LoggedInUser;
                 objUser.OrderID = Convert.ToString( obj[0].OrderId);
-                
+                objUser.OrderDetailsID = obj[0].OrderDetailsID.ToString();
+
                 //if (obj[0].OrderStatusId == 1)
                 //    sendEmails.setMailContent(objUser, EStatus.NewOrderCompletion.ToString());
 

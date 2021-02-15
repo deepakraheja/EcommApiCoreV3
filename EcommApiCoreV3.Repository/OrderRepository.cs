@@ -201,10 +201,13 @@ namespace EcommApiCoreV3.Repository
             {
                 DynamicParameters parameters = new DynamicParameters();
                 parameters.Add("@OrderId", obj.OrderId);
+                parameters.Add("@OrderDetailsID", obj.OrderDetailsID);
+
                 var lst = await SqlMapper.QueryMultipleAsync(con, "p_GetEmailOrderByOrderID", param: parameters, commandType: StoredProcedure);
                 List<Order> lstOrder = new List<Order>();
                 List<Order> lstOrderDetails = new List<Order>();
                 List<Users> lstUsers = new List<Users>();
+              
                 lstOrder = lst.Read<Order>().ToList();
                 lstOrderDetails = lst.Read<Order>().ToList();
                 lstUsers = lst.Read<Users>().ToList();
@@ -242,6 +245,7 @@ namespace EcommApiCoreV3.Repository
                 lstOrderDetails = lst.Read<Order>().ToList();
                 lstUsers = lst.Read<Users>().ToList();
                 lstAgentUser = lst.Read<Users>().ToList();
+               
                 foreach (var item in lstOrderDetails)
                 {
                     lstOrder[0].OrderDetails.Add(item);

@@ -127,9 +127,10 @@ namespace EcommApiCoreV3.Controllers.Common
                             password = objuserInfo[0].password,
                             XMLFilePath = "1",
                             email = objuserInfo[0].email,
-                            Subject = "Application Received"
+                            Subject = "Application Received",
+                            MobileNo = objuserInfo[0].MobileNo,
                         };
-
+                        SendNewUserSMS(emailParameters.email, emailParameters.MobileNo, emailParameters.password);
                         SendEmail(emailParameters);
                     }
                     break;
@@ -149,8 +150,60 @@ namespace EcommApiCoreV3.Controllers.Common
                     break;
                 case EStatus.NewOrderCompletion:
                     {
+                        //Order obj = new Order();
+                        //obj.OrderId = Convert.ToInt32(objUser.OrderID);
+                        //List<Order> lst = this._IOrderBAL.GetEmailOrderByOrderID(obj).Result;
+
+                        //List<Order> lst = this._IOrderBAL.GetOrderByOrderId(obj).Result;
+                        //lst[0].OrderDetails = this._IOrderBAL.GetOrderDetailsByOrderId(obj).Result;
+                        //foreach (var item in lst[0].OrderDetails)
+                        //{
+                        //    if (item.SetNo > 0)
+                        //        item.ProductImg = _utilities.ProductImage(item.ProductId, "productSetImage", webRootPath, item.SetNo);
+                        //    else
+                        //        item.ProductImg = _utilities.ProductImage(item.ProductId, "productColorImage", webRootPath, item.ProductSizeColorId);
+                        //}
+
+                        Order obj = new Order();
+                        obj.GUID = objUser.GUID;
+                        List<Order> lst = this._IOrderBAL.GetPrintOrderByGUID(obj).Result;
+
+                        foreach (var item in lst[0].OrderDetails)
+                        {
+                            if (item.SetNo > 0)
+                                item.ProductImg = _utilities.ProductImage(item.ProductId, "productSetImage", webRootPath, item.SetNo);
+                            else
+                                item.ProductImg = _utilities.ProductImage(item.ProductId, "productColorImage", webRootPath, item.ProductSizeColorId);
+                        }
+
+                        objUser.UserID = lst[0].UserID;
+                        objuserInfo = GetUserInfo(objUser, sendOnType);
+                        Users emailParameters = new Users()
+                        {
+                            Name = objuserInfo[0].Name,
+                            email = objuserInfo[0].email,
+                            MobileNo = objuserInfo[0].MobileNo,
+                            Subject = "Your order is confirmed",
+                            XMLFilePath = "3",
+                            OrderDetails = GenerateNewOrderDetails(lst),
+                            OrderID = lst[0].OrderNumber,
+                            OrderDate = lst[0].OrderDate,
+                            DeliveryAddress = lst[0].Address + ", " + lst[0].City + "<br/>" + lst[0].State + "<br/>" + lst[0].Country + ", " + lst[0].ZipCode,
+                            TemplateType = "NewOrderCompletion.html"
+                        };
+
+                        SendOrderSMS(lst[0].OrderNumber, objuserInfo[0].Name, objuserInfo[0].MobileNo, 1, "", "");
+                        SendEmail(emailParameters);
+                    }
+                    break;
+
+                case EStatus.NewOrderProcess:
+                    {
+
                         Order obj = new Order();
                         obj.OrderId = Convert.ToInt32(objUser.OrderID);
+                        obj.OrderDetailsID = Convert.ToInt32(objUser.OrderDetailsID);
+
                         List<Order> lst = this._IOrderBAL.GetEmailOrderByOrderID(obj).Result;
 
                         //List<Order> lst = this._IOrderBAL.GetOrderByOrderId(obj).Result;
@@ -162,11 +215,17 @@ namespace EcommApiCoreV3.Controllers.Common
                         //    else
                         //        item.ProductImg = _utilities.ProductImage(item.ProductId, "productColorImage", webRootPath, item.ProductSizeColorId);
                         //}
+                        string Name = lst[0].FName;
+                        string ProductName = lst[0].OrderDetails[0].ProductName;
+                        string OrderNumber = lst[0].OrderNumber + " and product name -" + ProductName;
+
+
                         objUser.UserID = lst[0].UserID;
                         objuserInfo = GetUserInfo(objUser, sendOnType);
+
                         Users emailParameters = new Users()
                         {
-                            Name = objuserInfo[0].Name,
+                            Name = Name,//objuserInfo[0].Name,
                             email = objuserInfo[0].email,
                             MobileNo = objuserInfo[0].MobileNo,
                             Subject = "Your order started processing",
@@ -179,20 +238,23 @@ namespace EcommApiCoreV3.Controllers.Common
                         };
 
 
-                        //SendOrderSMS(lst[0].OrderNumber, objuserInfo[0].Name, objuserInfo[0].MobileNo, 2);
+                        SendOrderSMS(OrderNumber, Name, objuserInfo[0].MobileNo, 2, "", "");
                         SendEmail(emailParameters);
                     }
                     break;
+
                 case EStatus.RegistrationApproval:
                     {
                         Users emailParameters = new Users()
                         {
                             Name = objuserInfo[0].Name,
+                            MobileNo = objuserInfo[0].MobileNo,
                             email = objuserInfo[0].email,
                             LoginURL = WebSiteURL,
                             Subject = "Registration Approval",
                             XMLFilePath = "4",
                         };
+                        SendRegistrationSMS(emailParameters.Name, emailParameters.MobileNo, emailParameters.email);
                         SendEmail(emailParameters);
                     }
                     break;
@@ -212,6 +274,8 @@ namespace EcommApiCoreV3.Controllers.Common
                     {
                         Order obj = new Order();
                         obj.OrderId = Convert.ToInt32(objUser.OrderID);
+                        obj.OrderDetailsID = Convert.ToInt32(objUser.OrderDetailsID);
+
                         List<Order> lst = this._IOrderBAL.GetEmailOrderByOrderID(obj).Result;
 
                         //List<Order> lst = this._IOrderBAL.GetOrderByOrderId(obj).Result;
@@ -223,8 +287,20 @@ namespace EcommApiCoreV3.Controllers.Common
                         //    else
                         //        item.ProductImg = _utilities.ProductImage(item.ProductId, "productColorImage", webRootPath, item.ProductSizeColorId);
                         //}
+
+
+                        string ProductName = lst[0].OrderDetails[0].ProductName;
+                        string OrderNumber = lst[0].OrderNumber + " and product name -" + ProductName;
+
+                        string TrackingName = lst[0].OrderDetails[0].TransportName;
+                        string TrackingURL = "";// lst[0].OrderDetails[0].TrackingURL;
+                        string TrackingID = lst[0].OrderDetails[0].Bilty;
+
+
                         objUser.UserID = lst[0].UserID;
+                        string Name = lst[0].FName;
                         objuserInfo = GetUserInfo(objUser, sendOnType);
+
                         Users emailParameters = new Users()
                         {
                             Name = objuserInfo[0].Name,
@@ -238,7 +314,7 @@ namespace EcommApiCoreV3.Controllers.Common
                             DeliveryAddress = lst[0].Address + ", " + lst[0].City + "<br/>" + lst[0].State + "<br/>" + lst[0].Country + ", " + lst[0].ZipCode,
                             TemplateType = "DispatchedConfirmation.html"
                         };
-                        //SendOrderSMS(lst[0].OrderNumber, objuserInfo[0].Name, objuserInfo[0].MobileNo, 3);
+                        SendOrderSMS(OrderNumber, Name, objuserInfo[0].MobileNo, 3, TrackingURL, TrackingID);
                         SendEmail(emailParameters);
                     }
                     break;
@@ -246,8 +322,10 @@ namespace EcommApiCoreV3.Controllers.Common
                     {
                         Order obj = new Order();
                         obj.OrderId = Convert.ToInt32(objUser.OrderID);
-                        List<Order> lst = this._IOrderBAL.GetEmailOrderByOrderID(obj).Result;
+                        obj.OrderDetailsID = Convert.ToInt32(objUser.OrderDetailsID);
 
+                        List<Order> lst = this._IOrderBAL.GetEmailOrderByOrderID(obj).Result;
+                      
                         //List<Order> lst = this._IOrderBAL.GetOrderByOrderId(obj).Result;
                         //lst[0].OrderDetails = this._IOrderBAL.GetOrderDetailsByOrderId(obj).Result;
                         //foreach (var item in lst[0].OrderDetails)
@@ -257,7 +335,14 @@ namespace EcommApiCoreV3.Controllers.Common
                         //    else
                         //        item.ProductImg = _utilities.ProductImage(item.ProductId, "productColorImage", webRootPath, item.ProductSizeColorId);
                         //}
+
+
+                        string ProductName = lst[0].OrderDetails[0].ProductName;
+                        string OrderNumber = lst[0].OrderNumber + " and product name -" + ProductName;
+
                         objUser.UserID = lst[0].UserID;
+                        string Name = lst[0].FName;
+
                         objuserInfo = GetUserInfo(objUser, sendOnType);
                         Users emailParameters = new Users()
                         {
@@ -272,7 +357,7 @@ namespace EcommApiCoreV3.Controllers.Common
                             DeliveryAddress = lst[0].Address + ", " + lst[0].City + "<br/>" + lst[0].State + "<br/>" + lst[0].Country + ", " + lst[0].ZipCode,
                             TemplateType = "DeliveredConfirmation.html"
                         };
-                        //SendOrderSMS(lst[0].OrderNumber, objuserInfo[0].Name, objuserInfo[0].MobileNo, 4);
+                        SendOrderSMS(OrderNumber, Name, objuserInfo[0].MobileNo, 4, "", "");
                         SendEmail(emailParameters);
                     }
                     break;
@@ -381,7 +466,7 @@ namespace EcommApiCoreV3.Controllers.Common
                 SubTotal += "<td></td>" +
                                     "<td></td>";
             }
-            SubTotal += "<td></td>" + 
+            SubTotal += "<td></td>" +
                         "<td style='text-align: right;'>" +
                                         "<span style='float: right; font-size: 16px; line-height: 20px; color: var(--theme-deafult); font-weight: 400;'><b>" +
                                             Total.ToString("0.00") + "</b></span>" +
@@ -469,6 +554,108 @@ namespace EcommApiCoreV3.Controllers.Common
                 return "";
             }
         }
+
+        public void SendRegistrationSMS(string FName, string Phone, string email)
+        {
+            try
+            {
+
+                String url = "https://2factor.in/API/R1/";
+                HttpWebRequest httpWReq = (HttpWebRequest)WebRequest.Create(url);
+                ASCIIEncoding encoding = new ASCIIEncoding();
+
+                string template_name = "";
+                template_name = HttpUtility.UrlEncode("RegisttrationApproval");
+
+                string var1 = HttpUtility.UrlEncode(FName);
+                string var2 = HttpUtility.UrlEncode(email);
+
+                string postData = "module=TRANS_SMS";
+                postData += "&apikey=c47c40de-e3cf-11ea-9fa5-0200cd936042";
+                postData += "&to=" + Phone;
+                postData += "&from=IVIKRM";
+                postData += "&templatename=" + template_name;
+                postData += "&var1=" + var1;
+                postData += "&var2=" + var2;
+
+                byte[] data = encoding.GetBytes(postData);
+
+                httpWReq.Method = "POST";
+                httpWReq.ContentType = "application/x-www-form-urlencoded";
+                httpWReq.ContentLength = data.Length;
+
+                using (Stream stream = httpWReq.GetRequestStream())
+                {
+                    stream.Write(data, 0, data.Length);
+                }
+
+                HttpWebResponse response = (HttpWebResponse)httpWReq.GetResponse();
+                //Get Response
+                string responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+                System.Diagnostics.Debug.Print(responseString);
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Log($"Something went wrong inside SendEmail.cs SendOrderSMS action: {ex.Message}");
+                ErrorLogger.Log(ex.StackTrace);
+
+
+            }
+        }
+
+        public void SendNewUserSMS(string LoginId, string Phone, string password)
+        {
+            try
+            {
+
+                String url = "https://2factor.in/API/R1/";
+                HttpWebRequest httpWReq = (HttpWebRequest)WebRequest.Create(url);
+                ASCIIEncoding encoding = new ASCIIEncoding();
+
+                string template_name = "";
+                template_name = HttpUtility.UrlEncode("Newuser");
+
+                string var1 = HttpUtility.UrlEncode(LoginId);
+                string var2 = HttpUtility.UrlEncode(password);
+
+                string postData = "module=TRANS_SMS";
+                postData += "&apikey=c47c40de-e3cf-11ea-9fa5-0200cd936042";
+                postData += "&to=" + Phone;
+                postData += "&from=IVIKRM";
+                postData += "&templatename=" + template_name;
+                postData += "&var1=" + var1;
+                postData += "&var2=" + var2;
+
+
+                byte[] data = encoding.GetBytes(postData);
+
+                httpWReq.Method = "POST";
+                httpWReq.ContentType = "application/x-www-form-urlencoded";
+                httpWReq.ContentLength = data.Length;
+
+                using (Stream stream = httpWReq.GetRequestStream())
+                {
+                    stream.Write(data, 0, data.Length);
+                }
+
+                HttpWebResponse response = (HttpWebResponse)httpWReq.GetResponse();
+                //Get Response
+
+
+                string responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+                System.Diagnostics.Debug.Print(responseString);
+
+
+
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Log($"Something went wrong inside SendEmail.cs SendOrderSMS action: {ex.Message}");
+                ErrorLogger.Log(ex.StackTrace);
+
+
+            }
+        }
         public void SendOrderSMS(string OrderNumber, string FName, string Phone, int type)
         {
             try
@@ -482,7 +669,7 @@ namespace EcommApiCoreV3.Controllers.Common
                 if (type == 2)
                     template_name = HttpUtility.UrlEncode("OrderProcessed");
                 if (type == 3)
-                    template_name = HttpUtility.UrlEncode("OrderDispatched"); 
+                    template_name = HttpUtility.UrlEncode("OrderDispatched");
                 if (type == 4)
                     template_name = HttpUtility.UrlEncode("OrderDelivered");
                 string var1 = HttpUtility.UrlEncode(FName);
@@ -512,6 +699,96 @@ namespace EcommApiCoreV3.Controllers.Common
                 ErrorLogger.Log(ex.StackTrace);
             }
         }
+
+        public void SendOrderSMS(string OrderNumber, string FName, string Phone, int type, string TrackingURL, string TrackingID)
+        {
+            try
+            {
+
+                String url = "https://2factor.in/API/R1/";
+                HttpWebRequest httpWReq = (HttpWebRequest)WebRequest.Create(url);
+                ASCIIEncoding encoding = new ASCIIEncoding();
+
+                string template_name = "";
+                if (type == 1)
+                    template_name = HttpUtility.UrlEncode("OrderConfirmation");
+                if (type == 2)
+                    template_name = HttpUtility.UrlEncode("OrderProcessed");
+                if (type == 3)
+                    template_name = HttpUtility.UrlEncode("OrderDispatched");
+                if (type == 4)
+                    template_name = HttpUtility.UrlEncode("OrderDelivered");
+
+
+
+                string postData = "module=TRANS_SMS";
+                postData += "&apikey=c47c40de-e3cf-11ea-9fa5-0200cd936042";
+                postData += "&to=" + Phone.Trim();
+
+                if (type == 1)
+                    postData += "&from=IVIKRM";
+                else
+                    postData += "&from=IVIKRM";
+
+                postData += "&templatename=" + template_name;
+
+                if (type != 3)
+                {
+
+                    string var1 = HttpUtility.UrlEncode(FName);
+                    string var2 = HttpUtility.UrlEncode(OrderNumber);
+
+                    postData += "&var1=" + var1;
+                    postData += "&var2=" + var2;
+                }
+                else
+
+                {
+                    string var1 = HttpUtility.UrlEncode(FName);
+                    string var2 = HttpUtility.UrlEncode(TrackingURL);
+                    string var3 = HttpUtility.UrlEncode(OrderNumber);
+                    string var4 = HttpUtility.UrlEncode(TrackingID);
+
+                    postData += "&var1=" + var1;
+                    postData += "&var2=" + var2;
+                    postData += "&var3=" + var3;
+                    postData += "&var4=" + var4;
+
+                }
+
+                ErrorLogger.Log(postData);
+
+                byte[] data = encoding.GetBytes(postData);
+
+                httpWReq.Method = "POST";
+                httpWReq.ContentType = "application/x-www-form-urlencoded";
+                httpWReq.ContentLength = data.Length;
+
+                using (Stream stream = httpWReq.GetRequestStream())
+                {
+                    stream.Write(data, 0, data.Length);
+                }
+
+                HttpWebResponse response = (HttpWebResponse)httpWReq.GetResponse();
+                //Get Response
+
+
+                string responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+                System.Diagnostics.Debug.Print(responseString);
+
+
+
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Log($"Something went wrong inside SendEmail.cs SendOrderSMS action: {ex.Message}");
+                ErrorLogger.Log(ex.StackTrace);
+
+
+            }
+        }
+
+
         public void SendSMS(string MobileNo, string msg)
         {
             string urlParameters = "";
