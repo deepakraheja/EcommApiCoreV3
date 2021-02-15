@@ -43,6 +43,7 @@ namespace EcommApiCoreV3.Controllers
                 }
                 foreach (var item in obj)
                 {
+                    item.UserID = UserService.LoggedInUser;
                     if (item.SetNo > 0)
                     {
                         List<ProductSizeSet> lstselect = lst.Where(x => x.SetNo == item.SetNo).ToList();

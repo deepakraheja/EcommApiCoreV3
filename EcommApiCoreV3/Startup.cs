@@ -190,6 +190,8 @@ namespace EcommApiCoreV3
 
             services.AddTransient<ITransportBAL, TransportBAL>();
             services.AddScoped<ITransportRepository, TransportRepository>();
+            services.AddTransient<IWishListBAL, WishListBAL>();
+            services.AddScoped<IWishListRepository, WishListRepository>();
 
             services.AddScoped<UserService>();
             services.AddHttpContextAccessor();
