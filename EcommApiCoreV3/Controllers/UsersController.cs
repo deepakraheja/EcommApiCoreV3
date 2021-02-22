@@ -50,6 +50,49 @@ namespace EcommApiCoreV3.Controllers
         }
 
 
+        [HttpPost]
+        [Route("GetUserAccess")]
+
+        public async Task<List<Users>> GetUserAccess([FromBody] Users _obj)
+        {
+            try
+            {
+                //string page = "mngemp1";
+                List<Users> _objuser = new List<Users>();
+
+                _obj.UserID = UserService.LoggedInUser;
+
+                if (_obj.UserID != 1069)
+                {
+                    //_obj.PageName = page;
+                    _objuser = await _usersBAL.GetUserAccess(_obj);
+                }
+                else
+                {
+                    _obj.CanAdd = true;
+                    _obj.CanUpdate = true;
+                    _obj.CanDelete = true;
+                    _obj.ViewOnly = true;
+                    _objuser.Add(_obj);
+                }
+
+                if (_objuser.Count > 0)
+                {
+                    return _objuser;
+                }
+                else
+                    throw new Exception("You dont have access to review this page.");
+
+            }
+
+            catch (Exception ex)
+            {
+                Logger.LogError($"Something went wrong inside UserController GetUserAccess action: {ex.Message}");
+                return null;
+            }
+        }
+
+
 
         /*  [HttpPost] /* commented on 3 oct 2010 by deepak
           [Route("SendEmail1")]

@@ -20,7 +20,7 @@ namespace EcommApiCoreV3.Controllers
         IWishListBAL _IWishListBAL;
         Utilities _utilities = new Utilities();
         public static string webRootPath;
-        public WishListController(IHostingEnvironment hostingEnvironment, IWishListBAL WishListBAL)
+        public WishListController(IWebHostEnvironment hostingEnvironment, IWishListBAL WishListBAL)
         {
             _IWishListBAL = WishListBAL;
             webRootPath = hostingEnvironment.WebRootPath;
