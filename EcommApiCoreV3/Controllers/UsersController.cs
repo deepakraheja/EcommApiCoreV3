@@ -55,14 +55,14 @@ namespace EcommApiCoreV3.Controllers
 
         public async Task<List<Users>> GetUserAccess([FromBody] Users _obj)
         {
-            try
+            try 
             {
                 //string page = "mngemp1";
                 List<Users> _objuser = new List<Users>();
 
                 _obj.UserID = UserService.LoggedInUser;
 
-                if (_obj.UserID != 1069)
+                if (_obj.UserID != 1069) 
                 {
                     //_obj.PageName = page;
                     _objuser = await _usersBAL.GetUserAccess(_obj);

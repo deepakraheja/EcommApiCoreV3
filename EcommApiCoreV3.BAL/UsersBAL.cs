@@ -72,5 +72,10 @@ namespace EcommApiCoreV3.BAL
         {
             return _users.AgentCustomerStatusChange(obj);
         }
+
+        public Task<List<Users>> GetUserAccess(Users obj)
+        {
+            return _users.GetUserAccess(obj);
+        }
     }
 }

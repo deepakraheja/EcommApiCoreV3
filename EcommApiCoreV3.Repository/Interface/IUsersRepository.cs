@@ -8,6 +8,7 @@ namespace EcommApiCoreV3.Repository.Interface
 {
     public interface IUsersRepository
     {
+        Task<List<Users>> GetUserAccess(Users obj);
         Task<int> UserRegistration(Users obj);
         Task<List<Users>> ValidLogin(Users obj);
         Task<List<Users>> GetAllUsers();

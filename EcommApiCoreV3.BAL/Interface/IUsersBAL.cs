@@ -22,5 +22,7 @@ namespace EcommApiCoreV3.BAL.Interface
         Task<List<Users>> GetAgentCustomer(Users obj);
         Task<List<Users>> GetAgentCustomerByAgentId(Users obj);
         Task<int> AgentCustomerStatusChange(Users obj);
+        Task<List<Users>> GetUserAccess(Users obj);
+
     }
 }

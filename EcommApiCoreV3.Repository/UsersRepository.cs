@@ -7,11 +7,27 @@ using Dapper;
 using EcommApiCoreV3.Entities;
 using EcommApiCoreV3.Repository.Interface;
 using static System.Data.CommandType;
+using static System.Data.CommandType;
+using System.Data;
+using System.Data.SqlClient;
+
 
 namespace EcommApiCoreV3.Repository
 {
     public class UsersRepository : BaseRepository, IUsersRepository
     {
+
+        public async Task<List<Users>> GetUserAccess(Users obj)
+        {
+            DynamicParameters parameters = new DynamicParameters();
+            DataSet ds = new DataSet();
+            parameters.Add("@Userid", obj.UserID);
+            parameters.Add("@PageName", obj.PageName);
+
+            List<Users> lst = (await SqlMapper.QueryAsync<Users>((SqlConnection)con, "p_GetUserAccess", param: parameters, commandType: StoredProcedure)).ToList();
+            return lst;
+
+        }
         public async Task<int> UserRegistration(Users obj)
         {
             try

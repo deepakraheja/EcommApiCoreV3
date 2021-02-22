@@ -57,5 +57,12 @@ namespace EcommApiCoreV3.Entities
         public string TemplateType { get; set; } = "";
 
         public string OrderDetailsID { get; set; }
+
+        public string PageName { get; set; }
+        public bool CanAdd { get; set; }
+        public bool CanUpdate { get; set; }
+        public bool CanDelete { get; set; }
+
+        public bool ViewOnly { get; set; }
     }
 }
