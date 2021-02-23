@@ -93,6 +93,20 @@ namespace EcommApiCoreV3.Repository
             }
         }
 
+        public async Task<List<Users>> GetAllCusotmers()
+        {
+            try
+            {
+                DynamicParameters parameters = new DynamicParameters();
+                List<Users> lst = (await SqlMapper.QueryAsync<Users>(con, "p_Customer_sel", param: parameters, commandType: StoredProcedure)).ToList();
+                return lst;
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+        }
+
         public async Task<int> UpdateUser(Users obj)
         {
             try
@@ -258,6 +272,21 @@ namespace EcommApiCoreV3.Repository
             }
         }
 
+        public async Task<List<Users>> GetUserPages(Users obj)
+        {
+            try
+            {
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@UserID", obj.UserID);
+                List<Users> lst = (await SqlMapper.QueryAsync<Users>(con, "p_UserPages_sel", param: parameters, commandType: StoredProcedure)).ToList();
+                return lst;
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+        }
+
         public async Task<List<Users>> GetAgentCustomerByAgentId(Users obj)
         {
             try
@@ -282,6 +311,22 @@ namespace EcommApiCoreV3.Repository
                 parameters.Add("@AdditionalDiscount", obj.AdditionalDiscount);
                 parameters.Add("@StatusId", obj.StatusId);
                 var res = await SqlMapper.ExecuteAsync(con, "p_AgentCustomerStatusChange", param: parameters, commandType: StoredProcedure);
+                return Convert.ToInt32(res);
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+        }
+
+        public async Task<int> SaveUserFunctions(Users obj)
+        {
+            try
+            {
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@UserId", obj.UserID);
+                parameters.Add("@PageNames", obj.PageName.TrimEnd(','));
+                var res = await SqlMapper.ExecuteScalarAsync(con, "p_UserFunctions_ins", param: parameters, commandType: StoredProcedure);
                 return Convert.ToInt32(res);
             }
             catch (Exception ex)

@@ -12,6 +12,7 @@ namespace EcommApiCoreV3.Repository.Interface
         Task<int> UserRegistration(Users obj);
         Task<List<Users>> ValidLogin(Users obj);
         Task<List<Users>> GetAllUsers();
+        Task<List<Users>> GetAllCusotmers();
         Task<int> UpdateUser(Users obj);
         Task<int> UpdatePwd(Users obj);
         Task<List<Users>> GetUserInfo(Users obj);
@@ -21,7 +22,9 @@ namespace EcommApiCoreV3.Repository.Interface
         Task<int> InsertOtp(OtpLog obj);
         Task<int> Verifymobileotp(OtpLog obj);
         Task<List<Users>> GetAgentCustomer(Users obj);
+        Task<List<Users>> GetUserPages(Users obj);
         Task<List<Users>> GetAgentCustomerByAgentId(Users obj);
         Task<int> AgentCustomerStatusChange(Users obj);
+        Task<int> SaveUserFunctions(Users obj);
     }
 }
