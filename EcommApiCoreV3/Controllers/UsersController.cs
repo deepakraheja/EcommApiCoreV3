@@ -55,14 +55,15 @@ namespace EcommApiCoreV3.Controllers
 
         public async Task<List<Users>> GetUserAccess([FromBody] Users _obj)
         {
-            try 
+            try
             {
                 //string page = "mngemp1";
                 List<Users> _objuser = new List<Users>();
 
                 _obj.UserID = UserService.LoggedInUser;
 
-                if (_obj.UserID != 1069) 
+                //if (_obj.UserID != 1069)
+                if (_obj.UserID != 1010)
                 {
                     //_obj.PageName = page;
                     _objuser = await _usersBAL.GetUserAccess(_obj);
@@ -303,7 +304,7 @@ namespace EcommApiCoreV3.Controllers
                 {
                     if (obj.UserDocument != null)
                         _utilities.SaveUserDocumentImages(res, obj.UserDocument, webRootPath);
-                   
+
                     SendEmails sendEmails = new SendEmails(_usersBAL, _IEmailTemplateBAL, _IOrderBAL);
                     Users objUsers = new Users();
                     objUsers.UserID = res;
@@ -359,10 +360,10 @@ namespace EcommApiCoreV3.Controllers
             {
                 //return await this._usersBAL.GetAllUsers();
                 List<Users> lst = await this._usersBAL.GetAllUsers();
-                for (int i = 0; i < lst.Count; i++)
-                {
-                    lst[i].UserDocument = _utilities.UserDocument(lst[i].UserID, webRootPath);
-                }
+                //for (int i = 0; i < lst.Count; i++)
+                //{
+                //    lst[i].UserDocument = _utilities.UserDocument(lst[i].UserID, webRootPath);
+                //}
 
                 return await Task.Run(() => new List<Users>(lst));
             }
@@ -372,6 +373,31 @@ namespace EcommApiCoreV3.Controllers
                 ErrorLogger.Log(ex.StackTrace);
 
                 Logger.LogError($"Something went wrong inside UsersController GetAllUsers action: {ex.Message}");
+                return null;
+            }
+        }
+
+        [HttpPost]
+        [Route("GetAllCusotmers")]
+        public async Task<List<Users>> GetAllCusotmers()
+        {
+            try
+            {
+                //return await this._usersBAL.GetAllUsers();
+                List<Users> lst = await this._usersBAL.GetAllCusotmers();
+                for (int i = 0; i < lst.Count; i++)
+                {
+                    lst[i].UserDocument = _utilities.UserDocument(lst[i].UserID, webRootPath);
+                }
+
+                return await Task.Run(() => new List<Users>(lst));
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Log($"Something went wrong inside UsersController GetAllCusotmers action: {ex.Message}");
+                ErrorLogger.Log(ex.StackTrace);
+
+                Logger.LogError($"Something went wrong inside UsersController GetAllCusotmers action: {ex.Message}");
                 return null;
             }
         }
@@ -612,6 +638,23 @@ namespace EcommApiCoreV3.Controllers
             }
         }
         [HttpPost]
+        [Route("GetUserPages")]
+        public async Task<List<Users>> GetUserPages([FromBody] Users obj)
+        {
+            try
+            {
+                return await this._usersBAL.GetUserPages(obj);
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Log($"Something went wrong inside UsersController GetUserPages action: {ex.Message}");
+                ErrorLogger.Log(ex.StackTrace);
+
+                Logger.LogError($"Something went wrong inside UsersController GetUserPages action: {ex.Message}");
+                return null;
+            }
+        }
+        [HttpPost]
         [Route("GetAgentCustomerByAgentId")]
         public async Task<List<Users>> GetAgentCustomerByAgentId([FromBody] Users obj)
         {
@@ -678,6 +721,24 @@ namespace EcommApiCoreV3.Controllers
                 ErrorLogger.Log($"Something went wrong inside UserController SaveUserDocumentImages action: {ex.Message}");
                 ErrorLogger.Log(ex.StackTrace);
                 Logger.LogError($"Something went wrong inside UserController SaveUserDocumentImages action: {ex.Message}");
+                return -1;
+            }
+        }
+
+        [HttpPost]
+        [Route("SaveUserFunctions")]
+        public async Task<int> SaveUserFunctions([FromBody] Users obj)
+        {
+            try
+            {
+                return await this._usersBAL.SaveUserFunctions(obj);
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Log($"Something went wrong inside UserController SaveUserFunctions action: {ex.Message}");
+                ErrorLogger.Log(ex.StackTrace);
+
+                Logger.LogError($"Something went wrong inside UserController SaveUserFunctions action: {ex.Message}");
                 return -1;
             }
         }
