@@ -28,6 +28,10 @@ namespace EcommApiCoreV3.BAL
         {
             return _users.GetAllUsers();
         }
+        public Task<List<Users>> GetAllCusotmers()
+        {
+            return _users.GetAllCusotmers();
+        }
         public Task<int> UpdateUser(Users obj)
         {
             return _users.UpdateUser(obj);
@@ -64,6 +68,10 @@ namespace EcommApiCoreV3.BAL
         {
             return _users.GetAgentCustomer(obj);
         }
+        public Task<List<Users>> GetUserPages(Users obj)
+        {
+            return _users.GetUserPages(obj);
+        }
         public Task<List<Users>> GetAgentCustomerByAgentId(Users obj)
         {
             return _users.GetAgentCustomerByAgentId(obj);
@@ -76,6 +84,10 @@ namespace EcommApiCoreV3.BAL
         public Task<List<Users>> GetUserAccess(Users obj)
         {
             return _users.GetUserAccess(obj);
+        }
+        public Task<int> SaveUserFunctions(Users obj)
+        {
+            return _users.SaveUserFunctions(obj);
         }
     }
 }
