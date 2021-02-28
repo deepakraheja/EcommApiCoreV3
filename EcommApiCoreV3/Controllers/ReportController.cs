@@ -49,7 +49,7 @@ namespace EcommApiCoreV3.Controllers
         [HttpPost]
         [Route("GenerateOrderDetail")]
         public string GenerateOrderDetail([FromBody] Order obj)
-        {
+        { 
             try
             {
                 string FileName = DateTime.Now.ToString("ddMMyyyyHHmmss") + ".pdf";
