@@ -105,9 +105,14 @@ namespace EcommApiCoreV3
             get;
             private set;
         }
-        public Startup(IHostEnvironment env)
+
+        public static IWebHostEnvironment _currentEnvironment;
+
+        public Startup(IWebHostEnvironment env)
         {
             Configuration = new ConfigurationBuilder().SetBasePath(env.ContentRootPath).AddJsonFile("appSettings.json").Build();
+
+            _currentEnvironment = env;
         }
 
         public IConfiguration Configuration { get; }
@@ -118,7 +123,7 @@ namespace EcommApiCoreV3
             var context = new CustomAssemblyLoadContext();
             //context.LoadUnmanagedLibrary(Path.Combine(Directory.GetCurrentDirectory(), "libwkhtmltox.dll"));
 
-            //services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+            services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
 
             services.AddControllers();
             //Inject AppSettings
