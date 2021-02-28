@@ -50,48 +50,59 @@ namespace EcommApiCoreV3.Controllers
         [Route("GenerateOrderDetail")]
         public string GenerateOrderDetail([FromBody] Order obj)
         {
-            string FileName = DateTime.Now.ToString("ddMMyyyyHHmmss") + ".pdf";
-
-            List<Order> lst = this._IOrderBAL.GetAllOrder(obj).Result;
-            for (int i = 0; i < lst.Count; i++)
+            try
             {
-                obj.OrderId = lst[i].OrderId;
-                lst[i].OrderDetails = this._IOrderBAL.GetAllOrderDetails(obj).Result;
-                foreach (var item in lst[i].OrderDetails)
+                string FileName = DateTime.Now.ToString("ddMMyyyyHHmmss") + ".pdf";
+
+                List<Order> lst = this._IOrderBAL.GetAllOrder(obj).Result;
+                for (int i = 0; i < lst.Count; i++)
                 {
-                    if (item.SetNo > 0)
-                        item.ProductImg = _utilities.ProductImage(item.ProductId, "productSetImage", webRootPath, item.SetNo);
-                    else
-                        item.ProductImg = _utilities.ProductImage(item.ProductId, "productColorImage", webRootPath, item.ProductSizeColorId);
+                    obj.OrderId = lst[i].OrderId;
+                    lst[i].OrderDetails = this._IOrderBAL.GetAllOrderDetails(obj).Result;
+                    foreach (var item in lst[i].OrderDetails)
+                    {
+                        if (item.SetNo > 0)
+                            item.ProductImg = _utilities.ProductImage(item.ProductId, "productSetImage", webRootPath, item.SetNo);
+                        else
+                            item.ProductImg = _utilities.ProductImage(item.ProductId, "productColorImage", webRootPath, item.ProductSizeColorId);
+                    }
                 }
-            }
-            var globalSettings = new GlobalSettings
-            {
-                ColorMode = ColorMode.Color,
-                Orientation = Orientation.Portrait,
-                PaperSize = PaperKind.A4,
-                Margins = new MarginSettings { Top = 10 },
-                DocumentTitle = "Order Details Report",
-                Out = webRootPath + "\\ReportGenerate\\" + FileName
-            };
-            var objectSettings = new ObjectSettings
-            {
-                PagesCount = true,
-                HtmlContent = ReportTemplate.OrderDetailByFilterTemplate(lst),
-                WebSettings = { DefaultEncoding = "utf-8", UserStyleSheet = Path.Combine(Directory.GetCurrentDirectory(), "assets", "styles.css") },
-                HeaderSettings = { FontName = "Arial", FontSize = 9, Right = "Page [page] of [toPage]", Line = true },
-                FooterSettings = { FontName = "Arial", FontSize = 9, Line = true, Center = "Report Footer" }
-            };
-            var pdf = new HtmlToPdfDocument()
-            {
-                GlobalSettings = globalSettings,
-                Objects = { objectSettings }
-            };
-            var file = _converter.Convert(pdf);
+                var globalSettings = new GlobalSettings
+                {
+                    ColorMode = ColorMode.Color,
+                    Orientation = Orientation.Portrait,
+                    PaperSize = PaperKind.A4,
+                    Margins = new MarginSettings { Top = 10 },
+                    DocumentTitle = "Order Details Report",
+                    Out = webRootPath + "\\ReportGenerate\\" + FileName
+                };
+                var objectSettings = new ObjectSettings
+                {
+                    PagesCount = true,
+                    HtmlContent = ReportTemplate.OrderDetailByFilterTemplate(lst),
+                    WebSettings = { DefaultEncoding = "utf-8", UserStyleSheet = Path.Combine(Directory.GetCurrentDirectory(), "assets", "styles.css") },
+                    HeaderSettings = { FontName = "Arial", FontSize = 9, Right = "Page [page] of [toPage]", Line = true },
+                    FooterSettings = { FontName = "Arial", FontSize = 9, Line = true, Center = "Report Footer" }
+                };
+                var pdf = new HtmlToPdfDocument()
+                {
+                    GlobalSettings = globalSettings,
+                    Objects = { objectSettings }
+                };
+                var file = _converter.Convert(pdf);
 
-            //return Ok("Successfully created PDF document.");
-            File(file, "application/pdf", FileName);
-            return FileName;
+                //return Ok("Successfully created PDF document.");
+                File(file, "application/pdf", FileName);
+                return FileName;
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Log($"Something went wrong inside ReportController GenerateOrderInvoice action: {ex.Message}");
+                ErrorLogger.Log(ex.StackTrace);
+
+                return null;
+            }
+
         }
 
 

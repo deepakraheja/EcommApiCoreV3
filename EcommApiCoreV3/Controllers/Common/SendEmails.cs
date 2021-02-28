@@ -514,7 +514,7 @@ namespace EcommApiCoreV3.Controllers.Common
             }
             if (lst[0].OrderDetails[index].SetNo == 0)
             {
-                ErrorLogger.Log("<img style = 'width: 100px;' src = '" + ProductImagePath + lst[0].OrderDetails[index].ProductId + "/frontImage/" + lst[0].OrderDetails[index].FrontImage);
+                //ErrorLogger.Log("<img style = 'width: 100px;' src = '" + ProductImagePath + lst[0].OrderDetails[index].ProductId + "/frontImage/" + lst[0].OrderDetails[index].FrontImage);
                 //return "<img style='width: 100px;' src= '" + ProductImagePath + lst[0].OrderDetails[index].ProductId + "/productColorImage/" + lst[0].OrderDetails[index].ProductSizeColorId + "/" + (lst[0].OrderDetails[index].ProductImg.Length == 0 ? "" : lst[0].OrderDetails[index].ProductImg[0]) + "'>";
                 return "<img style='width: 100px;' src= '" + ProductImagePath + lst[0].OrderDetails[index].ProductId + "/frontImage/" + lst[0].OrderDetails[index].FrontImage + "'>";
             }
@@ -756,7 +756,7 @@ namespace EcommApiCoreV3.Controllers.Common
 
                 }
 
-                ErrorLogger.Log(postData);
+                //ErrorLogger.Log(postData);
 
                 byte[] data = encoding.GetBytes(postData);
 
