@@ -63,7 +63,7 @@ namespace EcommApiCoreV3.Controllers
                 _obj.UserID = UserService.LoggedInUser;
 
                 //if (_obj.UserID != 1069)
-                if (_obj.UserID != 1010)
+                if (_obj.UserType != 1)
                 {
                     //_obj.PageName = page;
                     _objuser = await _usersBAL.GetUserAccess(_obj);
