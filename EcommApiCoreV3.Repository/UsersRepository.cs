@@ -334,5 +334,23 @@ namespace EcommApiCoreV3.Repository
                 throw (ex);
             }
         }
+        public async Task<int> UserRegistrationByAdmin(Users obj)
+        {
+            try
+            {
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@UserID", obj.UserID);
+                parameters.Add("@PASSWORD", obj.password);
+                parameters.Add("@LoginId", obj.LoginId);
+                parameters.Add("@Name", obj.Name);
+                parameters.Add("@IsActive", obj.IsActive);
+                var res = await SqlMapper.ExecuteScalarAsync(con, "p_UsersByAdmin_ins", param: parameters, commandType: StoredProcedure);
+                return Convert.ToInt32(res);
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+        }
     }
 }
