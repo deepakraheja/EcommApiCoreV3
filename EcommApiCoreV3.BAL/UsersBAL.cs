@@ -89,5 +89,9 @@ namespace EcommApiCoreV3.BAL
         {
             return _users.SaveUserFunctions(obj);
         }
+        public Task<int> UserRegistrationByAdmin(Users obj)
+        {
+            return _users.UserRegistrationByAdmin(obj);
+        }
     }
 }

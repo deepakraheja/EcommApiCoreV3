@@ -26,5 +26,6 @@ namespace EcommApiCoreV3.BAL.Interface
         Task<int> AgentCustomerStatusChange(Users obj);
         Task<List<Users>> GetUserAccess(Users obj);
         Task<int> SaveUserFunctions(Users obj);
+        Task<int> UserRegistrationByAdmin(Users obj);
     }
 }
