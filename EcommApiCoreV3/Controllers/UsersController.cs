@@ -742,5 +742,24 @@ namespace EcommApiCoreV3.Controllers
                 return -1;
             }
         }
+        [HttpPost]
+        [Route("UserRegistrationByAdmin")]
+        [AllowAnonymous]
+        public async Task<int> UserRegistrationByAdmin([FromBody] Users obj)
+        {
+            try
+            {
+                int res = await this._usersBAL.UserRegistrationByAdmin(obj);
+                return res;
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Log($"Something went wrong inside UsersController UserRegistrationByAdmin action: {ex.Message}");
+                ErrorLogger.Log(ex.StackTrace);
+
+                Logger.LogError($"Something went wrong inside UsersController UserRegistrationByAdmin action: {ex.Message}");
+                return -1;
+            }
+        }
     }
 }
