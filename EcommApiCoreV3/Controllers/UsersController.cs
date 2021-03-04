@@ -353,6 +353,33 @@ namespace EcommApiCoreV3.Controllers
         }
 
         [HttpPost]
+        [Route("AdminValidLogin")]
+        [AllowAnonymous]
+        public async Task<List<Users>> AdminValidLogin([FromBody] Users obj)
+        {
+            try
+            {
+                List<Users> lstLogin = new List<Users>();
+                lstLogin = await this._usersBAL.AdminValidLogin(obj);
+                if (lstLogin.Count > 0)
+                {
+                    AuthorizeService auth = new AuthorizeService();
+                    string _token = auth.Authenticate(Convert.ToString(lstLogin[0].UserID), _appSettings);
+                    lstLogin[0].Token = _token;
+                    // return lstLogin;
+                }
+                return lstLogin;
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Log($"Something went wrong inside UsersController AdminValidLogin action: {ex.Message}");
+                ErrorLogger.Log(ex.StackTrace);
+                Logger.LogError($"Something went wrong inside UsersController AdminValidLogin action: {ex.Message}");
+                return null;
+            }
+        }
+
+        [HttpPost]
         [Route("GetAllUsers")]
         public async Task<List<Users>> GetAllUsers()
         {
