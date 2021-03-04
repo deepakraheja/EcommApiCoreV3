@@ -24,6 +24,10 @@ namespace EcommApiCoreV3.BAL
         {
             return _users.ValidLogin(obj);
         }
+        public Task<List<Users>> AdminValidLogin(Users obj)
+        {
+            return _users.AdminValidLogin(obj);
+        }
         public Task<List<Users>> GetAllUsers()
         {
             return _users.GetAllUsers();
