@@ -7,7 +7,6 @@ using Dapper;
 using EcommApiCoreV3.Entities;
 using EcommApiCoreV3.Repository.Interface;
 using static System.Data.CommandType;
-using static System.Data.CommandType;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -72,6 +71,21 @@ namespace EcommApiCoreV3.Repository
                 parameters.Add("@PASSWORD", obj.password);
                 parameters.Add("@UserType", obj.UserType);
                 List<Users> lst = (await SqlMapper.QueryAsync<Users>(con, "p_ValidLogin", param: parameters, commandType: StoredProcedure)).ToList();
+                return lst;
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+        }
+        public async Task<List<Users>> AdminValidLogin(Users obj)
+        {
+            try
+            {
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@LoginId", obj.LoginId);
+                parameters.Add("@PASSWORD", obj.password);
+                List<Users> lst = (await SqlMapper.QueryAsync<Users>(con, "p_AdminValidLogin", param: parameters, commandType: StoredProcedure)).ToList();
                 return lst;
             }
             catch (Exception ex)
