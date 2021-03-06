@@ -77,7 +77,7 @@ namespace EcommApiCoreV3.Repository
             {
                 DynamicParameters parameters = new DynamicParameters();
                 parameters.Add("@AgentId", obj.AgentId);
-                parameters.Add("@UserIds", obj.UserIds);
+                parameters.Add("@UserIds", obj.UserIds.TrimEnd(','));
                 var res = await SqlMapper.ExecuteScalarAsync(con, "p_AgentCustomer_ins", param: parameters, commandType: StoredProcedure);
                 return Convert.ToInt32(res);
             }
