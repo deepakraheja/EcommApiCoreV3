@@ -28,5 +28,6 @@ namespace EcommApiCoreV3.Repository.Interface
         Task<int> AgentCustomerStatusChange(Users obj);
         Task<int> SaveUserFunctions(Users obj);
         Task<int> UserRegistrationByAdmin(Users obj);
+        Task<int> UserPasswordChange(Users obj);
     }
 }

@@ -366,5 +366,21 @@ namespace EcommApiCoreV3.Repository
                 throw (ex);
             }
         }
+        public async Task<int> UserPasswordChange(Users obj)
+        {
+            try
+            {
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@UserId", obj.UserID);
+                parameters.Add("@password", obj.password);
+                parameters.Add("@NewPassword", obj.NewPassword);
+                var res = await SqlMapper.ExecuteAsync(con, "p_UserChangePassword", param: parameters, commandType: StoredProcedure);
+                return Convert.ToInt32(res);
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+        }
     }
 }
