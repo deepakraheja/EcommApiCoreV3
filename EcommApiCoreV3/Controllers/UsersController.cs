@@ -788,5 +788,25 @@ namespace EcommApiCoreV3.Controllers
                 return -1;
             }
         }
+        [HttpPost]
+        [Route("UserPasswordChange")]
+        [AllowAnonymous]
+        public async Task<int> UserPasswordChange([FromBody] Users obj)
+        {
+            try
+            {
+                obj.UserID = UserService.LoggedInUser;
+                int res = await this._usersBAL.UserPasswordChange(obj);
+                return res;
+            }
+            catch (Exception ex)
+            {
+                ErrorLogger.Log($"Something went wrong inside UsersController UserPasswordChange action: {ex.Message}");
+                ErrorLogger.Log(ex.StackTrace);
+
+                Logger.LogError($"Something went wrong inside UsersController UserPasswordChange action: {ex.Message}");
+                return -1;
+            }
+        }
     }
 }
