@@ -28,5 +28,6 @@ namespace EcommApiCoreV3.BAL.Interface
         Task<List<Users>> GetUserAccess(Users obj);
         Task<int> SaveUserFunctions(Users obj);
         Task<int> UserRegistrationByAdmin(Users obj);
+        Task<int> UserPasswordChange(Users obj);
     }
 }

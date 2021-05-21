@@ -97,5 +97,10 @@ namespace EcommApiCoreV3.BAL
         {
             return _users.UserRegistrationByAdmin(obj);
         }
+
+        public Task<int> UserPasswordChange(Users obj)
+        {
+            return _users.UserPasswordChange(obj);
+        }
     }
 }
