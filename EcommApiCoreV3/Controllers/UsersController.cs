@@ -592,7 +592,7 @@ namespace EcommApiCoreV3.Controllers
                 List<Users> lstuser = new List<Users>();
                 lstuser = this._usersBAL.CheckMobileAlreadyRegisteredOrNot(obj).Result;
                 string urlParameters = "";
-
+                 
                 if (lstuser.Count == 0)
                 {
 
