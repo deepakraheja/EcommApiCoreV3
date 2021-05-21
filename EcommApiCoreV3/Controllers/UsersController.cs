@@ -600,7 +600,7 @@ namespace EcommApiCoreV3.Controllers
                     int otp = _random.Next(100000, 999999);
                     string api_key = "c47c40de-e3cf-11ea-9fa5-0200cd936042";
 
-                    string URL = "https://2factor.in/API/V1/" + api_key + "/SMS/+91" + obj.MobileNo.ToString() + "/" + otp.ToString();
+                    string URL = "https://2factor.in/API/V1/" + api_key + "/SMS/+91" + obj.MobileNo.ToString() + "/" + otp.ToString() + "/Regotp";
 
                     HttpClient client = new HttpClient();
                     client.BaseAddress = new Uri(URL);
