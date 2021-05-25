@@ -59,6 +59,15 @@ namespace EcommApiCoreV3.Controllers
                 Invoice_doc.Replace("[BillingAddress]", lst[0].Address + ", " + lst[0].City + ", " + lst[0].State + ", " + lst[0].Country + "-" + lst[0].ZipCode, false, true);
                 Invoice_doc.Replace("[BillingState]", lst[0].State, false, true);
                 Invoice_doc.Replace("[dis]", lst[0].OrderDetails[0].AdditionalDiscount.ToString() + "%", false, true);
+
+                //Invoice_doc.Replace("[CompanyName]", "Company Name: " + lst[0].CompanyName, false, true);
+                if (lst[0].ListUsers[0].BusinessLicenseType == "GSTIN")
+                    Invoice_doc.Replace("[GSTNo]", (lst[0].ListUsers[0].GSTNo), false, true);
+                if (lst[0].ListUsers[0].BusinessLicenseType == "BusinessPAN")
+                    Invoice_doc.Replace("[PANNo]", (lst[0].ListUsers[0].GSTNo), false, true);
+                if (lst[0].ListUsers[0].BusinessLicenseType == "AadharCard")
+                    Invoice_doc.Replace("[AadharCard]", (lst[0].ListUsers[0].AadharCard), false, true);
+
                 Table table1 = Invoice_doc.Sections[0].Tables[0] as Spire.Doc.Table;
                 int NextRowNumber = 0;
                 if ((Convert.ToDecimal(lst[0].ListUsers[0].AdditionalDiscount == "" ? "0" : lst[0].ListUsers[0].AdditionalDiscount) > 0))
@@ -66,12 +75,12 @@ namespace EcommApiCoreV3.Controllers
                     for (int i = 0; i < lst[0].OrderDetails.Count; i++)
                     {
                         NextRowNumber = i + 1;
-                        TableRow row = table1.AddRow(false, 13);
+                        TableRow row = table1.AddRow(false, 14);
                         table1.Rows.Insert(NextRowNumber, row);
 
-                        //table1.AddRow(true, 10);
                         //Sr.No
                         table1[NextRowNumber, 0].AddParagraph().AppendText((i + 1).ToString()).CharacterFormat.FontSize = 8;
+                        
                         //Product
                         table1[NextRowNumber, 1].AddParagraph().AppendText(lst[0].OrderDetails[i].ProductName).CharacterFormat.FontSize = 8;
 
@@ -80,159 +89,104 @@ namespace EcommApiCoreV3.Controllers
                         table1[NextRowNumber, 2].CellFormat.VerticalAlignment = VerticalAlignment.Middle;
 
                         //Quantity
-                        //table1[NextRowNumber, 2].AddParagraph().AppendText(lst[0].OrderDetails[i].Quantity.ToString()).CharacterFormat.FontSize = 8;
                         TextAlign(table1, NextRowNumber, 3, lst[0].OrderDetails[i].Quantity.ToString());
 
                         // PCS
                         TextAlign(table1, NextRowNumber, 4, "PCS");
 
-                        //Gross Amount
-                        //table1[NextRowNumber, 3].AddParagraph().AppendText(lst[0].OrderDetails[i].SalePrice.ToString("0.00")).CharacterFormat.FontSize = 8;
+                        //Rate
                         TextAlign(table1, NextRowNumber, 5, lst[0].OrderDetails[i].SalePrice.ToString("0.00"));
 
-                       
                         //Discount
-                        //table1[NextRowNumber, 4].AddParagraph().AppendText(lst[0].OrderDetails[i].AdditionalDiscountAmount.ToString("0.00")).CharacterFormat.FontSize = 8;
-                        TextAlign(table1, NextRowNumber, 6, lst[0].OrderDetails[i].AdditionalDiscountAmount.ToString("0.00"));
+                        TextAlign(table1, NextRowNumber, 6, lst[0].OrderDetails[i].AdditionalDiscount.ToString("0.00"));
 
-                        //Taxable Value
-                        double GST = lst[0].OrderDetails[i].Quantity * ((lst[0].OrderDetails[i].SalePrice - Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscountAmount)) * 18 / 100);
-                        //table1[NextRowNumber, 5].AddParagraph().AppendText(((lst[0].OrderDetails[i].Quantity) * (lst[0].OrderDetails[i].SalePrice - Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscountAmount)) - GST).ToString("0.00")).CharacterFormat.FontSize = 8;
-                        TextAlign(table1, NextRowNumber, 7, ((lst[0].OrderDetails[i].Quantity) * (lst[0].OrderDetails[i].SalePrice - Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscountAmount)) - GST).ToString("0.00"));
+                        //Discount Rate
+                        double DiscountedRate = lst[0].OrderDetails[i].Quantity * (lst[0].OrderDetails[i].SalePrice - Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscountAmount));
+                        TextAlign(table1, NextRowNumber, 7, DiscountedRate.ToString("0.00"));
+
+                        //Amount (Wihtout GST)
+                        //double GST = lst[0].OrderDetails[i].Quantity * ((lst[0].OrderDetails[i].SalePrice - Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscountAmount)) * lst[0].OrderDetails[i].GSTRate / 100);
+                        TextAlign(table1, NextRowNumber, 8, (DiscountedRate - lst[0].OrderDetails[i].GSTAmount).ToString("0.00"));
+
+                        //GST Rate in %
+                        TextAlign(table1, NextRowNumber, 9, (lst[0].OrderDetails[i].GSTRate).ToString("0.00"));
 
                         //CGST
-                        //table1[NextRowNumber, 6].AddParagraph().AppendText((GST / 2).ToString("0.00")).CharacterFormat.FontSize = 8;
-                        TextAlign(table1, NextRowNumber, 8, (GST / 2).ToString("0.00"));
+                        TextAlign(table1, NextRowNumber, 10, (lst[0].OrderDetails[i].GSTAmount / 2).ToString("0.00"));
 
                         //SGST
-                        //table1[NextRowNumber, 7].AddParagraph().AppendText((GST / 2).ToString("0.00")).CharacterFormat.FontSize = 8;
-                        TextAlign(table1, NextRowNumber, 9, (GST / 2).ToString("0.00"));
+                        TextAlign(table1, NextRowNumber, 11, (lst[0].OrderDetails[i].GSTAmount / 2).ToString("0.00"));
 
                         //IGST
-                        //table1[NextRowNumber, 8].AddParagraph().AppendText(GST.ToString("0.00")).CharacterFormat.FontSize = 8;
-                        TextAlign(table1, NextRowNumber, 10, GST.ToString("0.00"));
+                        TextAlign(table1, NextRowNumber, 12, lst[0].OrderDetails[i].GSTAmount.ToString("0.00"));
 
                         //Total
-                        //table1[NextRowNumber, 9].AddParagraph().AppendText((lst[0].OrderDetails[i].Quantity * (lst[0].OrderDetails[i].SalePrice - Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscountAmount))).ToString("0.00")).CharacterFormat.FontSize = 8;
-                        TextAlign(table1, NextRowNumber, 11, (lst[0].OrderDetails[i].Quantity * (lst[0].OrderDetails[i].SalePrice - Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscountAmount))).ToString("0.00"));
+                        TextAlign(table1, NextRowNumber, 13, (lst[0].OrderDetails[i].Quantity * (lst[0].OrderDetails[i].SalePrice - Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscountAmount)) + lst[0].OrderDetails[i].GSTAmount).ToString("0.00"));
                     }
                 }
-                //if (lst[0].ListUsers[0].IsPersonal == false)
-                //{
-                //    Invoice_doc.Replace("[CompanyName]", "Company Name: " + lst[0].CompanyName, false, true);
-                //    if (lst[0].BusinessLicenseType == "GSTIN")
-                //        Invoice_doc.Replace("[GSTNo]", ("GST Number: " + lst[0].BusinessLicenseNo), false, true);
-                //    if (lst[0].BusinessLicenseType == "BusinessPAN")
-                //        Invoice_doc.Replace("[GSTNo]", ("Business PAN: " + lst[0].BusinessLicenseNo), false, true);
-                //    if (lst[0].BusinessLicenseType == "AadharCard")
-                //        Invoice_doc.Replace("[GSTNo]", ("Aadhar Card: " + lst[0].BusinessLicenseNo), false, true);
-                //    for (int i = 0; i < lst[0].OrderDetails.Count; i++)
-                //    {
-                //        NextRowNumber = i + 1;
-                //        TableRow row = table1.AddRow(true, 10);
-                //        table1.Rows.Insert(NextRowNumber, row);
-                //        //table1.AddRow(true, 8);
-                //        //Product
-                //        table1[NextRowNumber, 0].AddParagraph().AppendText(lst[0].OrderDetails[i].ProductName).CharacterFormat.FontSize = 8;
-                //        //HSN Code + IGST
-                //        table1[NextRowNumber, 1].AddParagraph().AppendText("HSN: " + lst[0].OrderDetails[i].HSNCode).CharacterFormat.FontSize = 8;
-                //        table1[NextRowNumber, 1].CellFormat.VerticalAlignment = VerticalAlignment.Middle;
-                //        //Quantity
-                //        //table1[NextRowNumber, 2].AddParagraph().AppendText(lst[0].OrderDetails[i].Quantity.ToString()).CharacterFormat.FontSize = 8;
-                //        TextAlign(table1, NextRowNumber, 2, lst[0].OrderDetails[i].Quantity.ToString());
-                //        //Gross Amount
-                //        //table1[NextRowNumber, 3].AddParagraph().AppendText(lst[0].OrderDetails[i].SalePrice.ToString("0.00")).CharacterFormat.FontSize = 8;
-                //        TextAlign(table1, NextRowNumber, 3, lst[0].OrderDetails[i].SalePrice.ToString("0.00"));
-                //        //Discount
-                //        //table1[NextRowNumber, 4].AddParagraph().AppendText(lst[0].OrderDetails[i].AdditionalDiscountAmount.ToString("0.00")).CharacterFormat.FontSize = 8;
-                //        TextAlign(table1, NextRowNumber, 4, lst[0].OrderDetails[i].AdditionalDiscountAmount.ToString("0.00"));
-                //        //Taxable Value
-                //        //table1[NextRowNumber, 5].AddParagraph().AppendText((lst[0].OrderDetails[i].Quantity * (lst[0].OrderDetails[i].SalePrice - Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscountAmount))).ToString("0.00")).CharacterFormat.FontSize = 8;
-                //        TextAlign(table1, NextRowNumber, 5, (lst[0].OrderDetails[i].Quantity * (lst[0].OrderDetails[i].SalePrice - Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscountAmount))).ToString("0.00"));
-                //        //CGST
-                //        //table1[NextRowNumber, 6].AddParagraph().AppendText((lst[0].OrderDetails[i].GSTAmount / 2).ToString("0.00")).CharacterFormat.FontSize = 8;
-                //        TextAlign(table1, NextRowNumber, 6, (lst[0].OrderDetails[i].GSTAmount / 2).ToString("0.00"));
-                //        //SGST
-                //        //table1[NextRowNumber, 7].AddParagraph().AppendText((lst[0].OrderDetails[i].GSTAmount / 2).ToString("0.00")).CharacterFormat.FontSize = 8;
-                //        TextAlign(table1, NextRowNumber, 7, (lst[0].OrderDetails[i].GSTAmount / 2).ToString("0.00"));
-                //        //IGST
-                //        //table1[NextRowNumber, 8].AddParagraph().AppendText(lst[0].OrderDetails[i].GSTAmount.ToString("0.00")).CharacterFormat.FontSize = 8;
-                //        TextAlign(table1, NextRowNumber, 8, lst[0].OrderDetails[i].GSTAmount.ToString("0.00"));
-                //        //Total
-                //        //table1[NextRowNumber, 9].AddParagraph().AppendText(((lst[0].OrderDetails[i].Quantity * (lst[0].OrderDetails[i].SalePrice - Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscountAmount))) + Convert.ToDouble(lst[0].OrderDetails[i].GSTAmount)).ToString("0.00")).CharacterFormat.FontSize = 8;
-                //        TextAlign(table1, NextRowNumber, 9, ((lst[0].OrderDetails[i].Quantity * (lst[0].OrderDetails[i].SalePrice - Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscountAmount))) + Convert.ToDouble(lst[0].OrderDetails[i].GSTAmount)).ToString("0.00"));
-                //    }
-                //}
 
-                //int TotalQty = 0;
-                //decimal TotalAdditionalDiscountAmount = 0;
-                //decimal TotalAmount = 0;
-                //double TotalCGSTAmount = 0;
-                //double TotalSGSTAmount = 0;
-                //double TotalIGSTAmount = 0;
-                //for (int i = 0; i < lst[0].OrderDetails.Count; i++)
-                //{
-                //    TotalQty += lst[0].OrderDetails[i].Quantity;
-                //    TotalAdditionalDiscountAmount += lst[0].OrderDetails[i].AdditionalDiscountAmount;
-                //    TotalAmount += Convert.ToDecimal(lst[0].OrderDetails[i].SalePrice * lst[0].OrderDetails[i].Quantity) - lst[0].OrderDetails[i].AdditionalDiscountAmount;
-                //    if (lst[0].ListUsers[0].IsPersonal == true)
-                //    {
-                //        TotalIGSTAmount += lst[0].OrderDetails[i].Quantity * ((lst[0].OrderDetails[i].SalePrice - Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscountAmount)) * 18 / 100);
-                //        TotalCGSTAmount += (lst[0].OrderDetails[i].Quantity * ((lst[0].OrderDetails[i].SalePrice - Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscountAmount)) * 18 / 100)) / 2;
-                //        TotalSGSTAmount += (lst[0].OrderDetails[i].Quantity * ((lst[0].OrderDetails[i].SalePrice - Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscountAmount)) * 18 / 100)) / 2;
-                //    }
-                //    if (lst[0].ListUsers[0].IsPersonal == false)
-                //    {
-                //        TotalIGSTAmount += lst[0].OrderDetails[i].GSTAmount;
-                //        TotalCGSTAmount += lst[0].OrderDetails[i].GSTAmount / 2;
-                //        TotalSGSTAmount += lst[0].OrderDetails[i].GSTAmount / 2;
-                //    }
-                //}
+                int TotalQty = 0;
+                double TotalDiscountAmount = 0;
+                double TotalAmount = 0;
+                double TotalCGSTAmount = 0;
+                double TotalSGSTAmount = 0;
+                double TotalIGSTAmount = 0;
+                for (int i = 0; i < lst[0].OrderDetails.Count; i++)
+                {
+                    TotalQty += lst[0].OrderDetails[i].Quantity;
+                    TotalDiscountAmount += lst[0].OrderDetails[i].Quantity * (lst[0].OrderDetails[i].SalePrice - Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscountAmount));
+                    TotalAmount += TotalDiscountAmount - lst[0].OrderDetails[i].GSTAmount;
 
-                ////SubTotal
-                //TableRow row1 = table1.AddRow(true, 10);
-                //NextRowNumber = table1.Rows.Count - 1;
-                //table1.Rows.Insert(NextRowNumber, row1);
-                ////table1.AddRow(true, 8);
-                ////Product
-                //table1[NextRowNumber, 0].AddParagraph().AppendText("SubTotal").CharacterFormat.FontSize = 8;
-                ////HSN Code + IGST
-                //table1[NextRowNumber, 1].AddParagraph().AppendText("").CharacterFormat.FontSize = 8;
-                ////Quantity
-                ////table1[NextRowNumber, 2].AddParagraph().AppendText(TotalQty.ToString()).CharacterFormat.FontSize = 8;
-                //TextAlign(table1, NextRowNumber, 2, TotalQty.ToString());
-                ////Gross Amount
-                //table1[NextRowNumber, 3].AddParagraph().AppendText("").CharacterFormat.FontSize = 8;
-                ////Discount
-                ////table1[NextRowNumber, 4].AddParagraph().AppendText(TotalAdditionalDiscountAmount.ToString("0.00")).CharacterFormat.FontSize = 8;
-                //TextAlign(table1, NextRowNumber, 4, TotalAdditionalDiscountAmount.ToString("0.00"));
-                //if (lst[0].ListUsers[0].IsPersonal == true)
-                //{
-                //    //Taxable Value
-                //    //table1[NextRowNumber, 5].AddParagraph().AppendText((TotalAmount - Convert.ToDecimal(TotalIGSTAmount)).ToString("0.00")).CharacterFormat.FontSize = 8;
-                //    TextAlign(table1, NextRowNumber, 5, (TotalAmount - Convert.ToDecimal(TotalIGSTAmount)).ToString("0.00"));
-                //    //Total
-                //    //table1[NextRowNumber, 9].AddParagraph().AppendText(TotalAmount.ToString("0.00")).CharacterFormat.FontSize = 8;
-                //    TextAlign(table1, NextRowNumber, 9, TotalAmount.ToString("0.00"));
-                //}
-                ////CGST
-                ////table1[NextRowNumber, 6].AddParagraph().AppendText(TotalCGSTAmount.ToString("0.00")).CharacterFormat.FontSize = 8;
-                //TextAlign(table1, NextRowNumber, 6, TotalCGSTAmount.ToString("0.00"));
-                ////SGST
-                ////table1[NextRowNumber, 7].AddParagraph().AppendText(TotalSGSTAmount.ToString("0.00")).CharacterFormat.FontSize = 8;
-                //TextAlign(table1, NextRowNumber, 7, TotalSGSTAmount.ToString("0.00"));
-                ////IGST
-                ////table1[NextRowNumber, 8].AddParagraph().AppendText(TotalIGSTAmount.ToString("0.00")).CharacterFormat.FontSize = 8;
-                //TextAlign(table1, NextRowNumber, 8, TotalIGSTAmount.ToString("0.00"));
-                //if (lst[0].ListUsers[0].IsPersonal == false)
-                //{
-                //    //Taxable Value
-                //    //table1[NextRowNumber, 5].AddParagraph().AppendText(TotalAmount.ToString("0.00")).CharacterFormat.FontSize = 8;
-                //    TextAlign(table1, NextRowNumber, 5, TotalAmount.ToString("0.00"));
-                //    //Total
-                //    //table1[NextRowNumber, 9].AddParagraph().AppendText((TotalAmount + Convert.ToDecimal(TotalIGSTAmount)).ToString("0.00")).CharacterFormat.FontSize = 8;
-                //    TextAlign(table1, NextRowNumber, 9, (TotalAmount + Convert.ToDecimal(TotalIGSTAmount)).ToString("0.00"));
-                //}
+                    TotalIGSTAmount += lst[0].OrderDetails[i].GSTAmount;
+                    TotalCGSTAmount += lst[0].OrderDetails[i].GSTAmount / 2;
+                    TotalSGSTAmount += lst[0].OrderDetails[i].GSTAmount / 2;
+
+                }
+
+                //SubTotal
+                TableRow row1 = table1.AddRow(true, 14);
+                NextRowNumber = table1.Rows.Count - 1;
+                table1.Rows.Insert(NextRowNumber, row1);
+                //table1.AddRow(true, 8);
+               
+                //SR.No
+                table1[NextRowNumber, 0].AddParagraph().AppendText("SubTotal").CharacterFormat.FontSize = 8;
+                
+                //Product Name
+                table1[NextRowNumber, 1].AddParagraph().AppendText("").CharacterFormat.FontSize = 8;
+                
+                //HSN Code
+                table1[NextRowNumber, 2].AddParagraph().AppendText("").CharacterFormat.FontSize = 8;
+                
+                //Quantity
+                TextAlign(table1, NextRowNumber, 3, TotalQty.ToString("0.00"));
+                
+                //Unit
+                table1[NextRowNumber, 4].AddParagraph().AppendText("").CharacterFormat.FontSize = 8;
+                
+                //Rate
+                table1[NextRowNumber, 5].AddParagraph().AppendText("").CharacterFormat.FontSize = 8;
+                
+                //Discount
+                table1[NextRowNumber, 6].AddParagraph().AppendText("").CharacterFormat.FontSize = 8;
+                
+                //Discounted Rate
+                TextAlign(table1, NextRowNumber, 7, TotalDiscountAmount.ToString("0.00"));
+
+                //Amount (Wihtout GST)
+                TextAlign(table1, NextRowNumber, 8, TotalAmount.ToString("0.00"));
+
+                //GST Rate in %
+                table1[NextRowNumber, 9].AddParagraph().AppendText("").CharacterFormat.FontSize = 8;
+
+                //CGST
+                TextAlign(table1, NextRowNumber, 10, TotalCGSTAmount.ToString("0.00"));
+                
+                //SGST
+                TextAlign(table1, NextRowNumber, 11, TotalSGSTAmount.ToString("0.00"));
+                
+                //IGST
+                TextAlign(table1, NextRowNumber, 12, TotalIGSTAmount.ToString("0.00"));
 
                 //Total
                 TableRow row2 = table1.AddRow(true, 13);
