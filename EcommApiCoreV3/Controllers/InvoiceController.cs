@@ -44,7 +44,8 @@ namespace EcommApiCoreV3.Controllers
 
                 string Temp_Path = webRootPath + "\\TempPDF\\";
                 string Invoice_File = "Invoice_" + lst[0].OrderNumber + "_" + DateTime.Now.ToString("MM-dd-yyyy-hh-mm-ss");
-                string Invoice_Template = webRootPath + (Convert.ToDecimal(lst[0].ListUsers[0].AdditionalDiscount == "" ? "0" : lst[0].ListUsers[0].AdditionalDiscount) > 0 ? "\\Template\\AdditionalDiscountGSTInvoice.docx" : "\\Template\\GSTInvoice.docx");
+                string Invoice_Template = webRootPath + "\\Template\\AdditionalDiscountGSTInvoice.docx";
+                //string Invoice_Template = webRootPath + (Convert.ToDecimal(lst[0].ListUsers[0].AdditionalDiscount == "" ? "0" : lst[0].ListUsers[0].AdditionalDiscount) > 0 ? "\\Template\\AdditionalDiscountGSTInvoice.docx" : "\\Template\\GSTInvoice.docx");
                 Document Invoice_doc = new Document(Invoice_Template);
                 // Find and replace text in the document
 
