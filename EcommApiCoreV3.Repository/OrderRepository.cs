@@ -240,12 +240,16 @@ namespace EcommApiCoreV3.Repository
                 List<Order> lstOrderDetails = new List<Order>();
                 List<Users> lstUsers = new List<Users>();
                 List<Users> lstAgentUser = new List<Users>();
+                List<Order> lstOrderHSNGroup = new List<Order>();
+                List<Order> lstOrderGSTGroup = new List<Order>();
 
                 lstOrder = lst.Read<Order>().ToList();
                 lstOrderDetails = lst.Read<Order>().ToList();
                 lstUsers = lst.Read<Users>().ToList();
                 lstAgentUser = lst.Read<Users>().ToList();
-               
+                lstOrderHSNGroup = lst.Read<Order>().ToList();
+                lstOrderGSTGroup = lst.Read<Order>().ToList();
+
                 foreach (var item in lstOrderDetails)
                 {
                     lstOrder[0].OrderDetails.Add(item);
@@ -267,6 +271,14 @@ namespace EcommApiCoreV3.Repository
                     {
                         lstOrder[0].ListAgentUsers.Add(item);
                     }
+                }
+                foreach (var item in lstOrderHSNGroup)
+                {
+                    lstOrder[0].OrderHSNGroup.Add(item);
+                }
+                foreach (var item in lstOrderGSTGroup)
+                {
+                    lstOrder[0].OrderGSTGroup.Add(item);
                 }
 
                 return lstOrder;
