@@ -58,5 +58,7 @@ namespace EcommApiCoreV3.Entities
         public List<Users> ListAgentUsers { get; set; } = new List<Users>();
 
         public string TrackingURL { get; set; }
+        public List<Order> OrderHSNGroup { get; set; } = new List<Order>();
+        public List<Order> OrderGSTGroup { get; set; } = new List<Order>();
     }
 }
