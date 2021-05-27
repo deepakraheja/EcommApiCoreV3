@@ -12,6 +12,7 @@ using EcommApiCoreV3.Entities;
 using Spire.Doc;
 using Spire.Doc.Documents;
 using Spire.Doc.Fields;
+using System.Drawing;
 
 namespace EcommApiCoreV3.Controllers
 {
@@ -79,6 +80,38 @@ namespace EcommApiCoreV3.Controllers
                 Table table1 = Invoice_doc.Sections[0].Tables[0] as Spire.Doc.Table;
                 int NextRowNumber = 0;
 
+                tableFormat(table1);
+                ////set right border of table
+
+                //table1.TableFormat.Borders.Right.BorderType = Spire.Doc.Documents.BorderStyle.Hairline;
+                //table1.TableFormat.Borders.Right.LineWidth = 0.5F;
+                //table1.TableFormat.Borders.Right.Color = Color.Black;
+
+                ////set top border of table
+
+                //table1.TableFormat.Borders.Top.BorderType = Spire.Doc.Documents.BorderStyle.Hairline;
+                //table1.TableFormat.Borders.Top.LineWidth = 0.5F;
+                //table1.TableFormat.Borders.Top.Color = Color.Black;
+
+                ////set left border of table
+                //table1.TableFormat.Borders.Left.BorderType = Spire.Doc.Documents.BorderStyle.Hairline;
+                //table1.TableFormat.Borders.Left.LineWidth = 0.5F;
+                //table1.TableFormat.Borders.Left.Color = Color.Black;
+
+                ////set bottom border is none
+                //table1.TableFormat.Borders.Bottom.BorderType = Spire.Doc.Documents.BorderStyle.Hairline;
+                //table1.TableFormat.Borders.Left.LineWidth = 0.5F;
+                //table1.TableFormat.Borders.Left.Color = Color.Black;
+
+                ////set vertical and horizontal border
+
+                //table1.TableFormat.Borders.Vertical.BorderType = Spire.Doc.Documents.BorderStyle.Hairline;
+                //table1.TableFormat.Borders.Vertical.LineWidth = 0.5F;
+                //table1.TableFormat.Borders.Horizontal.BorderType = Spire.Doc.Documents.BorderStyle.None;
+                //table1.TableFormat.Borders.Vertical.Color = Color.Black;
+
+                //table1.TableFormat.IsAutoResized = true;
+
                 int TotalQty = 0;
                 double TotalDiscountAmount = 0;
                 double TotalAmountWithoutGST = 0;
@@ -100,9 +133,7 @@ namespace EcommApiCoreV3.Controllers
 
                 //}
 
-                Invoice_doc.Replace("[RoundOff]", Convert.ToDecimal("0." + TotalAmount.ToString("0.00").Split('.')[1]).ToString("0.00"), false, true);
-                Invoice_doc.Replace("[TotalAmount]", Convert.ToInt32(TotalAmount).ToString("0.00"), false, true);
-                Invoice_doc.Replace("[RupessInWord]", _convertInToWord.ConvertToWords(Convert.ToInt32(TotalAmount).ToString("0.00")), false, true);
+
 
                 if (lst[0].State.ToLower() == "delhi")
                 {
@@ -178,6 +209,11 @@ namespace EcommApiCoreV3.Controllers
                     }
 
                     TotalAmount = TotalAmountWithoutGST + TotalIGSTAmount;
+
+                    Invoice_doc.Replace("[RoundOff]", Convert.ToDecimal("0." + TotalAmount.ToString("0.00").Split('.')[1]).ToString("0.00"), false, true);
+                    Invoice_doc.Replace("[TotalAmount]", Convert.ToInt32(TotalAmount).ToString("0.00"), false, true);
+                    Invoice_doc.Replace("[RupessInWord]", _convertInToWord.ConvertToWords(Convert.ToInt32(TotalAmount).ToString("0.00")), false, true);
+
                     //SubTotal
                     TableRow row1 = table1.AddRow(true, 13);
                     NextRowNumber = table1.Rows.Count - 1;
@@ -320,20 +356,26 @@ namespace EcommApiCoreV3.Controllers
                         table1.Rows.Insert(NextRowNumber, row);
 
                         //Sr.No
-                        table1[NextRowNumber, 0].AddParagraph().AppendText((i + 1).ToString()).CharacterFormat.FontSize = 8;
+
+                        //table1[NextRowNumber, 0].AddParagraph().AppendText((i + 1).ToString()).CharacterFormat.FontSize = 9;
+                        //table1[NextRowNumber, 0].CellFormat.VerticalAlignment = VerticalAlignment.Middle;
+
+                        TextCenter(table1, NextRowNumber, 0, (i + 1).ToString(), false);
 
                         //Product
-                        table1[NextRowNumber, 1].AddParagraph().AppendText(lst[0].OrderDetails[i].ProductName).CharacterFormat.FontSize = 8;
+                        table1[NextRowNumber, 1].AddParagraph().AppendText(lst[0].OrderDetails[i].ProductName).CharacterFormat.FontSize = 9;
 
                         //HSN Code
-                        table1[NextRowNumber, 2].AddParagraph().AppendText(lst[0].OrderDetails[i].HSNCode).CharacterFormat.FontSize = 8;
-                        table1[NextRowNumber, 2].CellFormat.VerticalAlignment = VerticalAlignment.Middle;
+                        //table1[NextRowNumber, 2].AddParagraph().AppendText(lst[0].OrderDetails[i].HSNCode).CharacterFormat.FontSize = 8;
+                        //table1[NextRowNumber, 2].CellFormat.VerticalAlignment = VerticalAlignment.Middle;
+
+                        TextCenter(table1, NextRowNumber, 2, lst[0].OrderDetails[i].HSNCode.ToString(), false);
 
                         //Quantity
                         TextAlign(table1, NextRowNumber, 3, lst[0].OrderDetails[i].Quantity.ToString("0.00"), false);
 
                         // PCS
-                        TextAlign(table1, NextRowNumber, 4, "PCS", false);
+                        TextCenter(table1, NextRowNumber, 4, "PCS", false);
 
                         //Rate
                         TextAlign(table1, NextRowNumber, 5, lst[0].OrderDetails[i].SalePrice.ToString("0.00"), false);
@@ -376,7 +418,15 @@ namespace EcommApiCoreV3.Controllers
 
                     TotalAmount = TotalAmountWithoutGST + TotalIGSTAmount;
 
+                    Invoice_doc.Replace("[RoundOff]", Convert.ToDecimal("0." + TotalAmount.ToString("0.00").Split('.')[1]).ToString("0.00"), false, true);
+                    Invoice_doc.Replace("[TotalAmount]", Convert.ToInt32(TotalAmount).ToString("0.00"), false, true);
+                    Invoice_doc.Replace("[RupessInWord]", _convertInToWord.ConvertToWords(Convert.ToInt32(TotalAmount).ToString("0.00")), false, true);
+
                     //SubTotal
+                    TableRow row11 = table1.AddRow(true, 12);
+                    NextRowNumber = table1.Rows.Count - 1;
+                    table1.Rows.Insert(NextRowNumber, row11);
+
                     TableRow row1 = table1.AddRow(true, 12);
                     NextRowNumber = table1.Rows.Count - 1;
                     table1.Rows.Insert(NextRowNumber, row1);
@@ -422,13 +472,16 @@ namespace EcommApiCoreV3.Controllers
 
                     // GroupBy GSTRate
                     Table GST_table = Invoice_doc.Sections[0].Tables[1] as Spire.Doc.Table;
+
                     Table nestedTable = GST_table[0, 1].AddTable(true);
+                    tableFormatH(nestedTable);
+
                     nestedTable.AddRow(2);
                     //nestedTable.ResetCells(2, 2);
                     //nestedTable.AutoFitBehavior(AutoFitBehaviorType.wdAutoFitContents);
                     for (int i = 0; i < lst[0].OrderGSTGroup.Count; i++)
                     {
-                        TextAlign(nestedTable, i, 0, "IGST " + lst[0].OrderGSTGroup[i].GSTRate.ToString("0.00") + "%", true);
+                        TextAlign(nestedTable, i, 0, "IGST " + lst[0].OrderGSTGroup[i].GSTRate.ToString("0.00") + " %", true);
                         TextAlign(nestedTable, i, 1, lst[0].OrderGSTGroup[i].GSTAmount.ToString("0.00"), true);
                         nestedTable.AddRow(true, 2);
                     }
@@ -439,6 +492,9 @@ namespace EcommApiCoreV3.Controllers
 
                     // GroupBy HSN and GSTRate
                     Table HSNGST_table = Invoice_doc.Sections[0].Tables[2] as Spire.Doc.Table;
+
+                    tableFormatH(HSNGST_table);
+
                     for (int j = 0; j < lst[0].OrderHSNGroup.Count; j++)
                     {
                         TableRow row_HSN = HSNGST_table.AddRow(false, 6);
@@ -514,9 +570,104 @@ namespace EcommApiCoreV3.Controllers
             TextRange TR = p.AppendText(value);
             //Format Cells
             p.Format.HorizontalAlignment = HorizontalAlignment.Right;
-            TR.CharacterFormat.FontSize = 8;
+            TR.CharacterFormat.FontSize = 9;
             TR.CharacterFormat.Bold = IsBold;
             table1[i, rowNumber].CellFormat.VerticalAlignment = VerticalAlignment.Middle;
+        }
+
+
+        public void TextCenter(Table table1, int i, int rowNumber, string value, bool IsBold)
+        {
+            Paragraph p = table1[i, rowNumber].AddParagraph();
+            TextRange TR = p.AppendText(value);
+            //Format Cells
+            p.Format.HorizontalAlignment = HorizontalAlignment.Center;
+            TR.CharacterFormat.FontSize = 9;
+            TR.CharacterFormat.Bold = IsBold;
+            table1[i, rowNumber].CellFormat.VerticalAlignment = VerticalAlignment.Middle;
+        }
+
+        public void Textleft(Table table1, int i, int rowNumber, string value, bool IsBold)
+        {
+            Paragraph p = table1[i, rowNumber].AddParagraph();
+            TextRange TR = p.AppendText(value);
+            //Format Cells
+            p.Format.HorizontalAlignment = HorizontalAlignment.Left;
+            TR.CharacterFormat.FontSize = 9;
+            TR.CharacterFormat.Bold = IsBold;
+            table1[i, rowNumber].CellFormat.VerticalAlignment = VerticalAlignment.Middle;
+        }
+
+        public void tableFormat(Table table1)
+        {
+            //set right border of table
+
+            table1.TableFormat.Borders.Right.BorderType = Spire.Doc.Documents.BorderStyle.Hairline;
+            table1.TableFormat.Borders.Right.LineWidth = 0.5F;
+            table1.TableFormat.Borders.Right.Color = Color.Black;
+
+            //set top border of table
+
+            table1.TableFormat.Borders.Top.BorderType = Spire.Doc.Documents.BorderStyle.Hairline;
+            table1.TableFormat.Borders.Top.LineWidth = 0.5F;
+            table1.TableFormat.Borders.Top.Color = Color.Black;
+
+            //set left border of table
+            table1.TableFormat.Borders.Left.BorderType = Spire.Doc.Documents.BorderStyle.Hairline;
+            table1.TableFormat.Borders.Left.LineWidth = 0.5F;
+            table1.TableFormat.Borders.Left.Color = Color.Black;
+
+            //set bottom border is none
+            table1.TableFormat.Borders.Bottom.BorderType = Spire.Doc.Documents.BorderStyle.Hairline;
+            table1.TableFormat.Borders.Left.LineWidth = 0.5F;
+            table1.TableFormat.Borders.Left.Color = Color.Black;
+
+            //set vertical and horizontal border
+
+            table1.TableFormat.Borders.Vertical.BorderType = Spire.Doc.Documents.BorderStyle.Hairline;
+            table1.TableFormat.Borders.Vertical.LineWidth = 0.5F;
+            table1.TableFormat.Borders.Horizontal.BorderType = Spire.Doc.Documents.BorderStyle.None;
+            table1.TableFormat.Borders.Vertical.Color = Color.Black;
+
+            table1.TableFormat.IsAutoResized = true;
+
+
+        }
+
+        public void tableFormatH(Table table1)
+        {
+            //set right border of table
+
+            table1.TableFormat.Borders.Right.BorderType = Spire.Doc.Documents.BorderStyle.Hairline;
+            table1.TableFormat.Borders.Right.LineWidth = 0.5F;
+            table1.TableFormat.Borders.Right.Color = Color.Black;
+
+            //set top border of table
+
+            table1.TableFormat.Borders.Top.BorderType = Spire.Doc.Documents.BorderStyle.Hairline;
+            table1.TableFormat.Borders.Top.LineWidth = 0.5F;
+            table1.TableFormat.Borders.Top.Color = Color.Black;
+
+            //set left border of table
+            table1.TableFormat.Borders.Left.BorderType = Spire.Doc.Documents.BorderStyle.Hairline;
+            table1.TableFormat.Borders.Left.LineWidth = 0.5F;
+            table1.TableFormat.Borders.Left.Color = Color.Black;
+
+            //set bottom border is none
+            table1.TableFormat.Borders.Bottom.BorderType = Spire.Doc.Documents.BorderStyle.Hairline;
+            table1.TableFormat.Borders.Left.LineWidth = 0.5F;
+            table1.TableFormat.Borders.Left.Color = Color.Black;
+
+            //set vertical and horizontal border
+
+            table1.TableFormat.Borders.Vertical.BorderType = Spire.Doc.Documents.BorderStyle.Hairline;
+            table1.TableFormat.Borders.Vertical.LineWidth = 0.5F;
+            table1.TableFormat.Borders.Horizontal.BorderType = Spire.Doc.Documents.BorderStyle.Hairline;
+            table1.TableFormat.Borders.Vertical.Color = Color.Black;
+
+            table1.TableFormat.IsAutoResized = true;
+
+
         }
     }
 }
