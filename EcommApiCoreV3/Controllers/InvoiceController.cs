@@ -86,18 +86,19 @@ namespace EcommApiCoreV3.Controllers
                 double TotalCGSTAmount = 0;
                 double TotalSGSTAmount = 0;
                 double TotalIGSTAmount = 0;
-                for (int i = 0; i < lst[0].OrderDetails.Count; i++)
-                {
-                    TotalQty += lst[0].OrderDetails[i].Quantity;
-                    TotalDiscountAmount += lst[0].OrderDetails[i].SalePrice - Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscountAmount);
-                    TotalAmountWithoutGST += lst[0].OrderDetails[i].Quantity * TotalDiscountAmount;
-                    TotalAmount += lst[0].OrderDetails[i].Quantity * TotalDiscountAmount + lst[0].OrderDetails[i].GSTAmount;
 
-                    TotalIGSTAmount += lst[0].OrderDetails[i].GSTAmount;
-                    TotalCGSTAmount += lst[0].OrderDetails[i].GSTAmount / 2;
-                    TotalSGSTAmount += lst[0].OrderDetails[i].GSTAmount / 2;
+                //for (int i = 0; i < lst[0].OrderDetails.Count; i++)
+                //{
+                //    TotalQty += lst[0].OrderDetails[i].Quantity;
+                //    TotalDiscountAmount += lst[0].OrderDetails[i].SalePrice - Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscountAmount);
+                //    TotalAmountWithoutGST += lst[0].OrderDetails[i].Quantity * TotalDiscountAmount;
+                //    TotalAmount += lst[0].OrderDetails[i].Quantity * TotalDiscountAmount + lst[0].OrderDetails[i].GSTAmount;
 
-                }
+                //    TotalIGSTAmount += lst[0].OrderDetails[i].GSTAmount;
+                //    TotalCGSTAmount += lst[0].OrderDetails[i].GSTAmount / 2;
+                //    TotalSGSTAmount += lst[0].OrderDetails[i].GSTAmount / 2;
+
+                //}
 
                 Invoice_doc.Replace("[RoundOff]", Convert.ToDecimal("0." + TotalAmount.ToString("0.00").Split('.')[1]).ToString("0.00"), false, true);
                 Invoice_doc.Replace("[TotalAmount]", Convert.ToInt32(TotalAmount).ToString("0.00"), false, true);
@@ -137,12 +138,20 @@ namespace EcommApiCoreV3.Controllers
                         TextAlign(table1, NextRowNumber, 6, lst[0].OrderDetails[i].AdditionalDiscount.ToString("0.00"), false);
 
                         //Discount Rate
-                        double DiscountedRate = (lst[0].OrderDetails[i].SalePrice - Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscountAmount));
+                        //double DiscountedRate = (lst[0].OrderDetails[i].SalePrice - Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscountAmount));
+                        double DiscountedRate = (lst[0].OrderDetails[i].SalePrice - (Convert.ToDouble(lst[0].OrderDetails[i].SalePrice) * Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscount) / 100));
+
                         TextAlign(table1, NextRowNumber, 7, DiscountedRate.ToString("0.00"), false);
 
                         //Amount (Wihtout GST)
                         //double GST = lst[0].OrderDetails[i].Quantity * ((lst[0].OrderDetails[i].SalePrice - Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscountAmount)) * lst[0].OrderDetails[i].GSTRate / 100);
-                        TextAlign(table1, NextRowNumber, 8, ((lst[0].OrderDetails[i].Quantity * DiscountedRate) - lst[0].OrderDetails[i].GSTAmount).ToString("0.00"), false);
+                        //TextAlign(table1, NextRowNumber, 8, ((lst[0].OrderDetails[i].Quantity * DiscountedRate) - lst[0].OrderDetails[i].GSTAmount).ToString("0.00"), false);
+
+                        //TextAlign(table1, NextRowNumber, 8, ((lst[0].OrderDetails[i].Quantity * DiscountedRate)).ToString("0.00"), false);
+
+
+                        double AmountWihtoutGST = (lst[0].OrderDetails[i].Quantity * DiscountedRate);
+                        TextAlign(table1, NextRowNumber, 8, (AmountWihtoutGST).ToString("0.00"), false);
 
                         //GST Rate in %
                         TextAlign(table1, NextRowNumber, 9, (lst[0].OrderDetails[i].GSTRate).ToString("0.00"), false);
@@ -158,8 +167,17 @@ namespace EcommApiCoreV3.Controllers
 
                         //Total
                         TextAlign(table1, NextRowNumber, 12, ((lst[0].OrderDetails[i].Quantity * DiscountedRate) + lst[0].OrderDetails[i].GSTAmount).ToString("0.00"), false);
+
+                        //Total
+                        //Amount
+                        //(WihtoutGST)
+                        TotalAmountWithoutGST += AmountWihtoutGST;
+
+                        //Total IGSTAmount
+                        TotalIGSTAmount += lst[0].OrderDetails[i].GSTAmount;
                     }
 
+                    TotalAmount = TotalAmountWithoutGST + TotalIGSTAmount;
                     //SubTotal
                     TableRow row1 = table1.AddRow(true, 13);
                     NextRowNumber = table1.Rows.Count - 1;
@@ -218,8 +236,8 @@ namespace EcommApiCoreV3.Controllers
                     //nestedTable.AutoFitBehavior(AutoFitBehaviorType.wdAutoFitContents);
                     for (int i = 0; i < lst[0].OrderGSTGroup.Count; i++)
                     {
-                        TextAlign(nestedTable, nestedTable.Rows.Count - 1, 0, "SGST " + (lst[0].OrderGSTGroup[i].GSTRate/2).ToString("0.00") + "%", true);
-                        TextAlign(nestedTable, nestedTable.Rows.Count - 1, 1, (lst[0].OrderGSTGroup[i].GSTAmount/2).ToString("0.00"), true);
+                        TextAlign(nestedTable, nestedTable.Rows.Count - 1, 0, "SGST " + (lst[0].OrderGSTGroup[i].GSTRate / 2).ToString("0.00") + "%", true);
+                        TextAlign(nestedTable, nestedTable.Rows.Count - 1, 1, (lst[0].OrderGSTGroup[i].GSTAmount / 2).ToString("0.00"), true);
                         nestedTable.AddRow(true, 2);
                         TextAlign(nestedTable, nestedTable.Rows.Count - 1, 0, "CGST " + (lst[0].OrderGSTGroup[i].GSTRate / 2).ToString("0.00") + "%", true);
                         TextAlign(nestedTable, nestedTable.Rows.Count - 1, 1, (lst[0].OrderGSTGroup[i].GSTAmount / 2).ToString("0.00"), true);
@@ -293,7 +311,7 @@ namespace EcommApiCoreV3.Controllers
                     //Tax Amount
                     TextAlign(HSNGST_table, NextRowNumber, 7, TotalIGSTAmount.ToString("0.00"), true);
                 }
-                else
+                else/////////////////////////// Outside delhi*********************************
                 {
                     for (int i = 0; i < lst[0].OrderDetails.Count; i++)
                     {
@@ -324,12 +342,15 @@ namespace EcommApiCoreV3.Controllers
                         TextAlign(table1, NextRowNumber, 6, lst[0].OrderDetails[i].AdditionalDiscount.ToString("0.00"), false);
 
                         //Discount Rate
-                        double DiscountedRate = (lst[0].OrderDetails[i].SalePrice - Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscountAmount));
+                        //double DiscountedRate = (lst[0].OrderDetails[i].SalePrice - Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscountAmount));
+                        double DiscountedRate = (lst[0].OrderDetails[i].SalePrice - (Convert.ToDouble(lst[0].OrderDetails[i].SalePrice) * Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscount) / 100));
                         TextAlign(table1, NextRowNumber, 7, DiscountedRate.ToString("0.00"), false);
 
                         //Amount (Wihtout GST)
                         //double GST = lst[0].OrderDetails[i].Quantity * ((lst[0].OrderDetails[i].SalePrice - Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscountAmount)) * lst[0].OrderDetails[i].GSTRate / 100);
-                        TextAlign(table1, NextRowNumber, 8, ((lst[0].OrderDetails[i].Quantity * DiscountedRate) - lst[0].OrderDetails[i].GSTAmount).ToString("0.00"), false);
+
+                        double AmountWihtoutGST = (lst[0].OrderDetails[i].Quantity * DiscountedRate);
+                        TextAlign(table1, NextRowNumber, 8, (AmountWihtoutGST).ToString("0.00"), false);
 
                         //GST Rate in %
                         TextAlign(table1, NextRowNumber, 9, (lst[0].OrderDetails[i].GSTRate).ToString("0.00"), false);
@@ -337,9 +358,23 @@ namespace EcommApiCoreV3.Controllers
                         //IGST
                         TextAlign(table1, NextRowNumber, 10, lst[0].OrderDetails[i].GSTAmount.ToString("0.00"), false);
 
-                        //Total
+                        //Grand Total
+                        //(Amount)
                         TextAlign(table1, NextRowNumber, 11, ((lst[0].OrderDetails[i].Quantity * DiscountedRate) + lst[0].OrderDetails[i].GSTAmount).ToString("0.00"), false);
+
+                        //Total
+                        //Amount
+                        //(WihtoutGST)
+                        TotalAmountWithoutGST += AmountWihtoutGST;
+
+                        //Total Qty
+                        TotalQty += lst[0].OrderDetails[i].Quantity;
+
+                        //Total IGSTAmount
+                        TotalIGSTAmount += lst[0].OrderDetails[i].GSTAmount;
                     }
+
+                    TotalAmount = TotalAmountWithoutGST + TotalIGSTAmount;
 
                     //SubTotal
                     TableRow row1 = table1.AddRow(true, 12);
