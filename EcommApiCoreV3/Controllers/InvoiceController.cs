@@ -113,6 +113,7 @@ namespace EcommApiCoreV3.Controllers
 
                         //Sr.No
                         table1[NextRowNumber, 0].AddParagraph().AppendText((i + 1).ToString()).CharacterFormat.FontSize = 8;
+                        table1[NextRowNumber, 0].CellFormat.VerticalAlignment = VerticalAlignment.Middle;
 
                         //Product
                         table1[NextRowNumber, 1].AddParagraph().AppendText(lst[0].OrderDetails[i].ProductName).CharacterFormat.FontSize = 8;
@@ -123,9 +124,11 @@ namespace EcommApiCoreV3.Controllers
 
                         //Quantity
                         TextAlign(table1, NextRowNumber, 3, lst[0].OrderDetails[i].Quantity.ToString("0.00"), false);
+                        table1[NextRowNumber, 3].CellFormat.VerticalAlignment = VerticalAlignment.Middle;
 
                         // PCS
                         TextAlign(table1, NextRowNumber, 4, "PCS", false);
+                        table1[NextRowNumber, 4].CellFormat.VerticalAlignment = VerticalAlignment.Middle;
 
                         //Rate
                         TextAlign(table1, NextRowNumber, 5, lst[0].OrderDetails[i].SalePrice.ToString("0.00"), false);
