@@ -144,23 +144,31 @@ namespace EcommApiCoreV3.Controllers
                         table1.Rows.Insert(NextRowNumber, row);
 
                         //Sr.No
-                        table1[NextRowNumber, 0].AddParagraph().AppendText((i + 1).ToString()).CharacterFormat.FontSize = 8;
-                        table1[NextRowNumber, 0].CellFormat.VerticalAlignment = VerticalAlignment.Middle;
+                        //table1[NextRowNumber, 0].AddParagraph().AppendText((i + 1).ToString()).CharacterFormat.FontSize = 8;
+                        //table1[NextRowNumber, 0].CellFormat.VerticalAlignment = VerticalAlignment.Middle;
+
+                        TextCenter(table1, NextRowNumber, 0, (i + 1).ToString(), false);
 
                         //Product
                         table1[NextRowNumber, 1].AddParagraph().AppendText(lst[0].OrderDetails[i].ProductName).CharacterFormat.FontSize = 8;
 
                         //HSN Code
-                        table1[NextRowNumber, 2].AddParagraph().AppendText(lst[0].OrderDetails[i].HSNCode).CharacterFormat.FontSize = 8;
-                        table1[NextRowNumber, 2].CellFormat.VerticalAlignment = VerticalAlignment.Middle;
+                        //table1[NextRowNumber, 2].AddParagraph().AppendText(lst[0].OrderDetails[i].HSNCode).CharacterFormat.FontSize = 8;
+                        //table1[NextRowNumber, 2].CellFormat.VerticalAlignment = VerticalAlignment.Middle;
+
+                        TextCenter(table1, NextRowNumber, 2, lst[0].OrderDetails[i].HSNCode.ToString(), false);
 
                         //Quantity
+                        //TextAlign(table1, NextRowNumber, 3, lst[0].OrderDetails[i].Quantity.ToString("0.00"), false);
+                        //table1[NextRowNumber, 3].CellFormat.VerticalAlignment = VerticalAlignment.Middle;
+
                         TextAlign(table1, NextRowNumber, 3, lst[0].OrderDetails[i].Quantity.ToString("0.00"), false);
-                        table1[NextRowNumber, 3].CellFormat.VerticalAlignment = VerticalAlignment.Middle;
 
                         // PCS
-                        TextAlign(table1, NextRowNumber, 4, "PCS", false);
-                        table1[NextRowNumber, 4].CellFormat.VerticalAlignment = VerticalAlignment.Middle;
+                        //TextAlign(table1, NextRowNumber, 4, "PCS", false);
+                        //table1[NextRowNumber, 4].CellFormat.VerticalAlignment = VerticalAlignment.Middle;
+
+                        TextCenter(table1, NextRowNumber, 4, "PCS", false);
 
                         //Rate
                         TextAlign(table1, NextRowNumber, 5, lst[0].OrderDetails[i].SalePrice.ToString("0.00"), false);
@@ -171,7 +179,6 @@ namespace EcommApiCoreV3.Controllers
                         //Discount Rate
                         //double DiscountedRate = (lst[0].OrderDetails[i].SalePrice - Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscountAmount));
                         double DiscountedRate = (lst[0].OrderDetails[i].SalePrice - (Convert.ToDouble(lst[0].OrderDetails[i].SalePrice) * Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscount) / 100));
-
                         TextAlign(table1, NextRowNumber, 7, DiscountedRate.ToString("0.00"), false);
 
                         //Amount (Wihtout GST)
@@ -204,9 +211,15 @@ namespace EcommApiCoreV3.Controllers
                         //(WihtoutGST)
                         TotalAmountWithoutGST += AmountWihtoutGST;
 
+                        //Total Qty
+                        TotalQty += lst[0].OrderDetails[i].Quantity;
+
                         //Total IGSTAmount
                         TotalIGSTAmount += lst[0].OrderDetails[i].GSTAmount;
                     }
+
+                    TotalCGSTAmount = TotalIGSTAmount / 2;
+                    TotalSGSTAmount = TotalIGSTAmount / 2;
 
                     TotalAmount = TotalAmountWithoutGST + TotalIGSTAmount;
 
@@ -222,7 +235,7 @@ namespace EcommApiCoreV3.Controllers
 
                     //SR.No
                     //table1[NextRowNumber, 0].AddParagraph().AppendText("Total").CharacterFormat.FontSize = 8;
-                    TextAlign(table1, NextRowNumber, 0, "Total", true);
+                    TextCenter(table1, NextRowNumber, 0, "Total", true);
 
                     //Product Name
                     table1[NextRowNumber, 1].AddParagraph().AppendText("").CharacterFormat.FontSize = 8;
@@ -272,10 +285,10 @@ namespace EcommApiCoreV3.Controllers
                     //nestedTable.AutoFitBehavior(AutoFitBehaviorType.wdAutoFitContents);
                     for (int i = 0; i < lst[0].OrderGSTGroup.Count; i++)
                     {
-                        TextAlign(nestedTable, nestedTable.Rows.Count - 1, 0, "SGST " + (lst[0].OrderGSTGroup[i].GSTRate / 2).ToString("0.00") + "%", true);
+                        TextAlign(nestedTable, nestedTable.Rows.Count - 1, 0, "SGST " + (Convert.ToDecimal(lst[0].OrderGSTGroup[i].GSTRate) / 2).ToString("0.00") + "%", true);
                         TextAlign(nestedTable, nestedTable.Rows.Count - 1, 1, (lst[0].OrderGSTGroup[i].GSTAmount / 2).ToString("0.00"), true);
                         nestedTable.AddRow(true, 2);
-                        TextAlign(nestedTable, nestedTable.Rows.Count - 1, 0, "CGST " + (lst[0].OrderGSTGroup[i].GSTRate / 2).ToString("0.00") + "%", true);
+                        TextAlign(nestedTable, nestedTable.Rows.Count - 1, 0, "CGST " + (Convert.ToDecimal(lst[0].OrderGSTGroup[i].GSTRate) / 2).ToString("0.00") + "%", true);
                         TextAlign(nestedTable, nestedTable.Rows.Count - 1, 1, (lst[0].OrderGSTGroup[i].GSTAmount / 2).ToString("0.00"), true);
                         nestedTable.AddRow(true, 2);
                     }
@@ -286,6 +299,8 @@ namespace EcommApiCoreV3.Controllers
 
                     // GroupBy HSN and GSTRate
                     Table HSNGST_table = Invoice_doc.Sections[0].Tables[2] as Spire.Doc.Table;
+
+                    tableFormatH(HSNGST_table);
                     for (int j = 0; j < lst[0].OrderHSNGroup.Count; j++)
                     {
                         TableRow row_HSN = HSNGST_table.AddRow(false, 8);
