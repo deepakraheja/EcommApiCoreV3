@@ -46,71 +46,66 @@ namespace EcommApiCoreV3.Controllers
                 string Temp_Path = webRootPath + "\\TempPDF\\";
                 string Invoice_File = "Invoice_" + lst[0].OrderNumber + "_" + DateTime.Now.ToString("MM-dd-yyyy-hh-mm-ss");
                 //string Invoice_Template = webRootPath + "\\Template\\GSTInvoice.docx";
-                string Invoice_Template = webRootPath + (lst[0].State.ToLower() == "delhi" ? "\\Template\\LocalGSTInvoice.docx" : "\\Template\\CentralGSTInvoice.docx");
+                string Invoice_Template = webRootPath + (lst[0].State.ToLower() == "delhi" ?
+                    (string.IsNullOrEmpty(lst[0].Bilty) ? "\\Template\\LocalGSTOrder.docx" : "\\Template\\LocalGSTInvoice.docx")
+                    : (string.IsNullOrEmpty(lst[0].Bilty) ? "\\Template\\CentralGSTOrder.docx" : "\\Template\\CentralGSTInvoice.docx"));
                 Document Invoice_doc = new Document(Invoice_Template);
                 // Find and replace text in the document
 
                 Invoice_doc.Replace("[OrderNumber]", lst[0].OrderNumber, false, true);
-                Invoice_doc.Replace("[OrderDate]", lst[0].OrderDate, false, true);
+                Invoice_doc.Replace("[OrderDate]", Convert.ToDateTime(lst[0].OrderDate).ToString("dd/MM/yyyy"), false, true);
                 Invoice_doc.Replace("[InvoiceNumber]", (lst[0].InvoiceNo), false, true);
                 //Invoice_doc.Replace("[InvoiceNumber]", ("INV-" + lst[0].OrderId.ToString("000") + "-" + lst[0].OrderNumber), false, true);
                 Invoice_doc.Replace("[ShippingName]", lst[0].FName + " " + lst[0].LName, false, true);
                 Invoice_doc.Replace("[ShippingAddress]", lst[0].Address + ", " + lst[0].City + ", " + lst[0].State + ", " + lst[0].Country + "-" + lst[0].ZipCode, false, true);
                 Invoice_doc.Replace("[ShippingState]", lst[0].State, false, true);
-                Invoice_doc.Replace("[BillingName]", lst[0].FName + " " + lst[0].LName, false, true);
-                Invoice_doc.Replace("[BillingAddress]", lst[0].Address + ", " + lst[0].City + ", " + lst[0].State + ", " + lst[0].Country + "-" + lst[0].ZipCode, false, true);
-                Invoice_doc.Replace("[BillingState]", lst[0].State, false, true);
-                Invoice_doc.Replace("[dis]", lst[0].OrderDetails[0].AdditionalDiscount.ToString() + "%", false, true);
-                Invoice_doc.Replace("[MobileNo]", lst[0].Phone, false, true);
+                if (lst[0].ListAgentUsers.Count > 0)
+                    Invoice_doc.Replace("[BillingName]", lst[0].ListAgentUsers[0].Name, false, true);
+                else
+                    Invoice_doc.Replace("[BillingName]", lst[0].FName + " " + lst[0].LName, false, true);
+                if (lst[0].ListAgentUsers.Count > 0)
+                    Invoice_doc.Replace("[BillingAddress]", lst[0].ListAgentUsers[0].Address1 + ", " + lst[0].ListAgentUsers[0].Address1 + ", " + lst[0].ListAgentUsers[0].City + ", " + lst[0].ListAgentUsers[0].State + "-" + lst[0].ListAgentUsers[0].PinCode, false, true);
+                else
+                    Invoice_doc.Replace("[BillingAddress]", lst[0].Address + ", " + lst[0].City + ", " + lst[0].State + ", " + lst[0].Country + "-" + lst[0].ZipCode, false, true);
+                if (lst[0].ListAgentUsers.Count > 0)
+                    Invoice_doc.Replace("[BillingState]", lst[0].ListAgentUsers[0].State, false, true);
+                else
+                    Invoice_doc.Replace("[BillingState]", lst[0].State, false, true);
+                //Invoice_doc.Replace("[dis]", lst[0].OrderDetails[0].AdditionalDiscount.ToString() + "%", false, true);
+                if (lst[0].ListAgentUsers.Count > 0)
+                    Invoice_doc.Replace("[MobileNo]", lst[0].ListAgentUsers[0].MobileNo, false, true);
+                else
+                    Invoice_doc.Replace("[MobileNo]", lst[0].Phone, false, true);
 
                 //Invoice_doc.Replace("[CompanyName]", "Company Name: " + lst[0].CompanyName, false, true);
-                if (lst[0].ListUsers[0].BusinessLicenseType == "GSTIN")
-                    Invoice_doc.Replace("[GSTNo]", lst[0].ListUsers[0].GSTNo, false, true);
+                if (lst[0].ListAgentUsers.Count > 0)
+                    Invoice_doc.Replace("[GSTNo]", lst[0].ListAgentUsers[0].GSTNo, false, true);
                 else
-                    Invoice_doc.Replace("[GSTNo]", "", false, true);
-                if (lst[0].ListUsers[0].BusinessLicenseType == "BusinessPAN")
-                    Invoice_doc.Replace("[PANNo]", lst[0].ListUsers[0].GSTNo, false, true);
+                {
+                    if (lst[0].ListUsers[0].BusinessLicenseType == "GSTIN")
+                        Invoice_doc.Replace("[GSTNo]", lst[0].ListUsers[0].GSTNo, false, true);
+                    else
+                        Invoice_doc.Replace("[GSTNo]", "", false, true);
+                }
+
+                if (lst[0].ListAgentUsers.Count > 0)
+                    Invoice_doc.Replace("[PANNo]", lst[0].ListAgentUsers[0].PANNo, false, true);
                 else
-                    Invoice_doc.Replace("[PANNo]", "", false, true);
-                if (lst[0].ListUsers[0].BusinessLicenseType == "AadharCard")
-                    Invoice_doc.Replace("[AadharCard]", lst[0].ListUsers[0].AadharCard, false, true);
-                else
-                    Invoice_doc.Replace("[AadharCard]", "", false, true);
+                {
+                    if (lst[0].ListUsers[0].BusinessLicenseType == "BusinessPAN")
+                        Invoice_doc.Replace("[PANNo]", lst[0].ListUsers[0].GSTNo, false, true);
+                    else
+                        Invoice_doc.Replace("[PANNo]", "", false, true);
+                }
+                //if (lst[0].ListUsers[0].BusinessLicenseType == "AadharCard")
+                //    Invoice_doc.Replace("[AadharCard]", lst[0].ListUsers[0].AadharCard, false, true);
+                //else
+                //    Invoice_doc.Replace("[AadharCard]", "", false, true);
 
                 Table table1 = Invoice_doc.Sections[0].Tables[0] as Spire.Doc.Table;
                 int NextRowNumber = 0;
 
                 tableFormat(table1);
-                ////set right border of table
-
-                //table1.TableFormat.Borders.Right.BorderType = Spire.Doc.Documents.BorderStyle.Hairline;
-                //table1.TableFormat.Borders.Right.LineWidth = 0.5F;
-                //table1.TableFormat.Borders.Right.Color = Color.Black;
-
-                ////set top border of table
-
-                //table1.TableFormat.Borders.Top.BorderType = Spire.Doc.Documents.BorderStyle.Hairline;
-                //table1.TableFormat.Borders.Top.LineWidth = 0.5F;
-                //table1.TableFormat.Borders.Top.Color = Color.Black;
-
-                ////set left border of table
-                //table1.TableFormat.Borders.Left.BorderType = Spire.Doc.Documents.BorderStyle.Hairline;
-                //table1.TableFormat.Borders.Left.LineWidth = 0.5F;
-                //table1.TableFormat.Borders.Left.Color = Color.Black;
-
-                ////set bottom border is none
-                //table1.TableFormat.Borders.Bottom.BorderType = Spire.Doc.Documents.BorderStyle.Hairline;
-                //table1.TableFormat.Borders.Left.LineWidth = 0.5F;
-                //table1.TableFormat.Borders.Left.Color = Color.Black;
-
-                ////set vertical and horizontal border
-
-                //table1.TableFormat.Borders.Vertical.BorderType = Spire.Doc.Documents.BorderStyle.Hairline;
-                //table1.TableFormat.Borders.Vertical.LineWidth = 0.5F;
-                //table1.TableFormat.Borders.Horizontal.BorderType = Spire.Doc.Documents.BorderStyle.None;
-                //table1.TableFormat.Borders.Vertical.Color = Color.Black;
-
-                //table1.TableFormat.IsAutoResized = true;
 
                 int TotalQty = 0;
                 double TotalDiscountAmount = 0;
@@ -119,20 +114,6 @@ namespace EcommApiCoreV3.Controllers
                 double TotalCGSTAmount = 0;
                 double TotalSGSTAmount = 0;
                 double TotalIGSTAmount = 0;
-
-                //for (int i = 0; i < lst[0].OrderDetails.Count; i++)
-                //{
-                //    TotalQty += lst[0].OrderDetails[i].Quantity;
-                //    TotalDiscountAmount += lst[0].OrderDetails[i].SalePrice - Convert.ToDouble(lst[0].OrderDetails[i].AdditionalDiscountAmount);
-                //    TotalAmountWithoutGST += lst[0].OrderDetails[i].Quantity * TotalDiscountAmount;
-                //    TotalAmount += lst[0].OrderDetails[i].Quantity * TotalDiscountAmount + lst[0].OrderDetails[i].GSTAmount;
-
-                //    TotalIGSTAmount += lst[0].OrderDetails[i].GSTAmount;
-                //    TotalCGSTAmount += lst[0].OrderDetails[i].GSTAmount / 2;
-                //    TotalSGSTAmount += lst[0].OrderDetails[i].GSTAmount / 2;
-
-                //}
-
 
 
                 if (lst[0].State.ToLower() == "delhi")
@@ -281,20 +262,20 @@ namespace EcommApiCoreV3.Controllers
                     Table GST_table = Invoice_doc.Sections[0].Tables[1] as Spire.Doc.Table;
                     Table nestedTable = GST_table[0, 1].AddTable(true);
                     nestedTable.AddRow(2);
-                    //nestedTable.ResetCells(2, 2);
-                    //nestedTable.AutoFitBehavior(AutoFitBehaviorType.wdAutoFitContents);
+                    
+                    nestedTable.AutoFit(AutoFitBehaviorType.AutoFitToContents);
                     for (int i = 0; i < lst[0].OrderGSTGroup.Count; i++)
                     {
-                        TextAlign(nestedTable, nestedTable.Rows.Count - 1, 0, "SGST " + (Convert.ToDecimal(lst[0].OrderGSTGroup[i].GSTRate) / 2).ToString("0.00") + "%", true);
-                        TextAlign(nestedTable, nestedTable.Rows.Count - 1, 1, (lst[0].OrderGSTGroup[i].GSTAmount / 2).ToString("0.00"), true);
+                        Textleft(nestedTable, nestedTable.Rows.Count - 1, 0, "SGST " + (Convert.ToDecimal(lst[0].OrderGSTGroup[i].GSTRate) / 2).ToString("0.00") + " %                         ", false);
+                        TextAlign(nestedTable, nestedTable.Rows.Count - 1, 1, (lst[0].OrderGSTGroup[i].GSTAmount / 2).ToString("0.00") + "        ", false);
                         nestedTable.AddRow(true, 2);
-                        TextAlign(nestedTable, nestedTable.Rows.Count - 1, 0, "CGST " + (Convert.ToDecimal(lst[0].OrderGSTGroup[i].GSTRate) / 2).ToString("0.00") + "%", true);
-                        TextAlign(nestedTable, nestedTable.Rows.Count - 1, 1, (lst[0].OrderGSTGroup[i].GSTAmount / 2).ToString("0.00"), true);
+                        Textleft(nestedTable, nestedTable.Rows.Count - 1, 0, "CGST " + (Convert.ToDecimal(lst[0].OrderGSTGroup[i].GSTRate) / 2).ToString("0.00") + " %                         ", false);
+                        TextAlign(nestedTable, nestedTable.Rows.Count - 1, 1, (lst[0].OrderGSTGroup[i].GSTAmount / 2).ToString("0.00") + "        ", false);
                         nestedTable.AddRow(true, 2);
                     }
 
                     // Total
-                    TextAlign(nestedTable, nestedTable.Rows.Count - 1, 0, "Total", true);
+                    Textleft(nestedTable, nestedTable.Rows.Count - 1, 0, "Total", true);
                     TextAlign(nestedTable, nestedTable.Rows.Count - 1, 1, TotalIGSTAmount.ToString("0.00"), true);
 
                     // GroupBy HSN and GSTRate
@@ -496,8 +477,8 @@ namespace EcommApiCoreV3.Controllers
                     //nestedTable.AutoFitBehavior(AutoFitBehaviorType.wdAutoFitContents);
                     for (int i = 0; i < lst[0].OrderGSTGroup.Count; i++)
                     {
-                        TextAlign(nestedTable, i, 0, "IGST " + lst[0].OrderGSTGroup[i].GSTRate.ToString("0.00") + " %", true);
-                        TextAlign(nestedTable, i, 1, lst[0].OrderGSTGroup[i].GSTAmount.ToString("0.00"), true);
+                        TextAlign(nestedTable, i, 0, "IGST " + lst[0].OrderGSTGroup[i].GSTRate.ToString("0.00") + " %                         ", false);
+                        TextAlign(nestedTable, i, 1, lst[0].OrderGSTGroup[i].GSTAmount.ToString("0.00") + "        ", false);
                         nestedTable.AddRow(true, 2);
                     }
 
