@@ -60,5 +60,6 @@ namespace EcommApiCoreV3.Entities
         public string TrackingURL { get; set; }
         public List<Order> OrderHSNGroup { get; set; } = new List<Order>();
         public List<Order> OrderGSTGroup { get; set; } = new List<Order>();
+        public int TotalPendingApproval { get; set; } = 0;
     }
 }
