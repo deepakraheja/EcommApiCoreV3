@@ -59,6 +59,7 @@ namespace EcommApiCoreV3.Controllers
                 Invoice_doc.Replace("[ShippingName]", lst[0].FName + " " + lst[0].LName, false, true);
                 Invoice_doc.Replace("[ShippingAddress]", lst[0].Address + ", " + lst[0].City + ", " + lst[0].State + ", " + lst[0].Country + "-" + lst[0].ZipCode, false, true);
                 Invoice_doc.Replace("[ShippingState]", lst[0].State, false, true);
+
                 if (lst[0].ListAgentUsers.Count > 0)
                     Invoice_doc.Replace("[BillingName]", lst[0].ListAgentUsers[0].Name, false, true);
                 else
