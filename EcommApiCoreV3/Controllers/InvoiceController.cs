@@ -46,9 +46,10 @@ namespace EcommApiCoreV3.Controllers
                 string Temp_Path = webRootPath + "\\TempPDF\\";
                 string Invoice_File = "Invoice_" + lst[0].OrderNumber + "_" + DateTime.Now.ToString("MM-dd-yyyy-hh-mm-ss");
                 //string Invoice_Template = webRootPath + "\\Template\\GSTInvoice.docx";
+                string InvoiceNo = lst[0].InvoiceNo == "000" ? "" : lst[0].InvoiceNo;
                 string Invoice_Template = webRootPath + (lst[0].State.ToLower() == "delhi" ?
-                    (string.IsNullOrEmpty(lst[0].Bilty) ? "\\Template\\LocalGSTOrder.docx" : "\\Template\\LocalGSTInvoice.docx")
-                    : (string.IsNullOrEmpty(lst[0].Bilty) ? "\\Template\\CentralGSTOrder.docx" : "\\Template\\CentralGSTInvoice.docx"));
+                    (string.IsNullOrEmpty(InvoiceNo) ? "\\Template\\LocalGSTOrder.docx" : "\\Template\\LocalGSTInvoice.docx")
+                    : (string.IsNullOrEmpty(InvoiceNo) ? "\\Template\\CentralGSTOrder.docx" : "\\Template\\CentralGSTInvoice.docx"));
                 Document Invoice_doc = new Document(Invoice_Template);
                 // Find and replace text in the document
 
@@ -138,7 +139,7 @@ namespace EcommApiCoreV3.Controllers
                         //table1[NextRowNumber, 2].AddParagraph().AppendText(lst[0].OrderDetails[i].HSNCode).CharacterFormat.FontSize = 8;
                         //table1[NextRowNumber, 2].CellFormat.VerticalAlignment = VerticalAlignment.Middle;
 
-                        TextCenter(table1, NextRowNumber, 2, lst[0].OrderDetails[i].HSNCode.ToString(), false);
+                        TextCenter(table1, NextRowNumber, 2, Convert.ToString(lst[0].OrderDetails[i].HSNCode), false);
 
                         //Quantity
                         //TextAlign(table1, NextRowNumber, 3, lst[0].OrderDetails[i].Quantity.ToString("0.00"), false);
@@ -263,7 +264,7 @@ namespace EcommApiCoreV3.Controllers
                     Table GST_table = Invoice_doc.Sections[0].Tables[1] as Spire.Doc.Table;
                     Table nestedTable = GST_table[0, 1].AddTable(true);
                     nestedTable.AddRow(2);
-                    
+
                     nestedTable.AutoFit(AutoFitBehaviorType.AutoFitToContents);
                     for (int i = 0; i < lst[0].OrderGSTGroup.Count; i++)
                     {
@@ -366,7 +367,7 @@ namespace EcommApiCoreV3.Controllers
                         //table1[NextRowNumber, 2].AddParagraph().AppendText(lst[0].OrderDetails[i].HSNCode).CharacterFormat.FontSize = 8;
                         //table1[NextRowNumber, 2].CellFormat.VerticalAlignment = VerticalAlignment.Middle;
 
-                        TextCenter(table1, NextRowNumber, 2, lst[0].OrderDetails[i].HSNCode.ToString(), false);
+                        TextCenter(table1, NextRowNumber, 2, Convert.ToString(lst[0].OrderDetails[i].HSNCode), false);
 
                         //Quantity
                         TextAlign(table1, NextRowNumber, 3, lst[0].OrderDetails[i].Quantity.ToString("0.00"), false);
@@ -478,7 +479,7 @@ namespace EcommApiCoreV3.Controllers
                     //nestedTable.AutoFitBehavior(AutoFitBehaviorType.wdAutoFitContents);
                     for (int i = 0; i < lst[0].OrderGSTGroup.Count; i++)
                     {
-                        TextAlign(nestedTable, i, 0, "IGST " + lst[0].OrderGSTGroup[i].GSTRate.ToString("0.00") + " %                         ", false);
+                        Textleft(nestedTable, i, 0, "IGST " + lst[0].OrderGSTGroup[i].GSTRate.ToString("0.00") + " %                         ", false);
                         TextAlign(nestedTable, i, 1, lst[0].OrderGSTGroup[i].GSTAmount.ToString("0.00") + "        ", false);
                         nestedTable.AddRow(true, 2);
                     }
