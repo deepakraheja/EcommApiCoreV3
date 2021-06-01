@@ -20,5 +20,6 @@ namespace EcommApiCoreV3.Entities
         public string CreatedDate { get; set; }
         public string ModifiedDate { get; set; }
         public string Country { get; set; }
+        public bool IsDefault { get; set; }
     }
 }
