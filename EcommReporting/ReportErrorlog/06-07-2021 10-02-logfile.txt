@@ -1,0 +1,1 @@
+Report handler realted:  Procedure or function 'p_GetNewInvoiceOrderByGUID' expects parameter '@GUID', which was not supplied.
