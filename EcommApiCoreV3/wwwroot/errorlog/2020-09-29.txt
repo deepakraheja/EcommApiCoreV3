@@ -1,0 +1,20 @@
+-------------------------------------------------
+Error Occurrred At:29-09-2020 14:33:37
+Something went wrong inside UsersController checkMobileAllReadyRegisteredOrNot action: One or more errors occurred. (A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: Named Pipes Provider, error: 40 - Could not open a connection to SQL Server))
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:29-09-2020 14:33:58
+   at System.Threading.Tasks.Task.ThrowIfExceptional(Boolean includeTaskCanceledExceptions)
+   at System.Threading.Tasks.Task`1.GetResultCore(Boolean waitCompletionNotification)
+   at EcommApiCoreV3.Controllers.UsersController.CheckMobileAllReadyRegisteredOrNot(Users obj) in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\Controllers\UsersController.cs:line 358
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:29-09-2020 14:36:55
+Something went wrong inside UsersController UserRegistration action: String or binary data would be truncated.
+The statement has been terminated.
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:29-09-2020 14:37:04
+   at EcommApiCoreV3.Repository.UsersRepository.UserRegistration(Users obj) in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3.Repository\UsersRepository.cs:line 45
+   at EcommApiCoreV3.Controllers.UsersController.UserRegistration(Users obj) in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\Controllers\UsersController.cs:line 151
+---------------------END-------------------------

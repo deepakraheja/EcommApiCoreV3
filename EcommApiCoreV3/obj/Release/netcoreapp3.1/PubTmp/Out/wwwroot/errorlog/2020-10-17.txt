@@ -1,0 +1,181 @@
+-------------------------------------------------
+Error Occurrred At:17-10-2020 15:59:31
+Something went wrong inside BillingAddressController GetBillingAddress action: A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: Named Pipes Provider, error: 40 - Could not open a connection to SQL Server)
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 15:59:32
+   at EcommApiCoreV3.Repository.BillingAddressRepository.GetBillingAddress(BillingAddress obj) in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3.Repository\BillingAddressRepository.cs:line 52
+   at EcommApiCoreV3.Controllers.BillingAddressController.GetBillingAddress(BillingAddress obj) in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\Controllers\BillingAddressController.cs:line 52
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 15:59:33
+   at System.Threading.Tasks.Task`1.GetResultCore(Boolean waitCompletionNotification)
+   at EcommApiCoreV3.Controllers.CartController.GetCartProcessedById(Cart obj) in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\Controllers\CartController.cs:line 177
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 15:59:33
+   at System.Threading.Tasks.Task`1.GetResultCore(Boolean waitCompletionNotification)
+   at EcommApiCoreV3.Controllers.CartController.GetCartById(Cart obj) in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\Controllers\CartController.cs:line 150
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 16:36:38
+Something went wrong inside UsersController UserRegistration action: String or binary data would be truncated.
+The statement has been terminated.
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 16:36:38
+   at EcommApiCoreV3.Repository.UsersRepository.UserRegistration(Users obj) in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3.Repository\UsersRepository.cs:line 46
+   at EcommApiCoreV3.Controllers.UsersController.UserRegistration(Users obj) in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\Controllers\UsersController.cs:line 255
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 16:38:08
+Something went wrong inside UsersController SendEmailWithGmail action: Value cannot be null. (Parameter 'addresses')
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 16:38:08
+   at System.Net.Mail.MailAddressCollection.Add(String addresses)
+   at EcommApiCoreV3.Controllers.Common.SendEmails.SendEmailWithGmail(Object objMail) in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\Controllers\Common\SendEmails.cs:line 462
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 21:50:54
+Something went wrong inside UsersController GetAllUsers action: A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: Named Pipes Provider, error: 40 - Could not open a connection to SQL Server)
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 21:50:54
+   at EcommApiCoreV3.Repository.UsersRepository.GetAllUsers() in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3.Repository\UsersRepository.cs:line 76
+   at EcommApiCoreV3.Controllers.UsersController.GetAllUsers() in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\Controllers\UsersController.cs:line 311
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 21:51:19
+Something went wrong inside UsersController checkMobileAllReadyRegisteredOrNot action: One or more errors occurred. (A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: Named Pipes Provider, error: 40 - Could not open a connection to SQL Server))
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 21:51:19
+   at System.Threading.Tasks.Task`1.GetResultCore(Boolean waitCompletionNotification)
+   at EcommApiCoreV3.Controllers.UsersController.CheckMobileAllReadyRegisteredOrNot(Users obj) in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\Controllers\UsersController.cs:line 483
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 21:51:22
+Something went wrong inside UsersController checkMobileAllReadyRegisteredOrNot action: One or more errors occurred. (A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: Named Pipes Provider, error: 40 - Could not open a connection to SQL Server))
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 21:51:22
+   at System.Threading.Tasks.Task`1.GetResultCore(Boolean waitCompletionNotification)
+   at EcommApiCoreV3.Controllers.UsersController.CheckMobileAllReadyRegisteredOrNot(Users obj) in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\Controllers\UsersController.cs:line 483
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 21:51:24
+Something went wrong inside UsersController checkMobileAllReadyRegisteredOrNot action: One or more errors occurred. (A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: Named Pipes Provider, error: 40 - Could not open a connection to SQL Server))
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 21:51:24
+   at System.Threading.Tasks.Task`1.GetResultCore(Boolean waitCompletionNotification)
+   at EcommApiCoreV3.Controllers.UsersController.CheckMobileAllReadyRegisteredOrNot(Users obj) in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\Controllers\UsersController.cs:line 483
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 21:51:28
+Something went wrong inside UsersController checkMobileAllReadyRegisteredOrNot action: One or more errors occurred. (A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: Named Pipes Provider, error: 40 - Could not open a connection to SQL Server))
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 21:51:28
+   at System.Threading.Tasks.Task`1.GetResultCore(Boolean waitCompletionNotification)
+   at EcommApiCoreV3.Controllers.UsersController.CheckMobileAllReadyRegisteredOrNot(Users obj) in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\Controllers\UsersController.cs:line 483
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 21:51:49
+Something went wrong inside UsersController checkMobileAllReadyRegisteredOrNot action: One or more errors occurred. (A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: Named Pipes Provider, error: 40 - Could not open a connection to SQL Server))
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 21:51:49
+   at System.Threading.Tasks.Task`1.GetResultCore(Boolean waitCompletionNotification)
+   at EcommApiCoreV3.Controllers.UsersController.CheckMobileAllReadyRegisteredOrNot(Users obj) in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\Controllers\UsersController.cs:line 483
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 21:51:57
+Something went wrong inside UsersController checkMobileAllReadyRegisteredOrNot action: One or more errors occurred. (A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: Named Pipes Provider, error: 40 - Could not open a connection to SQL Server))
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 21:51:57
+   at System.Threading.Tasks.Task`1.GetResultCore(Boolean waitCompletionNotification)
+   at EcommApiCoreV3.Controllers.UsersController.CheckMobileAllReadyRegisteredOrNot(Users obj) in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\Controllers\UsersController.cs:line 483
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 23:20:03
+Something went wrong inside ProductController SaveProductSizeColor action: Object reference not set to an instance of an object.
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 23:20:03
+   at EcommApiCoreV3.Controllers.ProductController.SaveProductSizeColor(ProductSizeColor obj) in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\Controllers\ProductController.cs:line 254
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 23:22:09
+Something went wrong inside ProductController SaveProductSizeColor action: Object reference not set to an instance of an object.
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 23:22:09
+   at EcommApiCoreV3.Controllers.ProductController.SaveProductSizeColor(ProductSizeColor obj) in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\Controllers\ProductController.cs:line 254
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 23:22:52
+Something went wrong inside ProductController SaveProductSizeColor action: Object reference not set to an instance of an object.
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 23:22:52
+   at EcommApiCoreV3.Controllers.ProductController.SaveProductSizeColor(ProductSizeColor obj) in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\Controllers\ProductController.cs:line 254
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 23:26:15
+Something went wrong inside ProductController SaveProductSizeColor action: Object reference not set to an instance of an object.
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 23:26:15
+   at EcommApiCoreV3.Controllers.ProductController.SaveProductSizeColor(ProductSizeColor obj) in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\Controllers\ProductController.cs:line 254
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 23:27:33
+Something went wrong inside ProductController SaveProductSizeColor action: Object reference not set to an instance of an object.
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 23:27:34
+   at EcommApiCoreV3.Controllers.ProductController.SaveProductSizeColor(ProductSizeColor obj) in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\Controllers\ProductController.cs:line 254
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 23:41:08
+Something went wrong inside ProductController SaveProductSizeColor action: Object reference not set to an instance of an object.
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 23:41:08
+   at EcommApiCoreV3.Controllers.ProductController.SaveProductSizeColor(ProductSizeColor obj) in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\Controllers\ProductController.cs:line 254
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 23:42:17
+Something went wrong inside ProductController SaveProductSizeColor action: Object reference not set to an instance of an object.
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 23:42:17
+   at EcommApiCoreV3.Controllers.ProductController.SaveProductSizeColor(ProductSizeColor obj) in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\Controllers\ProductController.cs:line 254
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 23:44:35
+Something went wrong inside ProductController SaveProductSizeColor action: Object reference not set to an instance of an object.
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 23:44:35
+   at EcommApiCoreV3.Controllers.ProductController.SaveProductSizeColor(ProductSizeColor obj) in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\Controllers\ProductController.cs:line 254
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 23:49:44
+Something went wrong inside ProductController SaveProductSizeColor action: Object reference not set to an instance of an object.
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 23:49:45
+   at EcommApiCoreV3.Controllers.ProductController.SaveProductSizeColor(ProductSizeColor obj) in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\Controllers\ProductController.cs:line 254
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 23:51:25
+Something went wrong inside ProductController SaveProductSizeColor action: Object reference not set to an instance of an object.
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:17-10-2020 23:51:25
+   at EcommApiCoreV3.Controllers.ProductController.SaveProductSizeColor(ProductSizeColor obj) in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\Controllers\ProductController.cs:line 254
+---------------------END-------------------------

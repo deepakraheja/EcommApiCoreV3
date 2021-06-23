@@ -195,15 +195,18 @@ namespace EcommApiCoreV3.Controllers
 
                         //**********CGST
 
-                        decimal tempCGST = Math.Round(Convert.ToDecimal(lst[0].OrderDetails[i].GSTAmount) / 2, 3);
-                        string CGST = tempCGST.ToString("0.000");
+                        //decimal tempCGST = Math.Round(Convert.ToDecimal(lst[0].OrderDetails[i].GSTAmount) / 2, 4);
+                        string CGST = (lst[0].OrderDetails[i].GSTAmount / 2).ToString("0.000");
+                        decimal tempCGST = Convert.ToDecimal((lst[0].OrderDetails[i].GSTAmount / 2).ToString("0.000"));
 
                         TextAlign(table1, NextRowNumber, 10, CGST, false);
 
                         //************SGST
 
-                        decimal tempSGST = Math.Round(Convert.ToDecimal(lst[0].OrderDetails[i].GSTAmount) / 2, 3);//Convert.ToDecimal(lst[0].OrderDetails[i].GSTAmount) - tempCGST;
-                        string SGST = tempSGST.ToString("0.000");
+                        //decimal tempSGST = Math.Round(Convert.ToDecimal(lst[0].OrderDetails[i].GSTAmount) / 2, 4);//Convert.ToDecimal(lst[0].OrderDetails[i].GSTAmount) - tempCGST;
+
+                        string SGST = (lst[0].OrderDetails[i].GSTAmount / 2).ToString("0.000");
+                        decimal tempSGST = Convert.ToDecimal((lst[0].OrderDetails[i].GSTAmount / 2).ToString("0.000"));
 
                         TextAlign(table1, NextRowNumber, 11, SGST, false);
 
@@ -211,7 +214,9 @@ namespace EcommApiCoreV3.Controllers
                         //TextAlign(table1, NextRowNumber, 12, lst[0].OrderDetails[i].GSTAmount.ToString("0.00"), false);
 
                         //Total
-                        TextAlign(table1, NextRowNumber, 12, ((lst[0].OrderDetails[i].Quantity * DiscountedRate) + lst[0].OrderDetails[i].GSTAmount).ToString("0.00"), false);
+                        //TextAlign(table1, NextRowNumber, 12, ((lst[0].OrderDetails[i].Quantity * DiscountedRate) + lst[0].OrderDetails[i].GSTAmount).ToString("0.00"), false);
+
+                        TextAlign(table1, NextRowNumber, 12, ((lst[0].OrderDetails[i].Quantity * DiscountedRate) + Convert.ToDouble(tempCGST + tempSGST)).ToString("0.00"), false);
 
                         //Total
                         //Amount
@@ -224,8 +229,8 @@ namespace EcommApiCoreV3.Controllers
                         //Total IGSTAmount
                         TotalIGSTAmount += Convert.ToDouble(lst[0].OrderDetails[i].GSTAmount.ToString("0.00"));
 
-                        //TotalCGSTAmount += tempCGST;
-                        //TotalSGSTAmount += tempSGST;
+                        //TotalCGSTAmount += Convert.ToDouble(tempCGST);
+                        //TotalSGSTAmount += Convert.ToDouble(tempSGST);
                     }
 
                     TotalCGSTAmount = Convert.ToDouble(TotalIGSTAmount / 2);
@@ -235,9 +240,18 @@ namespace EcommApiCoreV3.Controllers
 
                     TotalAmount = TotalAmountWithoutGST + Convert.ToDouble(TotalCGSTAmount + TotalSGSTAmount);
 
-                    string RoundOff = (1.00 - Convert.ToDouble("0." + TotalAmount.ToString("0.00").Split('.')[1])).ToString("0.00");
+                    double dblroundoff = Convert.ToDouble("0." + TotalAmount.ToString("0.00").Split('.')[1]);
+                    string RoundOff = "";
+                    if (dblroundoff > 0.49)
+                    {
+                        RoundOff = (1.00 - dblroundoff).ToString("0.00");
+                        Invoice_doc.Replace("[RoundOff]", RoundOff, false, true);
+                    }
+                    else
+                    {
+                        Invoice_doc.Replace("[RoundOff]", dblroundoff.ToString("0.00"), false, true);
+                    }
 
-                    Invoice_doc.Replace("[RoundOff]", RoundOff, false, true);
                     Invoice_doc.Replace("[TotalAmount]", Convert.ToInt32(TotalAmount).ToString("0.00"), false, true);
                     Invoice_doc.Replace("[RupessInWord]", _convertInToWord.ConvertToWords(Convert.ToInt32(TotalAmount).ToString("0.00")), false, true);
 
@@ -279,10 +293,10 @@ namespace EcommApiCoreV3.Controllers
                     table1[NextRowNumber, 9].AddParagraph().AppendText("").CharacterFormat.FontSize = 8;
 
                     //CGST
-                    TextAlign(table1, NextRowNumber, 10, TotalCGSTAmount.ToString("0.00"), true);
+                    TextAlign(table1, NextRowNumber, 10, TotalCGSTAmount.ToString("0.000"), true);
 
                     //SGST
-                    TextAlign(table1, NextRowNumber, 11, TotalSGSTAmount.ToString("0.00"), true);
+                    TextAlign(table1, NextRowNumber, 11, TotalSGSTAmount.ToString("0.000"), true);
 
                     ////IGST
                     //TextAlign(table1, NextRowNumber, 12, TotalIGSTAmount.ToString("0.00"), true);
@@ -300,10 +314,10 @@ namespace EcommApiCoreV3.Controllers
                     for (int i = 0; i < lst[0].OrderGSTGroup.Count; i++)
                     {
                         Textleft(nestedTable, nestedTable.Rows.Count - 1, 0, "SGST " + (Convert.ToDecimal(lst[0].OrderGSTGroup[i].GSTRate) / 2).ToString("0.00") + " %                         ", false);
-                        TextAlign(nestedTable, nestedTable.Rows.Count - 1, 1, (Convert.ToDecimal(lst[0].OrderGSTGroup[i].GSTAmount.ToString("0.00")) / 2).ToString("0.00") + "        ", false);
+                        TextAlign(nestedTable, nestedTable.Rows.Count - 1, 1, (Convert.ToDecimal(lst[0].OrderGSTGroup[i].GSTAmount.ToString("0.00")) / 2).ToString("0.000") + "        ", false);
                         nestedTable.AddRow(true, 2);
                         Textleft(nestedTable, nestedTable.Rows.Count - 1, 0, "CGST " + (Convert.ToDecimal(lst[0].OrderGSTGroup[i].GSTRate) / 2).ToString("0.00") + " %                         ", false);
-                        TextAlign(nestedTable, nestedTable.Rows.Count - 1, 1, (Convert.ToDecimal(lst[0].OrderGSTGroup[i].GSTAmount.ToString("0.00")) / 2).ToString("0.00") + "        ", false);
+                        TextAlign(nestedTable, nestedTable.Rows.Count - 1, 1, (Convert.ToDecimal(lst[0].OrderGSTGroup[i].GSTAmount.ToString("0.00")) / 2).ToString("0.000") + "        ", false);
                         nestedTable.AddRow(true, 2);
                     }
 
@@ -335,13 +349,13 @@ namespace EcommApiCoreV3.Controllers
                         TextAlign(HSNGST_table, NextRowNumber, 3, (Convert.ToDecimal(lst[0].OrderHSNGroup[j].GSTRate) / 2).ToString("0.00"), false);
 
                         //Central Amount
-                        TextAlign(HSNGST_table, NextRowNumber, 4, (lst[0].OrderHSNGroup[j].GSTAmount / 2).ToString("0.00"), false);
+                        TextAlign(HSNGST_table, NextRowNumber, 4, (lst[0].OrderHSNGroup[j].GSTAmount / 2).ToString("0.000"), false);
 
                         //State Rate
                         TextAlign(HSNGST_table, NextRowNumber, 5, (Convert.ToDecimal(lst[0].OrderHSNGroup[j].GSTRate) / 2).ToString("0.00"), false);
 
                         //State Amount
-                        TextAlign(HSNGST_table, NextRowNumber, 6, (lst[0].OrderHSNGroup[j].GSTAmount / 2).ToString("0.00"), false);
+                        TextAlign(HSNGST_table, NextRowNumber, 6, (lst[0].OrderHSNGroup[j].GSTAmount / 2).ToString("0.000"), false);
 
                         //Tax Amount
                         TextAlign(HSNGST_table, NextRowNumber, 7, lst[0].OrderHSNGroup[j].GSTAmount.ToString("0.00"), false);
@@ -365,13 +379,13 @@ namespace EcommApiCoreV3.Controllers
                     TextAlign(HSNGST_table, NextRowNumber, 3, "", true);
 
                     //Central Amount
-                    TextAlign(HSNGST_table, NextRowNumber, 4, (TotalIGSTAmount / 2).ToString("0.00"), true);
+                    TextAlign(HSNGST_table, NextRowNumber, 4, (TotalIGSTAmount / 2).ToString("0.000"), true);
 
                     //State Rate
                     TextAlign(HSNGST_table, NextRowNumber, 5, "", true);
 
                     //State Amount
-                    TextAlign(HSNGST_table, NextRowNumber, 6, (TotalIGSTAmount / 2).ToString("0.00"), true);
+                    TextAlign(HSNGST_table, NextRowNumber, 6, (TotalIGSTAmount / 2).ToString("0.000"), true);
 
                     //Tax Amount
                     TextAlign(HSNGST_table, NextRowNumber, 7, TotalIGSTAmount.ToString("0.00"), true);
@@ -448,7 +462,20 @@ namespace EcommApiCoreV3.Controllers
 
                     TotalAmount = TotalAmountWithoutGST + TotalIGSTAmount;
 
-                    Invoice_doc.Replace("[RoundOff]", Convert.ToDecimal("0." + TotalAmount.ToString("0.00").Split('.')[1]).ToString("0.00"), false, true);
+                    //  Invoice_doc.Replace("[RoundOff]", Convert.ToDecimal("0." + TotalAmount.ToString("0.00").Split('.')[1]).ToString("0.00"), false, true);
+
+                    double dblroundoff = Convert.ToDouble("0." + TotalAmount.ToString("0.00").Split('.')[1]);
+                    string RoundOff = "";
+                    if (dblroundoff > 0.49)
+                    {
+                        RoundOff = (1.00 - dblroundoff).ToString("0.00");
+                        Invoice_doc.Replace("[RoundOff]", RoundOff, false, true);
+                    }
+                    else
+                    {
+                        Invoice_doc.Replace("[RoundOff]", dblroundoff.ToString("0.00"), false, true);
+                    }
+
                     Invoice_doc.Replace("[TotalAmount]", Convert.ToInt32(TotalAmount).ToString("0.00"), false, true);
                     Invoice_doc.Replace("[RupessInWord]", _convertInToWord.ConvertToWords(Convert.ToInt32(TotalAmount).ToString("0.00")), false, true);
 
@@ -576,6 +603,7 @@ namespace EcommApiCoreV3.Controllers
                 }
 
 
+                ////////******************************Saving the pdf file
 
                 Invoice_doc.SaveToFile(Temp_Path + Invoice_File + ".docx", FileFormat.Docx);
                 //Convert Word to PDF
@@ -602,7 +630,7 @@ namespace EcommApiCoreV3.Controllers
             p.Format.HorizontalAlignment = HorizontalAlignment.Right;
             TR.CharacterFormat.FontSize = 9;
             TR.CharacterFormat.Bold = IsBold;
-            table1[i, rowNumber].CellFormat.VerticalAlignment = VerticalAlignment.Middle;
+            table1[i, rowNumber].CellFormat.VerticalAlignment = VerticalAlignment.Top;
         }
 
 
@@ -614,7 +642,7 @@ namespace EcommApiCoreV3.Controllers
             p.Format.HorizontalAlignment = HorizontalAlignment.Center;
             TR.CharacterFormat.FontSize = 9;
             TR.CharacterFormat.Bold = IsBold;
-            table1[i, rowNumber].CellFormat.VerticalAlignment = VerticalAlignment.Middle;
+            table1[i, rowNumber].CellFormat.VerticalAlignment = VerticalAlignment.Top;
         }
 
         public void Textleft(Table table1, int i, int rowNumber, string value, bool IsBold)
@@ -625,7 +653,7 @@ namespace EcommApiCoreV3.Controllers
             p.Format.HorizontalAlignment = HorizontalAlignment.Left;
             TR.CharacterFormat.FontSize = 9;
             TR.CharacterFormat.Bold = IsBold;
-            table1[i, rowNumber].CellFormat.VerticalAlignment = VerticalAlignment.Middle;
+            table1[i, rowNumber].CellFormat.VerticalAlignment = VerticalAlignment.Top;
         }
 
         public void tableFormat(Table table1)

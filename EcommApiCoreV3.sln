@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcommApiCoreV3.Entities", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcommApiCoreV3.Repository", "EcommApiCoreV3.Repository\EcommApiCoreV3.Repository.csproj", "{07FC1C44-ED8B-4ADF-B5D4-55FE032AA5B3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcommReporting", "EcommReporting\EcommReporting.csproj", "{859130E0-2BF9-4561-97F7-99BBCEA6EA80}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{07FC1C44-ED8B-4ADF-B5D4-55FE032AA5B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07FC1C44-ED8B-4ADF-B5D4-55FE032AA5B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07FC1C44-ED8B-4ADF-B5D4-55FE032AA5B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{859130E0-2BF9-4561-97F7-99BBCEA6EA80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{859130E0-2BF9-4561-97F7-99BBCEA6EA80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{859130E0-2BF9-4561-97F7-99BBCEA6EA80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{859130E0-2BF9-4561-97F7-99BBCEA6EA80}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

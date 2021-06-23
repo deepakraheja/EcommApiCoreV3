@@ -1,0 +1,35 @@
+-------------------------------------------------
+Error Occurrred At:06/05/2021 19:32:15
+Something went wrong inside OrderController GetOrderByUserId action: Index was out of range. Must be non-negative and less than the size of the collection. (Parameter 'index')
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:06/05/2021 19:32:16
+   at System.Collections.Generic.List`1.get_Item(Int32 index)
+   at EcommApiCoreV3.Controllers.OrderController.GetOrderByUserId() in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\Controllers\OrderController.cs:line 179
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:06/05/2021 19:34:10
+Something went wrong inside OrderController GetOrderByUserId action: Index was out of range. Must be non-negative and less than the size of the collection. (Parameter 'index')
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:06/05/2021 19:34:10
+   at System.Collections.Generic.List`1.get_Item(Int32 index)
+   at EcommApiCoreV3.Controllers.OrderController.GetOrderByUserId() in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\Controllers\OrderController.cs:line 179
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:06/05/2021 23:45:30
+Something went wrong inside OrderController SaveOrder action: Object reference not set to an instance of an object.
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:06/05/2021 23:45:30
+   at EcommApiCoreV3.Controllers.OrderController.SaveOrder(Order obj) in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\Controllers\OrderController.cs:line 41
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:06/05/2021 23:45:32
+Something went wrong inside OrderController GetNewOrderByGUID action: One or more errors occurred. (Conversion failed when converting from a character string to uniqueidentifier.)
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:06/05/2021 23:45:32
+   at System.Threading.Tasks.Task`1.GetResultCore(Boolean waitCompletionNotification)
+   at EcommApiCoreV3.Controllers.OrderController.GetNewOrderByGUID(Order obj) in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\Controllers\OrderController.cs:line 146
+---------------------END-------------------------

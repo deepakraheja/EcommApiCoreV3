@@ -1,0 +1,27 @@
+-------------------------------------------------
+Error Occurrred At:16-10-2020 23:32:23
+Something went wrong inside ProductController GetProductBySubcatecode action: One or more errors occurred. (A transport-level error has occurred when receiving results from the server. (provider: TCP Provider, error: 0 - The semaphore timeout period has expired.))
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:16-10-2020 23:32:23
+Something went wrong inside CartController GetCartById action: One or more errors occurred. (A transport-level error has occurred when receiving results from the server. (provider: TCP Provider, error: 0 - The semaphore timeout period has expired.))
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:16-10-2020 23:32:23
+   at System.Threading.Tasks.Task`1.GetResultCore(Boolean waitCompletionNotification)
+   at EcommApiCoreV3.Controllers.CartController.GetCartById(Cart obj) in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\Controllers\CartController.cs:line 150
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:16-10-2020 23:35:18
+Something went wrong inside ProductController GetProductBySubcatecode action: One or more errors occurred. (A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: Named Pipes Provider, error: 40 - Could not open a connection to SQL Server))
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:16-10-2020 23:35:18
+   at System.Threading.Tasks.Task`1.GetResultCore(Boolean waitCompletionNotification)
+   at EcommApiCoreV3.Controllers.ProductController.GetProductBySubcatecode(Product obj) in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\Controllers\ProductController.cs:line 43
+---------------------END-------------------------
+-------------------------------------------------
+Error Occurrred At:16-10-2020 23:35:18
+   at System.Threading.Tasks.Task`1.GetResultCore(Boolean waitCompletionNotification)
+   at EcommApiCoreV3.Controllers.CartController.GetCartById(Cart obj) in C:\Project\Mohit\EcommApiCoreV3\EcommApiCoreV3\Controllers\CartController.cs:line 150
+---------------------END-------------------------
